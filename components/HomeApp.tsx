@@ -77,7 +77,7 @@ function MainAppContent() {
             <HeroBanner />
             <FlashSaleSection />
             <TopRankedSection />
-            <ProductGrid showFilters={false} title="Nos Articles en Stock" subtitle="Découvrez nos meilleures ventes et articles disponibles immédiatement avec livraison rapide." />
+            <ProductGrid showFilters={false} title="Nos Articles & Collections en Stock" subtitle="Découvrez nos meilleures ventes et sélections exclusives, disponibles immédiatement avec commande directe et livraison express." />
             <TrustBadges />
           </div>
         )}

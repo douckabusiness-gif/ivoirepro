@@ -208,10 +208,10 @@ export const HeroBanner = () => {
                         alignment === 'center' ? 'mx-auto text-center' : alignment === 'right' ? 'ml-auto text-right' : 'mr-auto text-left'
                       }`}>
                         {slide.title && (
-                          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-md">
+                          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white drop-shadow-lg font-display">
                             {slide.title}
                             {slide.highlight && (
-                              <span className="block mt-1 text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-sky-200 to-amber-200">
+                              <span className="block mt-1 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-indigo-200 to-sky-200">
                                 {slide.highlight}
                               </span>
                             )}
@@ -219,20 +219,20 @@ export const HeroBanner = () => {
                         )}
 
                         {slide.subtitle && (
-                          <p className="text-xs sm:text-sm md:text-base text-slate-200 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl">
+                          <p className="text-sm sm:text-base md:text-lg text-slate-100 font-medium leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl drop-shadow-sm">
                             {slide.subtitle}
                           </p>
                         )}
 
                         {/* CTA Buttons */}
-                        <div className={`flex flex-wrap items-center gap-3 pt-2 ${
+                        <div className={`flex flex-wrap items-center gap-3 pt-2 sm:pt-3 ${
                           alignment === 'center' ? 'justify-center' : alignment === 'right' ? 'justify-end' : 'justify-start'
                         }`}>
                           {slide.buttonText && (
                             <button
                               type="button"
                               onClick={() => executeAction(slide.buttonAction, slide.buttonLink, slide)}
-                              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold rounded-2xl text-xs sm:text-sm shadow-xl flex items-center gap-2 transition cursor-pointer hover:scale-105 active:scale-95"
+                              className="px-7 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl text-sm sm:text-base shadow-xl flex items-center gap-2.5 transition cursor-pointer hover:scale-105 active:scale-95"
                             >
                               <span>{slide.buttonText}</span>
                               <ArrowRight className="w-4 h-4" />
@@ -243,7 +243,7 @@ export const HeroBanner = () => {
                             <button
                               type="button"
                               onClick={() => executeAction(slide.secondaryButtonAction || 'whatsapp', slide.secondaryButtonLink, slide)}
-                              className="px-5 py-3 bg-white/20 hover:bg-white/30 text-white font-bold rounded-2xl text-xs sm:text-sm backdrop-blur-md border border-white/30 flex items-center gap-2 transition cursor-pointer hover:scale-105 active:scale-95"
+                              className="px-6 py-3.5 bg-white/20 hover:bg-white/30 text-white font-extrabold rounded-2xl text-sm sm:text-base backdrop-blur-md border border-white/30 flex items-center gap-2 transition cursor-pointer hover:scale-105 active:scale-95"
                             >
                               <MessageCircle className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
                               <span>{slide.secondaryButtonText}</span>
@@ -312,33 +312,34 @@ export const HeroBanner = () => {
           </div>
         ) : (
           /* CLEAN MINIMAL WELCOME WHEN NO BANNERS ARE CREATED YET (NO FAKE HARDCODED SLIDES) */
-          <div className="relative w-full rounded-3xl overflow-hidden p-8 sm:p-12 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-md border border-slate-800 text-center space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-black uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <div className="relative w-full rounded-3xl overflow-hidden p-8 sm:p-14 lg:p-16 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl border border-indigo-900/30 text-center space-y-5">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs sm:text-sm font-black uppercase tracking-wider shadow-inner">
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
               <span>{settings.storeName || 'Bienvenue dans notre Boutique'}</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight font-display drop-shadow-md">
               {settings.storeName || 'Notre Collection Exclusive'}
             </h1>
-            <p className="text-sm text-slate-300 max-w-xl mx-auto font-light">
+            <p className="text-base sm:text-lg md:text-xl text-slate-200 max-w-2xl mx-auto font-medium leading-relaxed">
               {settings.storeSlogan || 'Découvrez nos articles de qualité sélectionnés avec soin et profitez de la livraison rapide à domicile.'}
             </p>
-            <div className="pt-2 flex justify-center gap-3">
+            <div className="pt-3 flex flex-wrap justify-center gap-3.5">
               <button
                 type="button"
                 onClick={() => { setSelectedCategoryFilter(null); setCurrentView('shop'); }}
-                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition cursor-pointer"
+                className="px-7 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl text-sm sm:text-base shadow-xl hover:scale-105 active:scale-95 transition cursor-pointer flex items-center gap-2"
               >
-                Explorer le Catalogue
+                <span>Explorer le Catalogue</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
               <a
                 href={generateWhatsAppGeneralLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs sm:text-sm backdrop-blur-md border border-white/20 flex items-center gap-2 transition"
+                className="px-6 py-3.5 bg-white/15 hover:bg-white/25 text-white font-extrabold rounded-2xl text-sm sm:text-base backdrop-blur-md border border-white/25 flex items-center gap-2 transition hover:scale-105 active:scale-95"
               >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>WhatsApp</span>
+                <MessageCircle className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
+                <span>WhatsApp Direct</span>
               </a>
             </div>
           </div>
@@ -348,10 +349,10 @@ export const HeroBanner = () => {
         {/* SLEEK HORIZONTAL CATEGORY NAVIGATION BAR (AIRBNB / SHOPIFY STYLE) */}
         {/* ========================================================================= */}
         {categories && categories.length > 0 && (
-          <div className="relative pt-1">
+          <div className="relative pt-1.5">
             <div 
               ref={categoryScrollRef}
-              className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none scroll-smooth select-none"
+              className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none scroll-smooth select-none"
             >
               {/* "Tous les rayons" Pill */}
               <button
@@ -361,13 +362,13 @@ export const HeroBanner = () => {
                   setSelectedSubcategoryFilter(null);
                   setCurrentView('shop');
                 }}
-                className={`px-4 py-2 rounded-2xl text-xs font-bold transition whitespace-nowrap flex items-center gap-2 cursor-pointer shrink-0 border ${
+                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer shrink-0 border ${
                   selectedCategoryFilter === null
-                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white shadow-sm'
+                    ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 border-slate-950 dark:border-white shadow-md scale-[1.02]'
                     : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
-                <Grid className="w-3.5 h-3.5" />
+                <Grid className="w-4 h-4" />
                 <span>Tous les Rayons</span>
               </button>
 
@@ -383,14 +384,14 @@ export const HeroBanner = () => {
                       setSelectedSubcategoryFilter(null);
                       setCurrentView('shop');
                     }}
-                    className={`px-4 py-2 rounded-2xl text-xs font-bold transition whitespace-nowrap flex items-center gap-2 cursor-pointer shrink-0 border ${
+                    className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer shrink-0 border ${
                       isSelected
-                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20'
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 scale-[1.02]'
                         : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={isSelected ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'}>
-                      {categoryIconMap[cat.iconName || ''] || <Grid className="w-3.5 h-3.5" />}
+                      {categoryIconMap[cat.iconName || ''] || <Grid className="w-4 h-4" />}
                     </span>
                     <span>{cat.name}</span>
                   </button>

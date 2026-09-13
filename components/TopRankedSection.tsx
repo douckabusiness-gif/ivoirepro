@@ -57,55 +57,55 @@ export const TopRankedSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header with Ranking Tabs */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-4 border-b border-slate-100">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-5 border-b border-slate-200/80 dark:border-slate-800">
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-600 uppercase tracking-widest">
-              <Award className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
+              <Award className="w-4 h-4 text-amber-500 animate-pulse" />
               <span>Classement Officiel</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 dark:text-white tracking-tight font-display leading-[1.15]">
               Top Produits & Meilleures Ventes
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Sélection basée sur le volume de commandes et les avis vérifiés de nos clients.
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-2xl mt-2">
+              Sélection basée sur le volume réel des commandes et les avis vérifiés de nos clients.
             </p>
           </div>
 
           {/* Ranking Tabs */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start md:self-auto">
+          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl self-start md:self-auto border border-slate-200/80 dark:border-slate-700">
             <button
               onClick={() => setActiveTab('sales')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 ${
                 activeTab === 'sales'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-md scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Award className="w-3.5 h-3.5 text-amber-500" />
+              <Award className="w-4 h-4 text-amber-500" />
               <span>Plus Populaires</span>
             </button>
 
             <button
               onClick={() => setActiveTab('rating')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 ${
                 activeTab === 'rating'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-md scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
               <span>Mieux Notés (4.9+)</span>
             </button>
 
             <button
               onClick={() => setActiveTab('trending')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 ${
                 activeTab === 'trending'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-md scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Flame className="w-3.5 h-3.5 text-rose-500" />
+              <Flame className="w-4 h-4 text-rose-500" />
               <span>Tendances Chaudes</span>
             </button>
           </div>
@@ -177,50 +177,50 @@ export const TopRankedSection = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-bold text-sm text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                  <h3 className="font-extrabold text-base sm:text-lg text-slate-950 dark:text-white group-hover:text-indigo-600 transition-colors line-clamp-1">
                     {product.title}
                   </h3>
                   
-                  <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-1 mt-1 leading-relaxed">
                     {product.shortDescription || product.description}
                   </p>
                 </div>
 
                 {/* Price & Instant Buy */}
-                <div className="pt-3 mt-3 border-t border-slate-200/80 space-y-2">
+                <div className="pt-3.5 mt-3.5 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
                   <div className="flex items-baseline justify-between">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-base font-black text-slate-900">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-950 dark:text-white">
                         {formatPrice(product.price)}
                       </span>
                       {product.originalPrice && (
-                        <span className="text-xs text-slate-400 line-through">
+                        <span className="text-xs sm:text-sm text-slate-400 line-through font-semibold">
                           {formatPrice(product.originalPrice)}
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    <span className="text-[10px] sm:text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                       Prix Direct
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={(e) => handleAddToCart(product, e)}
-                      className={`py-2 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer ${
+                      className={`py-2.5 px-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs ${
                         isAdded
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-900 hover:bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-950 hover:bg-indigo-600 text-white'
                       }`}
                     >
                       {isAdded ? (
                         <>
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-4 h-4" />
                           <span>Ajouté !</span>
                         </>
                       ) : (
                         <>
-                          <ShoppingBag className="w-3.5 h-3.5" />
+                          <ShoppingBag className="w-4 h-4" />
                           <span>Panier</span>
                         </>
                       )}
@@ -231,10 +231,10 @@ export const TopRankedSection = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="py-2 px-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
+                      className="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs hover:scale-[1.02] active:scale-95"
                       title="Commander sur WhatsApp"
                     >
-                      <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                      <MessageCircle className="w-4 h-4 fill-white" />
                       <span>WhatsApp</span>
                     </a>
                   </div>

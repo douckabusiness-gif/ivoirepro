@@ -501,16 +501,16 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Header Title & Sorting / Actions Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-5 border-b border-slate-200/80 dark:border-slate-800">
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
-              <Sparkles className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
+              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400 animate-pulse" />
               <span>{title ? 'Sélection Officielle' : 'Catalogue & Disponibilités Réelles'}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 dark:text-white tracking-tight font-display leading-[1.15]">
               {title || (activeCategory ? activeCategory.name : 'Tous Nos Articles Disponibles')}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl mt-2">
               {subtitle || activeCategory?.description || "Parcourez notre catalogue exclusif en stock réel, avec commande rapide et livraison express à domicile."}
             </p>
           </div>
@@ -524,11 +524,11 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   setCurrentView('shop');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border border-indigo-100 dark:border-slate-700"
+                className="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-indigo-700 dark:text-indigo-300 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition cursor-pointer border border-indigo-200/80 dark:border-slate-700 shadow-xs hover:scale-105 active:scale-95"
               >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-4 h-4" />
                 <span>Ouvrir les filtres avancés</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
               /* Mobile Filter Toggle Button (Shop view only) */

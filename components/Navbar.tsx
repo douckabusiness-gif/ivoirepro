@@ -152,10 +152,10 @@ export const Navbar = () => {
     >
       
       {/* 1. Top Mini Utility Bar */}
-      <div className="bg-slate-100/90 dark:bg-slate-950/90 text-slate-600 dark:text-slate-400 text-[11px] font-medium border-b border-slate-200/80 dark:border-slate-800/80 hidden sm:block">
-        <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between">
+      <div className="bg-slate-100/90 dark:bg-slate-950/90 text-slate-700 dark:text-slate-300 text-xs sm:text-[12.5px] font-semibold border-b border-slate-200/80 dark:border-slate-800/80 hidden sm:block">
+        <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-8.5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-semibold">
+            <span className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 font-bold">
               <Truck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Livraison express à domicile & Expédition 24h</span>
             </span>
@@ -164,14 +164,14 @@ export const Navbar = () => {
               href={generateWhatsAppGeneralLink()} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1 text-slate-600 dark:text-slate-400 transition font-medium"
+              className="hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1.5 text-slate-700 dark:text-slate-300 transition font-semibold"
             >
-              <MessageCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400 fill-emerald-600/20" />
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 fill-emerald-600/20" />
               <span>Assistance Client WhatsApp 7j/7</span>
             </a>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] font-semibold">
+          <div className="flex items-center gap-4 text-xs font-bold">
             <button 
               onClick={() => handleNavigate('delivery')} 
               className="hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer"
@@ -450,15 +450,15 @@ export const Navbar = () => {
       {/* 3. Category Navigation Bar (Desktop) */}
       <div className="border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hidden lg:block">
         <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-11 text-xs font-bold text-slate-700 dark:text-slate-300">
+          <div className="flex items-center justify-between h-12 text-xs sm:text-[13px] font-extrabold text-slate-700 dark:text-slate-300">
             
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 w-full">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full">
               
               {/* Mega Categories Trigger */}
               <div className="relative shrink-0">
                 <button
                   onClick={() => setIsCategoryMegaMenuOpen(!isCategoryMegaMenuOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition cursor-pointer font-bold shadow-xs"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition cursor-pointer font-extrabold text-xs sm:text-[13px] shadow-xs hover:scale-105 active:scale-95"
                 >
                   <Layers className="w-4 h-4" />
                   <span>Toutes les catégories</span>
@@ -472,7 +472,7 @@ export const Navbar = () => {
                   >
                     <button
                       onClick={() => handleNavigate('shop', null)}
-                      className="w-full text-left px-4 py-2.5 text-xs text-slate-900 dark:text-white hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between font-bold cursor-pointer"
+                      className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between font-extrabold cursor-pointer"
                     >
                       <span className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -484,10 +484,10 @@ export const Navbar = () => {
                       <button
                         key={cat.id}
                         onClick={() => handleNavigate('shop', cat.id)}
-                        className="w-full text-left px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between transition cursor-pointer"
+                        className="w-full text-left px-4 py-2 text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between transition cursor-pointer"
                       >
-                        <span className="font-semibold">{cat.name}</span>
-                        <span className="text-[10px] text-slate-400 font-bold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700">
+                        <span className="font-bold">{cat.name}</span>
+                        <span className="text-[10px] text-slate-400 font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700">
                           {products.filter(p => p.categoryId === cat.id).length}
                         </span>
                       </button>
@@ -499,7 +499,7 @@ export const Navbar = () => {
               {/* All Products Link */}
               <button
                 onClick={() => handleNavigate('shop', null)}
-                className={`shrink-0 px-3.5 py-1.5 rounded-lg transition cursor-pointer font-bold whitespace-nowrap ${
+                className={`shrink-0 px-4 py-2 rounded-xl transition cursor-pointer font-extrabold text-xs sm:text-[13px] whitespace-nowrap ${
                   currentView === 'shop' && !selectedCategoryFilter
                     ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 font-black'
                     : 'text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -517,13 +517,13 @@ export const Navbar = () => {
                   <button
                     key={cat.id}
                     onClick={() => handleNavigate('shop', cat.id)}
-                    className={`shrink-0 px-3.5 py-1.5 rounded-lg transition cursor-pointer font-semibold text-xs whitespace-nowrap ${
-                      isSelected 
-                        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 font-black' 
+                    className={`shrink-0 px-4 py-2 rounded-xl transition cursor-pointer font-bold text-xs sm:text-[13px] whitespace-nowrap ${
+                      isSelected
+                        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 font-black'
                         : 'text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
-                    {cat.name}
+                    <span>{cat.name}</span>
                   </button>
                 );
               })}
