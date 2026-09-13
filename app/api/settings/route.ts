@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { initialStoreSettings } from '@/lib/initialData';
+import { loadStoreSettingsRecord } from '@/lib/publicData';
 import { hasAdminRole, verifyAdminSession } from '@/lib/auth';
 import { canViewPrivateSettings, toPublicSettings } from '@/lib/settingsSecurity';
 
@@ -50,42 +51,7 @@ export async function GET(request: Request) {
     // Only the real administrator role may receive private AI/SMTP settings.
     // Demo sessions still carry role=admin, so local demonstrations keep working.
     const isAdmin = canViewPrivateSettings(session);
-    let settings: any = await prisma.storeSettings.findUnique({
-      where: { id: 'default_settings' },
-      include: {
-        faqList: {
-          orderBy: { order: 'asc' },
-        },
-      },
-    });
-
-    if (!settings) {
-      const { faqList, ...rest } = initialStoreSettings;
-      settings = await prisma.storeSettings.create({
-        data: {
-          id: 'default_settings',
-          ...(rest as any),
-          faqList: {
-            create: faqList.map((faq, idx) => ({
-              id: faq.id,
-              question: faq.question,
-              answer: faq.answer,
-              category: faq.category || 'Général',
-              order: idx,
-            })),
-          },
-        },
-        include: {
-          faqList: {
-            orderBy: { order: 'asc' },
-          },
-        },
-      });
-    }
-
-    // Older databases used `auto` as an AI model placeholder. It is no longer
-    // a valid model: only an identifier returned by the provider API may be used.
-    if (settings.aiModel === 'auto') settings.aiModel = '';
+    const settings = await loadStoreSettingsRecord();
 
     return NextResponse.json(isAdmin ? settings : toPublicSettings(settings));
   } catch (error: any) {

@@ -146,3 +146,25 @@ test('la politique de mot de passe administrateur impose une valeur robuste', ()
   assert.equal(validateAdminPassword('AdminPassword').valid, false);
   assert.equal(validateAdminPassword('A'.repeat(73) + '1!a').valid, false);
 });
+
+// --- Sécurité des intégrations Telegram / cron (fix/security-week1) ---
+import { getTelegramWebhookSecret, verifyTelegramWebhookSecret } from '../lib/telegram';
+
+test('Telegram webhook secret: dérivé de JWT_SECRET, stable et vérifiable', () => {
+  process.env.JWT_SECRET = 'test-secret-for-webhook';
+  const a = getTelegramWebhookSecret('123456:AAA-bot-token');
+  const b = getTelegramWebhookSecret('123456:AAA-bot-token');
+  assert.equal(a, b);
+  assert.equal(a.length, 64);
+  assert.ok(verifyTelegramWebhookSecret('123456:AAA-bot-token', a));
+  assert.equal(verifyTelegramWebhookSecret('123456:AAA-bot-token', null), false);
+  assert.equal(verifyTelegramWebhookSecret('123456:AAA-bot-token', 'wrong'), false);
+  assert.equal(verifyTelegramWebhookSecret('other:token', a), false);
+});
+
+test('Telegram webhook secret: refuse de fonctionner sans JWT_SECRET', () => {
+  const saved = process.env.JWT_SECRET;
+  delete process.env.JWT_SECRET;
+  assert.throws(() => getTelegramWebhookSecret('123456:AAA'));
+  process.env.JWT_SECRET = saved;
+});

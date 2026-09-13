@@ -66,8 +66,19 @@ Le conteneur applicatif écoute sur [http://localhost:3000](http://localhost:300
 | `ADMIN_DEFAULT_EMAIL` / `ADMIN_DEFAULT_PASSWORD` | Compte admin initial créé à la première connexion |
 | `APP_URL` | URL publique utilisée par les liens de l'application |
 | `GEMINI_API_KEY` | Clé optionnelle pour les fonctions IA |
+| `CRON_SECRET` | Secret exigé par `/api/cron/daily-report` (`Authorization: Bearer <CRON_SECRET>`) |
 
 Les clés IA et les identifiants SMTP ne sont jamais renvoyés par l'API publique des paramètres. Ils sont réservés à une session admin réelle.
+
+## Bot Telegram et rapport quotidien
+
+- Le webhook Telegram s'active depuis l'admin (Paramètres > Telegram). L'URL publique est construite à partir de `APP_URL` (https obligatoire) et un `secret_token` dérivé de `JWT_SECRET` est vérifié sur chaque requête entrante. Après avoir changé `JWT_SECRET` ou le token du bot, relancez « Activer le webhook ».
+- Le rapport quotidien `/api/cron/daily-report` doit être appelé par un planificateur avec le header `Authorization: Bearer <CRON_SECRET>`, par exemple :
+
+  ```bash
+  # crontab -e (tous les jours à 20h, heure d'Abidjan)
+  0 20 * * * curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://ivoireci.com/api/cron/daily-report
+  ```
 
 ## Vérifications et maintenance
 

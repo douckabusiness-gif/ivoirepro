@@ -237,7 +237,40 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
-export const StoreProvider = ({ children, initialView }: { children: ReactNode; initialView?: AppView }) => {
+// Browser notification helper (module-level: no component state needed)
+function showBrowserCallNotification(title: string, body: string) {
+  if (typeof window === 'undefined' || !('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    try {
+      new Notification(title, { body, icon: '/favicon.ico' });
+    } catch {}
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        try {
+          new Notification(title, { body, icon: '/favicon.ico' });
+        } catch {}
+      }
+    });
+  }
+}
+
+export interface StoreInitialData {
+  settings?: StoreSettings;
+  products?: Product[];
+  categories?: Category[];
+}
+
+export const StoreProvider = ({
+  children,
+  initialView,
+  initialData,
+}: {
+  children: ReactNode;
+  initialView?: AppView;
+  /** Données préchargées côté serveur (home) : évite le flash de données démo et 3 requêtes au démarrage. */
+  initialData?: StoreInitialData | null;
+}) => {
   // Navigation
   const [currentView, setCurrentViewState] = useState<AppView>(initialView || 'home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -367,13 +400,13 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
   }, []);
 
   // Core Data
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [products, setProducts] = useState<Product[]>(initialData?.products ?? initialProducts);
+  const [categories, setCategories] = useState<Category[]>(initialData?.categories ?? initialCategories);
   // Orders are always loaded from the server. Keeping demo orders in this client
   // bundle would expose customer names, phones and addresses to every visitor.
   const [orders, setOrders] = useState<Order[]>([]);
-  const [settings, setSettings] = useState<StoreSettings>(initialStoreSettings);
-  const [isSettingsLoaded, setIsSettingsLoaded] = useState<boolean>(false);
+  const [settings, setSettings] = useState<StoreSettings>(initialData?.settings ?? initialStoreSettings);
+  const [isSettingsLoaded, setIsSettingsLoaded] = useState<boolean>(Boolean(initialData?.settings));
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
 
   // Autonomous Delivery Fleet (Côte d'Ivoire)
@@ -497,15 +530,22 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
     });
   }, []);
 
-  // Fetch all data from backend API
-  const refreshBackendData = useCallback(async () => {
+  // Fetch all data from backend API.
+  // Les commandes ne sont chargées que pour une session admin : un visiteur
+  // n'a pas besoin de cet appel (il répondait 401 et gaspillait une requête).
+  const isAdminRef = useRef(false);
+  useEffect(() => {
+    isAdminRef.current = isAdminAuthenticated;
+  }, [isAdminAuthenticated]);
+  const refreshBackendData = useCallback(async (options?: { includeOrders?: boolean }) => {
+    const includeOrders = options?.includeOrders ?? isAdminRef.current;
     try {
       setIsSyncing(true);
       const [resSettings, resProducts, resCategories, resOrders] = await Promise.allSettled([
         fetch('/api/settings').then(r => r.ok ? r.json() : null),
         fetch('/api/products').then(r => r.ok ? r.json() : null),
         fetch('/api/categories').then(r => r.ok ? r.json() : null),
-        fetch('/api/orders').then(r => r.ok ? r.json() : null),
+        includeOrders ? fetch('/api/orders').then(r => r.ok ? r.json() : null) : Promise.resolve(null),
       ]);
 
       if (resSettings.status === 'fulfilled' && resSettings.value) {
@@ -568,7 +608,7 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
         if (response.ok && data.authenticated) {
           setIsAdminAuthenticated(true);
           setCurrentUser(data.user);
-          await Promise.all([fetchTeamMembers(), refreshBackendData()]);
+          await Promise.all([fetchTeamMembers(), refreshBackendData({ includeOrders: true })]);
         } else {
           setIsAdminAuthenticated(false);
           setCurrentUser(null);
@@ -587,7 +627,12 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
         }
       });
 
-    refreshBackendData();
+    // Si le serveur a déjà fourni paramètres/produits/catégories, inutile de les redemander.
+    const hasServerData = Boolean(initialData?.settings && initialData?.products && initialData?.categories);
+    if (!hasServerData) {
+      refreshBackendData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchTeamMembers, refreshBackendData]);
 
   // Persist cart & wishlist in localStorage
@@ -715,7 +760,7 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
       if (res.ok && data.success) {
         setIsAdminAuthenticated(true);
         setCurrentUser(data.user);
-        await Promise.all([fetchTeamMembers(), refreshBackendData()]);
+        await Promise.all([fetchTeamMembers(), refreshBackendData({ includeOrders: true })]);
         return { success: true };
       }
       return { success: false, error: data.error || 'Email ou mot de passe incorrect.' };
@@ -735,7 +780,7 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
       if (res.ok && data.success) {
         setIsAdminAuthenticated(true);
         setCurrentUser(data.user);
-        await Promise.all([fetchTeamMembers(), refreshBackendData()]);
+        await Promise.all([fetchTeamMembers(), refreshBackendData({ includeOrders: true })]);
         return true;
       }
     } catch (e) {
@@ -1892,24 +1937,6 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
       window.speechSynthesis.speak(utterance);
     } catch (err) {
       console.warn('Speech synthesis error:', err);
-    }
-  };
-
-  // Browser notification helper
-  const showBrowserCallNotification = (title: string, body: string) => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-    if (Notification.permission === 'granted') {
-      try {
-        new Notification(title, { body, icon: '/favicon.ico' });
-      } catch {}
-    } else if (Notification.permission !== 'denied') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          try {
-            new Notification(title, { body, icon: '/favicon.ico' });
-          } catch {}
-        }
-      });
     }
   };
 

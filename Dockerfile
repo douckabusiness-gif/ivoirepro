@@ -30,9 +30,10 @@ COPY --chown=node:node --from=builder /app/node_modules ./node_modules
 COPY --chown=node:node --from=builder /app/public ./public
 COPY --chown=node:node --from=builder /app/.next ./.next
 COPY --chown=node:node --from=builder /app/prisma ./prisma
+COPY --chown=node:node --chmod=755 --from=builder /app/scripts/docker-entrypoint.sh ./docker-entrypoint.sh
 
 EXPOSE 3000
 
 USER node
 
-CMD ["sh", "-c", "node_modules/.bin/prisma db push --skip-generate && node_modules/.bin/next start -p 3000"]
+CMD ["sh", "./docker-entrypoint.sh"]

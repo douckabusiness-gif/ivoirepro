@@ -116,7 +116,7 @@ export const HeroBanner = () => {
       if (link.startsWith('http')) {
         window.open(link, '_blank');
       } else {
-        window.location.href = link;
+        window.location.assign(link);
       }
     } else {
       setSelectedCategoryFilter(null);
