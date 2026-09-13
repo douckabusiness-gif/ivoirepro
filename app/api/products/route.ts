@@ -60,12 +60,33 @@ export async function GET(request: Request) {
     if (sortBy === 'rating') orderBy = { rating: 'desc' };
     if (sortBy === 'popular') orderBy = { reviewCount: 'desc' };
 
-    const products = await prisma.product.findMany({
-      where,
-      orderBy,
-    });
+    // Pagination optionnelle et rétro-compatible : sans `limit`, la réponse
+    // reste le tableau complet. Avec `limit` (max 200) et `offset`/`page`,
+    // le total est exposé dans l'en-tête X-Total-Count.
+    const rawLimit = Number.parseInt(searchParams.get('limit') || '', 10);
+    const limit = Number.isFinite(rawLimit) && rawLimit > 0 ? Math.min(rawLimit, 200) : null;
+    const rawPage = Number.parseInt(searchParams.get('page') || '', 10);
+    const rawOffset = Number.parseInt(searchParams.get('offset') || '', 10);
+    const offset = limit
+      ? Math.max(0, Number.isFinite(rawOffset) ? rawOffset : (Number.isFinite(rawPage) && rawPage > 0 ? (rawPage - 1) * limit : 0))
+      : 0;
 
-    return NextResponse.json(products);
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        orderBy,
+        ...(limit ? { take: limit, skip: offset } : {}),
+      }),
+      limit ? prisma.product.count({ where }) : Promise.resolve<number | null>(null),
+    ]);
+
+    const headers = new Headers();
+    if (total !== null) {
+      headers.set('X-Total-Count', String(total));
+      headers.set('X-Limit', String(limit));
+      headers.set('X-Offset', String(offset));
+    }
+    return NextResponse.json(products, { headers });
   } catch (error: any) {
     console.error('Error fetching products:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -59,6 +59,23 @@ docker compose --env-file .env.production -f docker-compose.production.yml logs 
 Le premier compte administrateur est créé lors de la première connexion avec
 `ADMIN_DEFAULT_EMAIL` et `ADMIN_DEFAULT_PASSWORD`.
 
+## 3 bis. Migrations Prisma et rapport quotidien
+
+Le schéma est désormais versionné dans `prisma/migrations/`. Au démarrage, le conteneur `app`
+exécute `prisma migrate deploy`. Si la base a été créée avant cette version (via `db push`),
+le script de démarrage détecte l'erreur `P3005` et marque automatiquement la migration
+initiale comme appliquée (baseline) — aucune action manuelle, aucune perte de données.
+
+Pour toute évolution du schéma en développement : `npm run db:migrate -- --name ma_modification`,
+puis committer le dossier généré dans `prisma/migrations/`.
+
+Le rapport Telegram quotidien s'appelle depuis la crontab du VPS (le secret est celui de
+`.env.production`) :
+
+```bash
+( crontab -l 2>/dev/null; echo '0 20 * * * curl -fsS -H "Authorization: Bearer '"$(grep ^CRON_SECRET= .env.production | cut -d'"' -f2)"'" https://ivoireci.com/api/cron/daily-report >/dev/null 2>&1' ) | crontab -
+```
+
 ## 4. Cloudflare
 
 Enregistrements attendus :

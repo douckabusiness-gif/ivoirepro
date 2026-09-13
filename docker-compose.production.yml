@@ -38,6 +38,7 @@ services:
     environment:
       DATABASE_URL: "${DATABASE_URL:?DATABASE_URL est requis}"
       JWT_SECRET: "${JWT_SECRET:?JWT_SECRET est requis}"
+      CRON_SECRET: "${CRON_SECRET:-}"
       # Used only for first-account bootstrap. Remove both values from
       # .env.production after the real admin password has been set.
       ADMIN_DEFAULT_EMAIL: "${ADMIN_DEFAULT_EMAIL:-}"
