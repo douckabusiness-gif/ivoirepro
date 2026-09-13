@@ -177,6 +177,8 @@ export const AdminPanel = () => {
   const [showSmtpPassword, setShowSmtpPassword] = useState<boolean>(false);
   const [isSendingTelegramTest, setIsSendingTelegramTest] = useState<boolean>(false);
   const [telegramTestResult, setTelegramTestResult] = useState<{ success?: boolean; message?: string; error?: string } | null>(null);
+  const [isSettingUpTelegramWebhook, setIsSettingUpTelegramWebhook] = useState<boolean>(false);
+  const [telegramWebhookResult, setTelegramWebhookResult] = useState<{ success?: boolean; message?: string; error?: string } | null>(null);
   const [showTelegramBotToken, setShowTelegramBotToken] = useState<boolean>(false);
 
   // CMS & Legal Pages States
@@ -427,6 +429,26 @@ export const AdminPanel = () => {
       setTelegramTestResult({ success: false, error: err?.message || 'Erreur réseau pendant le test Telegram.' });
     } finally {
       setIsSendingTelegramTest(false);
+    }
+  };
+
+  const handleSetupTelegramWebhook = async () => {
+    setIsSettingUpTelegramWebhook(true);
+    setTelegramWebhookResult(null);
+    try {
+      const res = await fetch('/api/telegram/setup-webhook', {
+        method: 'POST',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) {
+        setTelegramWebhookResult({ success: true, message: data.message || 'Webhook Telegram activé avec succès !' });
+      } else {
+        setTelegramWebhookResult({ success: false, error: data.error || 'Échec de l\'activation du webhook Telegram.' });
+      }
+    } catch (err: any) {
+      setTelegramWebhookResult({ success: false, error: err?.message || 'Erreur réseau lors de la configuration du webhook.' });
+    } finally {
+      setIsSettingUpTelegramWebhook(false);
     }
   };
 
@@ -7515,6 +7537,49 @@ export const AdminPanel = () => {
                           <div>
                             <span className="font-bold block">{telegramTestResult.success ? 'Connexion Telegram validée' : 'Échec du test Telegram'}</span>
                             <span className="block leading-relaxed mt-1">{telegramTestResult.message || telegramTestResult.error}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Boutons Interactifs & Commandes Autonomes (Webhook) */}
+                  <div className="p-5 bg-gradient-to-tr from-purple-950/40 via-slate-950 to-sky-950/30 rounded-2xl border border-purple-500/30 space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Bot className="w-4 h-4 text-purple-400" />
+                      <h3 className="text-xs font-black text-white uppercase tracking-wider">Boutons Interactifs & Commandes Autonomes (Webhook)</h3>
+                    </div>
+                    <p className="text-[11px] text-slate-400">
+                      Active le webhook Telegram sur votre domaine (<span className="text-purple-300 font-mono font-bold">https://www.ivoireci.com/api/telegram/webhook</span>) pour permettre à votre bot de recevoir vos clics et vos commandes en temps réel :
+                    </p>
+                    <ul className="text-[11px] text-slate-300 list-disc list-inside space-y-1.5 pl-1">
+                      <li><span className="font-bold text-white">Boutons sous chaque alerte de commande :</span> <span className="text-emerald-400">✅ Valider Commande</span>, <span className="text-amber-400">🛵 Assigner Livreur</span>, <span className="text-emerald-300">💬 WhatsApp</span>, <span className="text-rose-400">❌ Refuser</span></li>
+                      <li><span className="font-bold text-white">Commandes autonomes dans votre chat Telegram :</span> <code className="text-purple-300 font-mono bg-purple-950/60 px-1.5 py-0.5 rounded">/stats</code> (bilan ventes & encaissements livreurs), <code className="text-purple-300 font-mono bg-purple-950/60 px-1.5 py-0.5 rounded">/stock</code> (alertes rupture), <code className="text-purple-300 font-mono bg-purple-950/60 px-1.5 py-0.5 rounded">/commandes</code> (5 dernières commandes en attente), <code className="text-purple-300 font-mono bg-purple-950/60 px-1.5 py-0.5 rounded">/aide</code></li>
+                      <li><span className="font-bold text-white">Alertes de stock critique :</span> Déclenchées automatiquement dès qu’un article passe à 3 unités ou moins</li>
+                    </ul>
+                    <div className="pt-2 flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        disabled={isSettingUpTelegramWebhook}
+                        onClick={handleSetupTelegramWebhook}
+                        className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition cursor-pointer"
+                      >
+                        <Bot className={`w-3.5 h-3.5 ${isSettingUpTelegramWebhook ? 'animate-spin' : ''}`} />
+                        <span>{isSettingUpTelegramWebhook ? 'Activation du Webhook...' : '🔗 Activer les Boutons & Commandes Telegram (Webhook)'}</span>
+                      </button>
+                    </div>
+
+                    {telegramWebhookResult && (
+                      <div className={`p-4 rounded-xl text-xs border animate-in fade-in duration-200 ${
+                        telegramWebhookResult.success
+                          ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-200'
+                          : 'bg-rose-950/80 border-rose-500/50 text-rose-200'
+                      }`}>
+                        <div className="flex items-start gap-2.5">
+                          {telegramWebhookResult.success ? <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" /> : <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />}
+                          <div>
+                            <span className="font-bold block">{telegramWebhookResult.success ? 'Webhook activé avec succès' : 'Échec de configuration du Webhook'}</span>
+                            <span className="block leading-relaxed mt-1">{telegramWebhookResult.message || telegramWebhookResult.error}</span>
                           </div>
                         </div>
                       </div>

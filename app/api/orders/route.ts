@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hasAdminRole, verifyAdminSession, verifyCustomerSession } from '@/lib/auth';
 import { sendOrderConfirmationEmail, sendAdminNewOrderNotification } from '@/lib/email';
-import { sendTelegramNewOrderNotification } from '@/lib/telegram';
+import { sendTelegramNewOrderNotification, sendTelegramLowStockAlert } from '@/lib/telegram';
 import { calculateOrderTotals } from '@/lib/orderPricing';
 import { enforceRateLimit } from '@/lib/rateLimit';
 
@@ -85,6 +85,8 @@ export async function POST(request: Request) {
     const session = await verifyCustomerSession(request);
     const orderNumber = `CMD-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}${Math.floor(10 + Math.random() * 90)}`;
 
+    const lowStockAlertProducts: Array<{ id: string; title: string; remainingStock: number; price?: number }> = [];
+
     const newOrder = await prisma.$transaction(async (tx) => {
       const productIds: string[] = Array.from(new Set(requestedItems.map((item) => item.productId)));
       const products = await tx.product.findMany({
@@ -147,8 +149,17 @@ export async function POST(request: Request) {
         });
         if (updated.count !== 1) throw new Error('Le stock a changé. Veuillez réessayer.');
         const product = productsById.get(productId)!;
-        if (product.stockCount === quantity) {
+        const remainingStock = Math.max(0, product.stockCount - quantity);
+        if (remainingStock === 0) {
           await tx.product.update({ where: { id: productId }, data: { inStock: false } });
+        }
+        if (remainingStock <= 3) {
+          lowStockAlertProducts.push({
+            id: product.id,
+            title: product.title,
+            remainingStock,
+            price: product.price,
+          });
         }
       }
 
@@ -221,6 +232,11 @@ export async function POST(request: Request) {
         });
         if (notificationSettings?.telegramEnabled && notificationSettings.telegramNotifyNewOrder !== false) {
           await sendTelegramNewOrderNotification(newOrder as any, notificationSettings as any);
+        }
+        if (notificationSettings?.telegramEnabled && lowStockAlertProducts.length > 0) {
+          for (const p of lowStockAlertProducts) {
+            await sendTelegramLowStockAlert(p, p.remainingStock, notificationSettings as any).catch(() => {});
+          }
         }
       } catch (telegramErr) {
         console.warn('Erreur envoi notification Telegram (non bloquant):', telegramErr);
