@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="152" height="152">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <linearGradient id="bagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </linearGradient>
+    <linearGradient id="zapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#ef4444" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0f172a" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Rounded App Tile -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  
+  <!-- Subtle Grid Accent Overlay -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#ffffff" stroke-opacity="0.1" stroke-width="8" />
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="4" stroke-dasharray="12 12" />
+  
+  <!-- Shopping Bag Shape -->
+  <g filter="url(#shadow)">
+    <!-- Bag Handle -->
+    <path d="M 196 170 C 196 120, 316 120, 316 170" fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round" />
+    
+    <!-- Bag Body -->
+    <path d="M 140 170 L 372 170 L 396 380 C 398 396, 386 410, 370 410 L 142 410 C 126 410, 114 396, 116 380 Z" fill="url(#bagGrad)" />
+  </g>
+  
+  <!-- Lightning / Flash Sale Energy Icon on Front -->
+  <path d="M 270 200 L 205 300 L 255 300 L 240 380 L 315 275 L 265 275 Z" fill="url(#zapGrad)" filter="url(#shadow)" />
+  
+  <!-- Sparkles on Top Right -->
+  <path d="M 380 90 L 390 115 L 415 125 L 390 135 L 380 160 L 370 135 L 345 125 L 370 115 Z" fill="#fbbf24" />
+</svg>

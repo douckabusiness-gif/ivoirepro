@@ -1,0 +1,6 @@
+{
+  "name": "Boutique E-Commerce & Panneau Admin",
+  "description": "Plateforme e-commerce moderne en français avec catalogue produits, commandes directes WhatsApp, liens de paiement personnalisés et panneau d'administration complet.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

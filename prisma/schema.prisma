@@ -1,0 +1,442 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StoreSettings {
+  id              String  @id @default("default_settings")
+  storeName       String  @default("Luxe & Tendance Boutique")
+  storeSlogan     String  @default("Mode, High-Tech et Accessoires Premium")
+  storeLogoUrl    String  @default("https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&auto=format&fit=crop&q=80")
+  storeLogoHeight Int     @default(40)
+  showLogoText    Boolean @default(true)
+  pwaIconUrl      String  @default("")
+  siteHeaderColor String  @default("#ffffff")
+  siteFooterColor String  @default("#020617")
+  siteBodyColor   String  @default("#f1f5f9")
+  homeTheme       String  @default("midnight")
+  currency        String  @default("FCFA")
+  currencySymbol  String  @default("FCFA")
+
+  // WhatsApp
+  whatsappNumber             String  @default("221778901234")
+  whatsappAutoMessage        String  @db.Text
+  whatsappFloatingEnabled    Boolean @default(true)
+  whatsappDirectOrderEnabled Boolean @default(true)
+
+  // Payments
+  enableWavePayment Boolean @default(true)
+  wavePaymentUrl    String  @default("")
+  waveMerchantPhone String  @default("221778901234")
+
+  enableOrangeMoney         Boolean @default(true)
+  orangeMoneyMerchantNumber String  @default("221778901234")
+
+  // Côte d'Ivoire Mobile Money
+  enableMtnMoney     Boolean @default(true)
+  mtnMerchantNumber  String  @default("")
+  enableMoovMoney    Boolean @default(true)
+  moovMerchantNumber String  @default("")
+
+  enableCustomPaymentLink Boolean @default(false)
+  customPaymentLinkUrl    String  @default("")
+  customPaymentLinkLabel  String  @default("Payer par Carte / Stripe")
+
+  enableBankTransfer Boolean @default(false)
+  bankDetails        String  @default("") @db.Text
+
+  enableCashOnDelivery Boolean @default(true)
+  codInstructions      String  @default("Paiement en espèces lors de la livraison.") @db.Text
+
+  // Contacts & Social
+  contactEmail   String @default("contact@luxetendance.com")
+  contactPhone   String @default("+221 77 890 12 34")
+  contactAddress String @default("Almadies, Dakar, Sénégal")
+  facebookUrl    String @default("")
+  instagramUrl   String @default("")
+  tiktokUrl      String @default("")
+
+  // Shipping
+  standardShippingFee   Float  @default(2000)
+  freeShippingThreshold Float  @default(50000)
+  estimatedDeliveryDays String @default("24h à 48h")
+
+  // Top Banner
+  topBannerEnabled Boolean @default(true)
+  topBannerText    String  @default("🎉 LIVRAISON OFFERTE DÈS 50 000 FCFA D'ACHATS !")
+  topBannerLink    String  @default("")
+
+  // TikTok Shoppable Video Feed
+  tiktokFeedEnabled Boolean @default(true)
+
+  // In-Grid Interstitial Promotional Banners (Bannières entre les rangées de produits)
+  inGridBannerEnabled               Boolean @default(true)
+  inGridBannerFrequency             Int     @default(8)
+  inGridBannerTitle                 String  @default("🔥 Vente Flash & Offres Exclusives")
+  inGridBannerSubtitle              String  @default("Profitez de réductions exceptionnelles allant jusqu'à -40% et de la livraison express 24h partout à Dakar et au Sénégal !")
+  inGridBannerBadge                 String  @default("⚡ OFFRE DU JOUR")
+  inGridBannerButtonText            String  @default("Profiter des Ventes Flash")
+  inGridBannerButtonAction          String  @default("flash") // "flash" | "whatsapp" | "category" | "vip" | "link"
+  inGridBannerButtonLink            String  @default("")
+  inGridBannerTheme                 String  @default("gold") // "gold" | "midnight" | "emerald" | "sunset" | "dark" | "custom"
+  inGridBannerImageUrl              String  @default("https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&auto=format&fit=crop&q=80")
+  inGridBannerSecondaryEnabled      Boolean @default(false)
+  inGridBannerSecondaryTitle        String  @default("🎁 Rejoignez le Club Privilège & Gagnez des Points")
+  inGridBannerSecondarySubtitle     String  @default("Inscrivez-vous en 1 clic pour obtenir +10 Points VIP offerts et des remises exclusives !")
+  inGridBannerSecondaryBadge        String  @default("✨ PROGRAMME VIP")
+  inGridBannerSecondaryButtonText   String  @default("Créer mon Compte VIP")
+  inGridBannerSecondaryButtonAction String  @default("vip") // "vip" | "whatsapp" | "link"
+  inGridBannerSecondaryTheme        String  @default("midnight")
+  inGridBannerSecondaryImageUrl     String  @default("https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80")
+  inGridBannersList                 Json?
+
+  // Hero Section
+  heroTheme               String @default("midnight")
+  heroTitle               String @default("Collection Exclusive")
+  heroHighlight           String @default("Nouvelle Saison")
+  heroSubtitle            String @default("Découvrez des produits d'exception et profitez de la livraison express partout au Sénégal.")
+  heroBadge               String @default("ÉDITION LIMITÉE 2026")
+  heroImage               String @default("https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&auto=format&fit=crop&q=80")
+  heroButtonText          String @default("Explorer les Nouveautés")
+  heroSecondaryButtonText String @default("Commander via WhatsApp")
+  heroPromoDiscount       String @default("-30%")
+  heroSlidesList          Json?
+
+  // Hero Slide 2
+  heroSlide2Title     String @default("Matériel High-Tech & Accessoires")
+  heroSlide2Highlight String @default("Qualité Certifiée & Garantie.")
+  heroSlide2Subtitle  String @default("Commandez vos articles à l'unité ou par lot avec remise immédiate. Support client dédié 7j/7.")
+  heroSlide2Badge     String @default("OFFRES SPÉCIALES 2026")
+  heroSlide2Image     String @default("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1000&auto=format&fit=crop&q=80")
+  heroSlide2Tag       String @default("⚡ EXPÉDITION 24H GARANTIE")
+
+  // Hero Slide 3
+  heroSlide3Title     String @default("Style Urbain & Horlogerie Luxe")
+  heroSlide3Highlight String @default("Les Nouveautés les Plus Demandées.")
+  heroSlide3Subtitle  String @default("Découvrez les modèles plébiscités par nos clients partout au Sénégal et en Afrique.")
+  heroSlide3Badge     String @default("TOP TENDANCES")
+  heroSlide3Image     String @default("https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1000&auto=format&fit=crop&q=80")
+  heroSlide3Tag       String @default("⭐ NOTÉ 4.9/5 PAR NOS CLIENTS")
+
+  // CMS Content
+  aboutUsText        String @db.Text
+  deliveryPolicyText String @db.Text
+  returnPolicyText   String @db.Text
+  termsText          String @db.Text
+  privacyText        String @db.Text
+
+  // Autonomous Multi-LLM AI Agent Configuration
+  aiAgentEnabled            Boolean @default(true)
+  aiAgentName               String  @default("Amara - Conseillère IA")
+  aiAgentRole               String  @default("Conseillère Vente & Support Client")
+  aiAgentTone               String  @default("chaleureux") // "professionnel" | "chaleureux" | "luxe"
+  aiAgentAutoReplyDelay     Int     @default(1500)
+  aiAgentMaxRecommendations Int     @default(3)
+  aiProvider                String  @default("gemini") // "gemini" | "openai" | "claude" | "groq" | "deepseek" | "glm" | "local"
+  aiModel                   String  @default("")
+  geminiApiKey              String  @default("")
+  openaiApiKey              String  @default("")
+  claudeApiKey              String  @default("")
+  groqApiKey                String  @default("")
+  deepseekApiKey            String  @default("")
+  glmApiKey                 String  @default("")
+  aiTemperature             Float   @default(0.7)
+  aiCustomInstructions      String  @default("") @db.Text
+  customAgents              Json?
+
+  // Partner / Affiliate Program Settings
+  partnerProgramEnabled        Boolean @default(true)
+  defaultPartnerCommissionRate Float   @default(10.0) // 10%
+  minPayoutAmount              Float   @default(5000) // 5000 FCFA
+
+  // Autonomous Delivery & Fleet Management (Côte d'Ivoire)
+  autoDispatchEnabled Boolean @default(true)
+  deliveryZonesList   Json?
+
+  // SMTP Email Server Configuration
+  smtpEnabled                   Boolean @default(false)
+  smtpHost                      String  @default("")
+  smtpPort                      Int     @default(587)
+  smtpSecure                    Boolean @default(false)
+  smtpUser                      String  @default("")
+  smtpPass                      String  @default("")
+  smtpFromName                  String  @default("")
+  smtpFromEmail                 String  @default("")
+  smtpOrderNotificationAdmin    Boolean @default(true)
+  smtpOrderConfirmationCustomer Boolean @default(true)
+  smtpOrderStatusUpdateCustomer Boolean @default(true)
+  smtpAdminRecipientEmail       String  @default("")
+
+  // Telegram order notifications (credentials are private and never exposed publicly)
+  telegramEnabled        Boolean @default(false)
+  telegramBotToken       String  @default("")
+  telegramChatId         String  @default("")
+  telegramNotifyNewOrder Boolean @default(true)
+
+  // SEO & Webmaster Configuration
+  seoTitle              String @default("ELITE BOUTIQUE | Mode, High-Tech & Shopping Premium")
+  seoDescription        String @default("Boutique en ligne haut de gamme en Côte d'Ivoire. Mode, montres, sneakers et high-tech avec livraison express 24h et paiement sécurisé Wave, Orange Money et à la livraison.") @db.Text
+  seoKeywords           String @default("boutique en ligne, abidjan, côte d'ivoire, mode, sneakers, high-tech, livraison express, wave, orange money, shopping afrique") @db.Text
+  seoOgImage            String @default("https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&auto=format&fit=crop&q=80")
+  seoCanonicalUrl       String @default("https://eliteboutique.ci")
+  seoGoogleVerification String @default("")
+  seoGoogleAnalyticsId  String @default("")
+  seoFacebookPixelId    String @default("")
+
+  faqList FAQItem[]
+
+  updatedAt DateTime @updatedAt
+}
+
+model FAQItem {
+  id         String         @id @default(cuid())
+  question   String
+  answer     String         @db.Text
+  category   String         @default("Général")
+  order      Int            @default(0)
+  settingsId String?
+  settings   StoreSettings? @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id            String        @id
+  name          String
+  slug          String        @unique
+  description   String        @db.Text
+  image         String
+  iconName      String?
+  itemCount     Int           @default(0)
+  subcategories Subcategory[]
+  products      Product[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Subcategory {
+  id          String    @id
+  name        String
+  slug        String
+  description String?   @db.Text
+  image       String?
+  itemCount   Int       @default(0)
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id               String       @id
+  title            String
+  slug             String       @unique
+  description      String       @db.Text
+  shortDescription String?
+  price            Float
+  originalPrice    Float?
+  discountPercent  Int?
+  categoryId       String
+  category         Category     @relation(fields: [categoryId], references: [id])
+  categoryName     String?
+  subcategoryId    String?
+  subcategory      Subcategory? @relation(fields: [subcategoryId], references: [id])
+  subcategoryName  String?
+  images           String[]
+  featured         Boolean      @default(false)
+  isNew            Boolean      @default(false)
+  isFlashSale      Boolean      @default(false)
+  flashSaleEndsAt  DateTime?
+  inStock          Boolean      @default(true)
+  stockCount       Int          @default(10)
+  rating           Float        @default(5.0)
+  reviewCount      Int          @default(12)
+  badgeText        String?
+  tags             String[]
+  specs            Json?
+  colors           String[]
+  sizes            String[]
+  tierPricingEnabled Boolean    @default(false)
+  priceTiers         Json?
+  orderItems       OrderItem[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Order {
+  id                    String    @id @default(cuid())
+  orderNumber           String    @unique
+  customerName          String
+  customerPhone         String
+  customerEmail         String?
+  customerAddress       String
+  customerCity          String
+  customerCountry       String?   @default("Sénégal")
+  customerNotes         String?   @db.Text
+  deliveryStatus        String    @default("pending")
+  deliveryPersonId      String?
+  deliveryPersonName    String?
+  deliveryPersonPhone   String?
+  deliveryAssignedAt    DateTime?
+  deliveredAt           DateTime?
+  deliveryCashCollected Float?
+  deliveryZone          String?
+  deliveryNotes         String?   @db.Text
+  subtotal              Float
+  shippingFee           Float     @default(0)
+  discountAmount        Float     @default(0)
+  totalAmount           Float
+  currency              String    @default("FCFA")
+  paymentMethod         String    @default("wave")
+  paymentStatus         String    @default("pending")
+  orderStatus           String    @default("pending")
+  directPaymentLinkUsed String?
+  whatsappMessageSent   Boolean   @default(false)
+
+  // Partner & Affiliate Attribution
+  partnerId                 String?
+  partner                   Partner? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  partnerSlug               String?
+  partnerCommission         Float    @default(0)
+  partnerCommissionCredited Boolean  @default(false)
+  stockRestored             Boolean  @default(false)
+
+  // Customer Account Link (Optional for Guest Checkout)
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Customer {
+  id                  String   @id @default(cuid())
+  fullName            String
+  phone               String   @unique
+  email               String?  @unique
+  passwordHash        String
+  city                String?  @default("Dakar")
+  address             String?
+  avatarUrl           String?
+  loyaltyPoints       Int      @default(0)
+  wishlist            String[] @default([])
+  referredByPartnerId String?
+  referredByPartner   Partner? @relation("CustomerReferredBy", fields: [referredByPartnerId], references: [id], onDelete: SetNull)
+  orders              Order[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String?
+  product       Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productTitle  String
+  productImage  String
+  price         Float
+  quantity      Int      @default(1)
+  selectedColor String?
+  selectedSize  String?
+}
+
+model AdminUser {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String   @default("Administrateur")
+  role           String   @default("admin")
+  sessionVersion Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Partner {
+  id                String          @id @default(cuid())
+  name              String
+  email             String          @unique
+  passwordHash      String
+  phone             String
+  slug              String          @unique
+  storeName         String?
+  bio               String?         @db.Text
+  avatarUrl         String?
+  payoutMethod      String          @default("wave") // "wave" | "orange_money" | "bank"
+  payoutPhone       String?
+  commissionRate    Float           @default(10.0) // percentage e.g. 10%
+  status            String          @default("pending") // "pending" | "active" | "suspended" | "rejected"
+  totalEarnings     Float           @default(0)
+  pendingBalance    Float           @default(0)
+  paidBalance       Float           @default(0)
+  clicksCount       Int             @default(0)
+  orders            Order[]
+  referredCustomers Customer[]      @relation("CustomerReferredBy")
+  payouts           PartnerPayout[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model PartnerPayout {
+  id           String    @id @default(cuid())
+  partnerId    String
+  partner      Partner   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  amount       Float
+  payoutMethod String    @default("wave")
+  payoutTarget String
+  status       String    @default("pending") // "pending" | "completed" | "rejected"
+  note         String?   @db.Text
+  createdAt    DateTime  @default(now())
+  processedAt  DateTime?
+}
+
+model ChatConversation {
+  id              String        @id @default(cuid())
+  visitorId       String        @unique
+  visitorName     String        @default("Visiteur")
+  visitorPhone    String?
+  visitorEmail    String?
+  lastMessageText String        @default("") @db.Text
+  lastMessageAt   DateTime      @default(now())
+  unreadByAdmin   Int           @default(0)
+  unreadByVisitor Int           @default(0)
+  status          String        @default("active")
+  messages        ChatMessage[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         String // "visitor" | "admin" | "system"
+  senderName     String           @default("Client")
+  text           String           @db.Text
+  isRead         Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+}
+
+model AnalyticsEvent {
+  id           String   @id @default(cuid())
+  eventType    String
+  path         String
+  visitorId    String
+  sessionId    String
+  productId    String?
+  productTitle String?
+  label        String?
+  referrer     String?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([eventType, createdAt])
+  @@index([path, createdAt])
+  @@index([productId, createdAt])
+  @@index([visitorId, createdAt])
+}

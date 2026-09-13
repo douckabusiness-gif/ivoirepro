@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mode Hors-Ligne | Boutique</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #020617;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 28px;
+      padding: 36px 24px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .icon-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      animation: pulse 2s infinite;
+    }
+    .icon-box svg {
+      width: 40px;
+      height: 40px;
+      stroke: #f87171;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.85; }
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(79, 70, 229, 0.2);
+      border: 1px solid rgba(79, 70, 229, 0.4);
+      color: #a5b4fc;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 16px;
+      background: #4f46e5;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+    }
+    .btn:active {
+      transform: scale(0.98);
+      background: #4338ca;
+    }
+    .cart-notice {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon-box">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m2 2 20 20"/>
+        <path d="M8.5 16.5a5 5 0 0 1 7 0"/>
+        <path d="M5 12.5a10 10 0 0 1 5.3-2.8"/>
+        <path d="M19 12.5a10 10 0 0 0-2.8-2"/>
+        <path d="M2 8.8a15 15 0 0 1 4.2-2.3"/>
+        <path d="M22 8.8a15 15 0 0 0-5.7-2.6"/>
+        <line x1="12" y1="20" x2="12.01" y2="20"/>
+      </svg>
+    </div>
+
+    <div class="badge">
+      <span>● Mode Hors-Ligne</span>
+    </div>
+
+    <h1>Connexion Internet Indisponible</h1>
+    <p>Il semble que vous ayez perdu l'accès à internet. L'application mobile Boutique a conservé vos données en cache local.</p>
+
+    <div class="cart-notice">
+      🛒 Vos articles ajoutés au panier sont sécurisés sur votre téléphone.
+    </div>
+
+    <div style="margin-top: 24px;">
+      <button class="btn" onclick="window.location.reload()">
+        🔄 Réessayer la connexion
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>
