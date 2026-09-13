@@ -96,3 +96,15 @@ export function getSiteThemePreset(theme: unknown): SiteThemePreset {
   }
   return SITE_THEME_PRESETS.midnight;
 }
+
+export function isColorDark(hexColor: string | undefined | null): boolean {
+  if (!hexColor || typeof hexColor !== 'string') return false;
+  const hex = hexColor.trim().replace('#', '');
+  if (hex.length !== 6) return false;
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return false;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance < 0.6;
+}

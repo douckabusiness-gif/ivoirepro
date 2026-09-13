@@ -108,7 +108,7 @@ import { AdminAnalyticsDashboard } from '@/components/AdminAnalyticsDashboard';
 import { AdminPasswordSecurity } from '@/components/AdminPasswordSecurity';
 import { isValidGoogleAnalyticsId, normalizeGoogleAnalyticsId } from '@/lib/googleAnalytics';
 import { UserRole, ROLE_DEFINITIONS } from '@/lib/types';
-import { SITE_THEME_PRESETS, SiteThemeName, normalizeHexColor } from '@/lib/siteTheme';
+import { SITE_THEME_PRESETS, SiteThemeName, normalizeHexColor, isColorDark } from '@/lib/siteTheme';
 
 export const AdminPanel = () => {
   const {
@@ -774,6 +774,18 @@ export const AdminPanel = () => {
       siteHeaderColor: preset.headerColor,
       siteFooterColor: preset.footerColor,
       siteBodyColor: preset.bodyColor,
+    }));
+  };
+
+  const handleApplyUnicolor = (color: string) => {
+    const cleanColor = normalizeHexColor(color, '#1d7771');
+    setLocalSettings(prev => ({
+      ...prev,
+      siteHeaderColor: cleanColor,
+      siteBodyColor: cleanColor,
+      siteFooterColor: cleanColor,
+      homeTheme: 'custom',
+      heroTheme: 'custom',
     }));
   };
 
@@ -2867,16 +2879,86 @@ export const AdminPanel = () => {
                   </div>
                 </div>
 
+                {/* MODE COULEUR UNIE */}
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-purple-950/20 to-slate-900/90 border border-indigo-500/30 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
+                          <Palette className="w-4 h-4" />
+                        </span>
+                        <h2 className="text-sm font-black text-white">Mode Couleur Unie (Tout le site)</h2>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Définissez une couleur unique et uniforme pour l'en-tête, le corps de la page et le pied de page en 1 seul clic.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <input
+                      type="color"
+                      value={normalizeHexColor(localSettings.siteBodyColor, '#1d7771')}
+                      onChange={(e) => handleApplyUnicolor(e.target.value)}
+                      className="h-11 w-14 cursor-pointer rounded-xl border border-slate-700 bg-transparent p-1 shadow-inner"
+                      aria-label="Choisir la couleur unie"
+                    />
+                    <input
+                      type="text"
+                      value={localSettings.siteBodyColor || '#1d7771'}
+                      onChange={(e) => handleApplyUnicolor(e.target.value)}
+                      className="w-28 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 font-mono text-xs uppercase text-white focus:border-indigo-500 focus:outline-hidden"
+                      maxLength={7}
+                      spellCheck={false}
+                      aria-label="Code hexadécimal couleur unie"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleApplyUnicolor(localSettings.siteBodyColor || '#1d7771')}
+                      className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition cursor-pointer flex items-center gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Appliquer à tout le site</span>
+                    </button>
+                  </div>
+
+                  <div>
+                    <span className="block text-[11px] font-bold text-slate-400 mb-2">Nuances unies recommandées :</span>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { name: 'Vert Ivoire (Signature)', color: '#1d7771' },
+                        { name: 'Blanc Pur', color: '#ffffff' },
+                        { name: 'Gris Doux', color: '#f8fafc' },
+                        { name: 'Noir Nuit Luxe', color: '#020617' },
+                        { name: 'Bleu Marine', color: '#0f172a' },
+                        { name: 'Orange Ivoire', color: '#ea580c' },
+                        { name: 'Bordeaux Élégant', color: '#4c0519' },
+                        { name: 'Bleu Océan', color: '#0284c7' },
+                      ].map((preset) => (
+                        <button
+                          key={preset.color}
+                          type="button"
+                          onClick={() => handleApplyUnicolor(preset.color)}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-900/90 hover:border-indigo-500 text-[11px] font-semibold text-slate-200 transition cursor-pointer"
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0" style={{ backgroundColor: preset.color }} />
+                          <span>{preset.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="space-y-3">
                   <div>
-                    <h2 className="text-sm font-black text-white">Couleurs principales</h2>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Choisissez une couleur via le sélecteur ou saisissez son code hexadécimal.</p>
+                    <h2 className="text-sm font-black text-white">Couleurs détaillées par zone (Optionnel)</h2>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Personnalisez chaque zone individuellement si vous ne souhaitez pas de couleur unie.</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {[
                       { key: 'siteHeaderColor' as const, label: "Couleur de l'en-tête", fallback: '#ffffff', hint: 'Navbar et zone supérieure' },
-                      { key: 'siteBodyColor' as const, label: 'Couleur du fond principal', fallback: '#f1f5f9', hint: "Fond de la page d'accueil" },
+                      { key: 'siteBodyColor' as const, label: 'Couleur du fond principal', fallback: '#f1f5f9', hint: "Fond de la page d'accueil et des pages" },
                       { key: 'siteFooterColor' as const, label: 'Couleur du footer', fallback: '#020617', hint: 'Pied de page du site' },
                     ].map((field) => {
                       const color = normalizeHexColor(localSettings[field.key], field.fallback);
@@ -2909,18 +2991,36 @@ export const AdminPanel = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <h2 className="text-sm font-black text-white">Aperçu</h2>
+                  <h2 className="text-sm font-black text-white">Aperçu en direct</h2>
                   <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-950">
-                    <div className="flex min-h-12 items-center justify-between px-4" style={{ backgroundColor: normalizeHexColor(localSettings.siteHeaderColor, '#ffffff') }}>
-                      <span className="text-xs font-black" style={{ color: '#0f172a' }}>EN-TÊTE</span>
-                      <span className="h-2 w-24 rounded-full bg-black/15" />
+                    <div 
+                      className="flex min-h-12 items-center justify-between px-4 transition-colors" 
+                      style={{ 
+                        backgroundColor: normalizeHexColor(localSettings.siteHeaderColor, '#ffffff'),
+                        color: isColorDark(localSettings.siteHeaderColor) ? '#ffffff' : '#0f172a'
+                      }}
+                    >
+                      <span className="text-xs font-black">EN-TÊTE / NAVBAR</span>
+                      <span className="h-2 w-24 rounded-full" style={{ backgroundColor: isColorDark(localSettings.siteHeaderColor) ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
                     </div>
-                    <div className="flex min-h-20 items-center justify-center px-4" style={{ backgroundColor: normalizeHexColor(localSettings.siteBodyColor, '#f1f5f9') }}>
-                      <span className="rounded-lg bg-white/75 px-4 py-2 text-xs font-bold text-slate-800 shadow-sm">Aperçu de la page d'accueil</span>
+                    <div 
+                      className="flex min-h-24 items-center justify-center p-4 transition-colors" 
+                      style={{ backgroundColor: normalizeHexColor(localSettings.siteBodyColor, '#f1f5f9') }}
+                    >
+                      <div className="rounded-xl bg-white border border-slate-200/90 px-4 py-3 text-center shadow-md">
+                        <span className="block text-xs font-black text-slate-900">Carte Produit Blanche (Contraste Optimal)</span>
+                        <span className="block text-[10px] text-slate-600 mt-0.5">Le texte reste 100% lisible quel que soit le fond</span>
+                      </div>
                     </div>
-                    <div className="flex min-h-12 items-center justify-between px-4" style={{ backgroundColor: normalizeHexColor(localSettings.siteFooterColor, '#020617') }}>
-                      <span className="text-xs font-black text-white">FOOTER</span>
-                      <span className="h-2 w-20 rounded-full bg-white/25" />
+                    <div 
+                      className="flex min-h-12 items-center justify-between px-4 transition-colors" 
+                      style={{ 
+                        backgroundColor: normalizeHexColor(localSettings.siteFooterColor, '#020617'),
+                        color: isColorDark(localSettings.siteFooterColor) ? '#ffffff' : '#0f172a'
+                      }}
+                    >
+                      <span className="text-xs font-black">PIED DE PAGE (FOOTER)</span>
+                      <span className="h-2 w-20 rounded-full" style={{ backgroundColor: isColorDark(localSettings.siteFooterColor) ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
                     </div>
                   </div>
                 </div>

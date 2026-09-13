@@ -3,7 +3,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { StoreProvider, useStore, type StoreInitialData } from '@/lib/storeContext';
-import { getSiteThemePreset, normalizeHexColor } from '@/lib/siteTheme';
+import { getSiteThemePreset, normalizeHexColor, isColorDark } from '@/lib/siteTheme';
 
 // --- Chemin critique de la home : chargé immédiatement ---
 import { TopBanner } from '@/components/TopBanner';
@@ -43,13 +43,18 @@ function MainAppContent() {
   const { currentView, settings } = useStore();
   const homePreset = getSiteThemePreset(settings.homeTheme);
   const bodyColor = normalizeHexColor(settings.siteBodyColor, homePreset.bodyColor);
-  const homeVisuals = settings.homeTheme === 'custom'
-    ? { ...homePreset, bodyColor, mutedColor: bodyColor }
+  const isCustom = settings.homeTheme === 'custom';
+  const isDarkBg = isColorDark(bodyColor);
+  const homeVisuals = isCustom
+    ? { ...homePreset, bodyColor, surfaceColor: bodyColor, mutedColor: bodyColor }
     : homePreset;
   const themeStyle = {
     '--site-body-color': bodyColor,
     '--home-surface-color': homeVisuals.surfaceColor,
     '--home-muted-color': homeVisuals.mutedColor,
+    '--home-text-primary': isDarkBg ? '#ffffff' : '#0f172a',
+    '--home-text-secondary': isDarkBg ? '#e2e8f0' : '#475569',
+    '--home-border-color': isDarkBg ? 'rgba(255, 255, 255, 0.14)' : 'rgba(0, 0, 0, 0.08)',
     '--home-flash-start': homeVisuals.flashStart,
     '--home-flash-mid': homeVisuals.flashMid,
     '--home-flash-end': homeVisuals.flashEnd,

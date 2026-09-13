@@ -147,30 +147,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {/* Title */}
-          <h3 className="font-extrabold text-base sm:text-lg text-slate-950 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+          <h3 className="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
             {product.title}
           </h3>
 
           {/* Short Description */}
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-1 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-500 line-clamp-1 leading-relaxed">
             {product.shortDescription || product.description}
           </p>
 
           {/* Alibaba MOQ & Verification Bar */}
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-0.5">
-            <span className="font-bold text-slate-700 dark:text-slate-300">MOQ: 1 pièce</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
+            <span className="font-bold text-slate-700">MOQ: 1 pièce</span>
+            <span className="text-emerald-600 font-bold flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>Qualité Certifiée</span>
             </span>
           </div>
         </div>
 
         {/* Price & Stock status */}
-        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+        <div className="pt-3 border-t border-slate-100 space-y-2.5">
           <div className="flex items-baseline justify-between">
             <div className="flex items-baseline gap-2">
-              <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-950 dark:text-white">
+              <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (

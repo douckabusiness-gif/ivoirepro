@@ -123,7 +123,10 @@ export default async function DedicatedProductPage({ params }: PageProps) {
 
       <StoreProvider initialView="product-detail">
         <AnalyticsTracker initialProduct={{ id: product.id, title: product.title, slug: product.slug }} />
-        <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-500 selection:text-white transition-colors pb-16 sm:pb-0">
+        <div 
+          className="min-h-screen flex flex-col text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-500 selection:text-white transition-colors pb-16 sm:pb-0"
+          style={{ backgroundColor: effectiveSettings.siteBodyColor || undefined }}
+        >
           <TopBanner />
           <Navbar />
 

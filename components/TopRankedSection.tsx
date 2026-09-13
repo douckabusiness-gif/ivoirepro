@@ -53,33 +53,54 @@ export const TopRankedSection = () => {
   ];
 
   return (
-    <section className="py-10 sm:py-14 bg-white border-b border-slate-200" style={{ backgroundColor: 'var(--home-surface-color, #ffffff)' }}>
+    <section 
+      className="py-10 sm:py-14 border-b transition-colors" 
+      style={{ 
+        backgroundColor: 'var(--home-surface-color, var(--site-body-color, #ffffff))',
+        borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header with Ranking Tabs */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-5 border-b border-slate-200/80 dark:border-slate-800">
+        <div 
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-5 border-b"
+          style={{ borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))' }}
+        >
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-500 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
               <Award className="w-4 h-4 text-amber-500 animate-pulse" />
               <span>Classement Officiel</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 dark:text-white tracking-tight font-display leading-[1.15]">
+            <h2 
+              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight font-display leading-[1.15]"
+              style={{ color: 'var(--home-text-primary, #0f172a)' }}
+            >
               Top Produits & Meilleures Ventes
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-2xl mt-2">
+            <p 
+              className="text-sm sm:text-base md:text-lg font-medium leading-relaxed max-w-2xl mt-2"
+              style={{ color: 'var(--home-text-secondary, #475569)' }}
+            >
               Sélection basée sur le volume réel des commandes et les avis vérifiés de nos clients.
             </p>
           </div>
 
           {/* Ranking Tabs */}
-          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl self-start md:self-auto border border-slate-200/80 dark:border-slate-700">
+          <div 
+            className="flex items-center gap-1.5 p-1.5 rounded-2xl self-start md:self-auto border shadow-xs"
+            style={{ 
+              backgroundColor: 'rgba(0, 0, 0, 0.06)',
+              borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))'
+            }}
+          >
             <button
               onClick={() => setActiveTab('sales')}
-              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 ${
-                activeTab === 'sales'
-                  ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-md scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 shadow-xs"
+              style={{
+                backgroundColor: activeTab === 'sales' ? '#ffffff' : 'transparent',
+                color: activeTab === 'sales' ? '#0f172a' : 'var(--home-text-primary, #0f172a)'
+              }}
             >
               <Award className="w-4 h-4 text-amber-500" />
               <span>Plus Populaires</span>
@@ -87,11 +108,11 @@ export const TopRankedSection = () => {
 
             <button
               onClick={() => setActiveTab('rating')}
-              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 ${
-                activeTab === 'rating'
-                  ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-md scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 shadow-xs"
+              style={{
+                backgroundColor: activeTab === 'rating' ? '#ffffff' : 'transparent',
+                color: activeTab === 'rating' ? '#0f172a' : 'var(--home-text-primary, #0f172a)'
+              }}
             >
               <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
               <span>Mieux Notés (4.9+)</span>
@@ -99,11 +120,11 @@ export const TopRankedSection = () => {
 
             <button
               onClick={() => setActiveTab('trending')}
-              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 ${
-                activeTab === 'trending'
-                  ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-md scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 shadow-xs"
+              style={{
+                backgroundColor: activeTab === 'trending' ? '#ffffff' : 'transparent',
+                color: activeTab === 'trending' ? '#0f172a' : 'var(--home-text-primary, #0f172a)'
+              }}
             >
               <Flame className="w-4 h-4 text-rose-500" />
               <span>Tendances Chaudes</span>
@@ -125,11 +146,11 @@ export const TopRankedSection = () => {
                   setSelectedProductId(product.id);
                   setCurrentView('product-detail');
                 }}
-                className="group relative bg-slate-50 hover:bg-white rounded-2xl border border-slate-200 hover:border-amber-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer p-4"
+                className="group relative bg-white rounded-2xl border border-slate-200/90 hover:border-amber-400 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer p-4 shadow-sm"
               >
                 <div>
                   {/* Image Container with Rank Medal */}
-                  <div className="relative aspect-square rounded-xl overflow-hidden bg-white mb-3 border border-slate-100">
+                  <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 mb-3 border border-slate-100">
                     <img
                       src={product.images[0]}
                       alt={product.title}
@@ -171,26 +192,26 @@ export const TopRankedSection = () => {
                       <span>{product.rating}</span>
                       <span className="text-slate-400 font-normal text-[11px]">({product.reviewCount} avis)</span>
                     </div>
-                    <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded">
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                       +{(product.reviewCount || 10) * 12} vendus
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-extrabold text-base sm:text-lg text-slate-950 dark:text-white group-hover:text-indigo-600 transition-colors line-clamp-1">
+                  <h3 className="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                     {product.title}
                   </h3>
                   
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-1 mt-1 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-500 line-clamp-1 mt-1 leading-relaxed">
                     {product.shortDescription || product.description}
                   </p>
                 </div>
 
                 {/* Price & Instant Buy */}
-                <div className="pt-3.5 mt-3.5 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
+                <div className="pt-3.5 mt-3.5 border-t border-slate-100 space-y-2.5">
                   <div className="flex items-baseline justify-between">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-950 dark:text-white">
+                      <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">
                         {formatPrice(product.price)}
                       </span>
                       {product.originalPrice && (
@@ -199,7 +220,7 @@ export const TopRankedSection = () => {
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] sm:text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider">
                       Prix Direct
                     </span>
                   </div>

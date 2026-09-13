@@ -495,22 +495,31 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   return (
     <section
       id="catalogue"
-      className="py-8 sm:py-12 bg-slate-50 dark:bg-slate-900/60 transition-colors"
-      style={currentView === 'home' ? { backgroundColor: 'var(--home-muted-color, #f8fafc)' } : undefined}
+      className="py-8 sm:py-12 transition-colors"
+      style={currentView === 'home' ? { backgroundColor: 'var(--home-muted-color, var(--site-body-color, #f8fafc))' } : undefined}
     >
       <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Header Title & Sorting / Actions Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-5 border-b border-slate-200/80 dark:border-slate-800">
+        <div 
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-5 border-b"
+          style={{ borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))' }}
+        >
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
-              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/40 text-indigo-500 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
+              <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
               <span>{title ? 'Sélection Officielle' : 'Catalogue & Disponibilités Réelles'}</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 dark:text-white tracking-tight font-display leading-[1.15]">
+            <h2 
+              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight font-display leading-[1.15]"
+              style={{ color: 'var(--home-text-primary, #0f172a)' }}
+            >
               {title || (activeCategory ? activeCategory.name : 'Tous Nos Articles Disponibles')}
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl mt-2">
+            <p 
+              className="text-sm sm:text-base md:text-lg font-medium leading-relaxed max-w-2xl mt-2"
+              style={{ color: 'var(--home-text-secondary, #475569)' }}
+            >
               {subtitle || activeCategory?.description || "Parcourez notre catalogue exclusif en stock réel, avec commande rapide et livraison express à domicile."}
             </p>
           </div>
