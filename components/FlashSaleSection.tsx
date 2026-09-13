@@ -47,12 +47,15 @@ export const FlashSaleSection = () => {
     }, 1200);
   };
 
-  // Filter flash products
+  // Filter flash products: STRICTEMENT réservé aux produits dont l'administrateur a coché "isFlashSale"
+  const allFlashProducts = useMemo(() => {
+    return products.filter(p => Boolean(p.isFlashSale));
+  }, [products]);
+
   const flashProducts = useMemo(() => {
-    const list = products.filter(p => p.isFlashSale || (p.discountPercent && p.discountPercent >= 15) || (p.originalPrice && p.originalPrice > p.price));
-    if (selectedCategory === 'all') return list;
-    return list.filter(p => p.categoryId === selectedCategory);
-  }, [products, selectedCategory]);
+    if (selectedCategory === 'all') return allFlashProducts;
+    return allFlashProducts.filter(p => p.categoryId === selectedCategory);
+  }, [allFlashProducts, selectedCategory]);
 
   // Live countdown timer (hours, minutes, seconds)
   const [timeLeft, setTimeLeft] = useState({ hours: 14, minutes: 22, seconds: 48 });
@@ -73,7 +76,7 @@ export const FlashSaleSection = () => {
     return () => clearInterval(timer);
   }, []);
 
-  if (flashProducts.length === 0) return null;
+  if (allFlashProducts.length === 0) return null;
 
   return (
     <section
@@ -164,11 +167,11 @@ export const FlashSaleSection = () => {
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
-            <span>Toutes les Offres ({products.filter(p => p.isFlashSale || (p.discountPercent && p.discountPercent >= 15)).length})</span>
+            <span>Toutes les Offres ({allFlashProducts.length})</span>
           </button>
 
           {categories.map((cat) => {
-            const count = products.filter(p => (p.isFlashSale || (p.discountPercent && p.discountPercent >= 15)) && p.categoryId === cat.id).length;
+            const count = allFlashProducts.filter(p => p.categoryId === cat.id).length;
             if (count === 0) return null;
 
             return (

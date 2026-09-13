@@ -3103,6 +3103,39 @@ export const AdminPanel = () => {
                         />
                       </div>
 
+                      {/* Section Vente Flash du Jour */}
+                      <div className="sm:col-span-2 lg:col-span-3 p-4 sm:p-5 bg-gradient-to-r from-rose-950/40 via-slate-900 to-amber-950/30 border border-rose-800/40 rounded-2xl space-y-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <Flame className="w-4 h-4 text-rose-500 fill-rose-500" />
+                              <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
+                                Mettre en Vente Flash du Jour
+                              </h4>
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded bg-rose-600/30 text-rose-300 border border-rose-500/40 uppercase">
+                                Manuel uniquement
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-300 mt-1">
+                              Ce produit n'apparaîtra dans la section <strong>« Ventes Flash du Jour »</strong> de la page d'accueil que si vous activez cet interrupteur. <strong>Rien n'est affiché automatiquement.</strong>
+                            </p>
+                          </div>
+
+                          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(productForm.isFlashSale)}
+                              onChange={(e) => setProductForm({ ...productForm, isFlashSale: e.target.checked })}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-slate-800 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
+                            <span className="ml-2 text-xs font-bold text-rose-300">
+                              {productForm.isFlashSale ? 'Actif en Vente Flash' : 'Désactivé'}
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+
                       {/* Section Remises par Quantité / Paliers Dégressifs */}
                       <div className="sm:col-span-2 lg:col-span-3 p-4 sm:p-5 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-4">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -3289,6 +3322,7 @@ export const AdminPanel = () => {
                         <th className="p-4">Rayon</th>
                         <th className="p-4">Prix</th>
                         <th className="p-4">Stock</th>
+                        <th className="p-4">Vente Flash</th>
                         <th className="p-4">Statut</th>
                         <th className="p-4 text-right">Actions</th>
                       </tr>
@@ -3318,6 +3352,30 @@ export const AdminPanel = () => {
                             }`}>
                               {p.stockCount} en stock
                             </span>
+                          </td>
+                          <td className="p-4">
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                try {
+                                  const updated = !p.isFlashSale;
+                                  await updateProduct(p.id, { isFlashSale: updated });
+                                  setSaveSuccessMsg(updated ? `"${p.title}" activé en Vente Flash !` : `"${p.title}" retiré des Ventes Flash.`);
+                                  setTimeout(() => setSaveSuccessMsg(''), 3000);
+                                } catch (err: any) {
+                                  setSaveErrorMsg(err?.message || 'Erreur lors de la modification Vente Flash.');
+                                }
+                              }}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer transition ${
+                                p.isFlashSale 
+                                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30' 
+                                  : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
+                              }`}
+                              title={p.isFlashSale ? "Désactiver la vente flash pour ce produit" : "Activer la vente flash pour ce produit"}
+                            >
+                              <Flame className={`w-3 h-3 ${p.isFlashSale ? 'text-rose-400 fill-rose-400 animate-pulse' : 'text-slate-500'}`} />
+                              <span>{p.isFlashSale ? 'En Vente Flash' : 'Non actif'}</span>
+                            </button>
                           </td>
                           <td className="p-4">
                             <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded">
