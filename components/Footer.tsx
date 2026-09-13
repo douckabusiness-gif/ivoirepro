@@ -77,11 +77,6 @@ export const Footer = () => {
                 </button>
               </li>
               <li>
-                <button onClick={() => setCurrentView('marketing')} className="text-purple-400 hover:text-purple-300 font-bold transition cursor-pointer flex items-center gap-1">
-                  <span>🎁 Marketing & Offres VIP</span>
-                </button>
-              </li>
-              <li>
                 <button onClick={() => setCurrentView('faq')} className="hover:text-indigo-400 transition cursor-pointer">
                   Foire Aux Questions (FAQ)
                 </button>
@@ -144,14 +139,6 @@ export const Footer = () => {
                 <button onClick={() => setCurrentView('partenaire')} className="text-amber-400 hover:text-amber-300 font-bold transition cursor-pointer flex items-center gap-1.5">
                   <span>🤝 Espace Partenaire / Affilié</span>
                 </button>
-              </li>
-              <li>
-                <a 
-                  href="/livreur" 
-                  className="text-slate-300 hover:text-amber-300 font-semibold transition cursor-pointer flex items-center gap-1.5 text-xs"
-                >
-                  <span>🛵 Espace Livreur Autonome (/livreur)</span>
-                </a>
               </li>
               <li>
                 <button onClick={() => setCurrentView('delivery')} className="hover:text-indigo-400 transition cursor-pointer">
