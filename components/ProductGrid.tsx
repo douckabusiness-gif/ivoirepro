@@ -506,18 +506,18 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           style={{ borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))' }}
         >
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/40 text-indigo-500 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
-              <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/35 text-indigo-600 dark:text-indigo-400 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
               <span>{title ? 'Sélection Officielle' : 'Catalogue & Disponibilités Réelles'}</span>
             </div>
             <h2 
-              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight font-display leading-[1.15]"
+              className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight"
               style={{ color: 'var(--home-text-primary, #0f172a)' }}
             >
               {title || (activeCategory ? activeCategory.name : 'Tous Nos Articles Disponibles')}
             </h2>
             <p 
-              className="text-sm sm:text-base md:text-lg font-medium leading-relaxed max-w-2xl mt-2"
+              className="text-xs sm:text-sm font-normal leading-relaxed max-w-xl mt-1.5 opacity-85"
               style={{ color: 'var(--home-text-secondary, #475569)' }}
             >
               {subtitle || activeCategory?.description || "Parcourez notre catalogue exclusif en stock réel, avec commande rapide et livraison express à domicile."}

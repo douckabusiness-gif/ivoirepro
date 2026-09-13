@@ -196,7 +196,7 @@ export const HeroBanner = () => {
                         alignment === 'center' ? 'justify-center' : alignment === 'right' ? 'justify-end' : 'justify-start'
                       }`}>
                         {slide.badge && (
-                          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-black tracking-wider uppercase shadow-sm">
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-[11px] sm:text-xs font-bold tracking-wider uppercase shadow-xs">
                             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                             <span>{slide.badge}</span>
                           </div>
@@ -204,11 +204,11 @@ export const HeroBanner = () => {
                       </div>
 
                       {/* Main Center Content */}
-                      <div className={`relative z-10 max-w-2xl space-y-3 sm:space-y-4 ${
+                      <div className={`relative z-10 max-w-2xl space-y-2.5 sm:space-y-3.5 ${
                         alignment === 'center' ? 'mx-auto text-center' : alignment === 'right' ? 'ml-auto text-right' : 'mr-auto text-left'
                       }`}>
                         {slide.title && (
-                          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white drop-shadow-lg font-display">
+                          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white drop-shadow-md">
                             {slide.title}
                             {slide.highlight && (
                               <span className="block mt-1 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-indigo-200 to-sky-200">
@@ -219,20 +219,20 @@ export const HeroBanner = () => {
                         )}
 
                         {slide.subtitle && (
-                          <p className="text-sm sm:text-base md:text-lg text-slate-100 font-medium leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl drop-shadow-sm">
+                          <p className="text-xs sm:text-sm md:text-base text-slate-100/90 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl drop-shadow-xs">
                             {slide.subtitle}
                           </p>
                         )}
 
                         {/* CTA Buttons */}
-                        <div className={`flex flex-wrap items-center gap-3 pt-2 sm:pt-3 ${
+                        <div className={`flex flex-wrap items-center gap-2.5 pt-2 sm:pt-2.5 ${
                           alignment === 'center' ? 'justify-center' : alignment === 'right' ? 'justify-end' : 'justify-start'
                         }`}>
                           {slide.buttonText && (
                             <button
                               type="button"
                               onClick={() => executeAction(slide.buttonAction, slide.buttonLink, slide)}
-                              className="px-7 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl text-sm sm:text-base shadow-xl flex items-center gap-2.5 transition cursor-pointer hover:scale-105 active:scale-95"
+                              className="px-5 py-2.5 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-lg flex items-center gap-2 transition cursor-pointer hover:scale-105 active:scale-95"
                             >
                               <span>{slide.buttonText}</span>
                               <ArrowRight className="w-4 h-4" />
@@ -243,7 +243,7 @@ export const HeroBanner = () => {
                             <button
                               type="button"
                               onClick={() => executeAction(slide.secondaryButtonAction || 'whatsapp', slide.secondaryButtonLink, slide)}
-                              className="px-6 py-3.5 bg-white/20 hover:bg-white/30 text-white font-extrabold rounded-2xl text-sm sm:text-base backdrop-blur-md border border-white/30 flex items-center gap-2 transition cursor-pointer hover:scale-105 active:scale-95"
+                              className="px-4 py-2.5 sm:px-5 sm:py-3 bg-white/20 hover:bg-white/30 text-white font-bold rounded-xl text-xs sm:text-sm backdrop-blur-md border border-white/30 flex items-center gap-2 transition cursor-pointer hover:scale-105 active:scale-95"
                             >
                               <MessageCircle className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
                               <span>{slide.secondaryButtonText}</span>

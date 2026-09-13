@@ -68,18 +68,18 @@ export const TopRankedSection = () => {
           style={{ borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))' }}
         >
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-500 text-xs sm:text-sm font-black uppercase tracking-wider mb-2 shadow-xs">
-              <Award className="w-4 h-4 text-amber-500 animate-pulse" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-500 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2 shadow-xs">
+              <Award className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
               <span>Classement Officiel</span>
             </div>
             <h2 
-              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight font-display leading-[1.15]"
+              className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight"
               style={{ color: 'var(--home-text-primary, #0f172a)' }}
             >
               Top Produits & Meilleures Ventes
             </h2>
             <p 
-              className="text-sm sm:text-base md:text-lg font-medium leading-relaxed max-w-2xl mt-2"
+              className="text-xs sm:text-sm font-normal leading-relaxed max-w-xl mt-1.5 opacity-85"
               style={{ color: 'var(--home-text-secondary, #475569)' }}
             >
               Sélection basée sur le volume réel des commandes et les avis vérifiés de nos clients.
@@ -88,7 +88,7 @@ export const TopRankedSection = () => {
 
           {/* Ranking Tabs */}
           <div 
-            className="flex items-center gap-1.5 p-1.5 rounded-2xl self-start md:self-auto border shadow-xs"
+            className="flex items-center gap-1 p-1 rounded-2xl self-start md:self-auto border shadow-xs"
             style={{ 
               backgroundColor: 'rgba(0, 0, 0, 0.06)',
               borderColor: 'var(--home-border-color, rgba(0,0,0,0.08))'
@@ -96,37 +96,37 @@ export const TopRankedSection = () => {
           >
             <button
               onClick={() => setActiveTab('sales')}
-              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 shadow-xs"
+              className="px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-xs"
               style={{
                 backgroundColor: activeTab === 'sales' ? '#ffffff' : 'transparent',
                 color: activeTab === 'sales' ? '#0f172a' : 'var(--home-text-primary, #0f172a)'
               }}
             >
-              <Award className="w-4 h-4 text-amber-500" />
+              <Award className="w-3.5 h-3.5 text-amber-500" />
               <span>Plus Populaires</span>
             </button>
 
             <button
               onClick={() => setActiveTab('rating')}
-              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 shadow-xs"
+              className="px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-xs"
               style={{
                 backgroundColor: activeTab === 'rating' ? '#ffffff' : 'transparent',
                 color: activeTab === 'rating' ? '#0f172a' : 'var(--home-text-primary, #0f172a)'
               }}
             >
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
               <span>Mieux Notés (4.9+)</span>
             </button>
 
             <button
               onClick={() => setActiveTab('trending')}
-              className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-2 shadow-xs"
+              className="px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-xs"
               style={{
                 backgroundColor: activeTab === 'trending' ? '#ffffff' : 'transparent',
                 color: activeTab === 'trending' ? '#0f172a' : 'var(--home-text-primary, #0f172a)'
               }}
             >
-              <Flame className="w-4 h-4 text-rose-500" />
+              <Flame className="w-3.5 h-3.5 text-rose-500" />
               <span>Tendances Chaudes</span>
             </button>
           </div>
@@ -198,29 +198,29 @@ export const TopRankedSection = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                  <h3 className="font-semibold text-sm sm:text-[15px] text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-snug">
                     {product.title}
                   </h3>
                   
-                  <p className="text-xs sm:text-sm text-slate-500 line-clamp-1 mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-500 line-clamp-1 mt-0.5 leading-normal">
                     {product.shortDescription || product.description}
                   </p>
                 </div>
 
                 {/* Price & Instant Buy */}
-                <div className="pt-3.5 mt-3.5 border-t border-slate-100 space-y-2.5">
+                <div className="pt-3 mt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-base sm:text-lg font-extrabold text-slate-900">
                         {formatPrice(product.price)}
                       </span>
                       {product.originalPrice && (
-                        <span className="text-xs sm:text-sm text-slate-400 line-through font-semibold">
+                        <span className="text-xs text-slate-400 line-through font-normal">
                           {formatPrice(product.originalPrice)}
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider">
+                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
                       Prix Direct
                     </span>
                   </div>
@@ -228,7 +228,7 @@ export const TopRankedSection = () => {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={(e) => handleAddToCart(product, e)}
-                      className={`py-2.5 px-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs ${
+                      className={`py-2 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs ${
                         isAdded
                           ? 'bg-emerald-600 text-white'
                           : 'bg-slate-950 hover:bg-indigo-600 text-white'
@@ -236,12 +236,12 @@ export const TopRankedSection = () => {
                     >
                       {isAdded ? (
                         <>
-                          <Check className="w-4 h-4" />
+                          <Check className="w-3.5 h-3.5" />
                           <span>Ajouté !</span>
                         </>
                       ) : (
                         <>
-                          <ShoppingBag className="w-4 h-4" />
+                          <ShoppingBag className="w-3.5 h-3.5" />
                           <span>Panier</span>
                         </>
                       )}

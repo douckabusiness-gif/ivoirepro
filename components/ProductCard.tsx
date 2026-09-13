@@ -139,26 +139,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/40 px-2.5 py-0.5 rounded-md uppercase tracking-wider truncate">
               {product.categoryName}
             </span>
-            <div className="flex items-center gap-1 text-amber-500 text-xs sm:text-[13px] font-bold shrink-0">
+            <div className="flex items-center gap-1 text-amber-500 text-xs font-bold shrink-0">
               <Star className="w-3.5 h-3.5 fill-amber-400" />
               <span>{product.rating}</span>
-              <span className="text-slate-400 font-medium text-[11px]">({product.reviewCount})</span>
+              <span className="text-slate-400 font-normal text-[11px]">({product.reviewCount})</span>
             </div>
           </div>
 
           {/* Title */}
-          <h3 className="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+          <h3 className="font-semibold text-sm sm:text-[15px] text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-snug">
             {product.title}
           </h3>
 
           {/* Short Description */}
-          <p className="text-xs sm:text-sm text-slate-500 line-clamp-1 leading-relaxed">
+          <p className="text-xs text-slate-500 line-clamp-1 mt-0.5 leading-normal">
             {product.shortDescription || product.description}
           </p>
 
           {/* Alibaba MOQ & Verification Bar */}
           <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
-            <span className="font-bold text-slate-700">MOQ: 1 pièce</span>
+            <span className="font-semibold text-slate-700">MOQ: 1 pièce</span>
             <span className="text-emerald-600 font-bold flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>Qualité Certifiée</span>
@@ -167,25 +167,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         {/* Price & Stock status */}
-        <div className="pt-3 border-t border-slate-100 space-y-2.5">
+        <div className="pt-3 border-t border-slate-100 space-y-2">
           <div className="flex items-baseline justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base sm:text-lg font-extrabold text-slate-900">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
-                <span className="text-xs sm:text-sm text-slate-400 line-through font-semibold">
+                <span className="text-xs text-slate-400 line-through font-normal">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
             </div>
 
             {product.inStock ? (
-              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800 px-2.5 py-0.5 rounded-md">
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md">
                 En Stock ({product.stockCount})
               </span>
             ) : (
-              <span className="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200/80 dark:border-rose-800 px-2.5 py-0.5 rounded-md">
+              <span className="text-[11px] font-semibold text-rose-700 bg-rose-50 border border-rose-200/80 px-2 py-0.5 rounded-md">
                 Épuisé
               </span>
             )}
@@ -196,7 +196,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <button
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className={`py-2.5 px-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs ${
+              className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs ${
                 isAdded 
                   ? 'bg-emerald-600 text-white' 
                   : 'bg-slate-950 hover:bg-indigo-600 text-white disabled:bg-slate-200 disabled:text-slate-400'
@@ -204,12 +204,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             >
               {isAdded ? (
                 <>
-                  <Check className="w-4 h-4" />
+                  <Check className="w-3.5 h-3.5" />
                   <span>Ajouté !</span>
                 </>
               ) : (
                 <>
-                  <ShoppingBag className="w-4 h-4 text-white" />
+                  <ShoppingBag className="w-3.5 h-3.5 text-white" />
                   <span>Panier</span>
                 </>
               )}

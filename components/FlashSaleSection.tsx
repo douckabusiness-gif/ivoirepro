@@ -94,20 +94,20 @@ export const FlashSaleSection = () => {
         {/* Header with Flash Branding & Digital Countdown Timer */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 sm:mb-8 gap-4 pb-6 border-b border-slate-800/80">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-rose-500/25 to-amber-500/25 text-rose-300 text-xs font-black uppercase tracking-wider border border-rose-500/30 shadow-inner">
-              <Flame className="w-4 h-4 fill-rose-500 text-rose-500 animate-bounce" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-rose-500/25 to-amber-500/25 text-rose-300 text-[11px] font-bold uppercase tracking-wider border border-rose-500/30 shadow-inner">
+              <Flame className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
               <span>SUPER DEALS & VENTES FLASH</span>
               <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping" />
             </div>
             
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white flex items-center gap-3">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
               <span>Ventes Flash du Jour</span>
-              <span className="hidden sm:inline-block text-xs font-black px-2.5 py-1 rounded-lg bg-rose-600 text-white uppercase shadow-lg animate-pulse">
+              <span className="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-600 text-white uppercase shadow-sm">
                 JUSQU'À -50%
               </span>
             </h2>
             
-            <p className="text-xs sm:text-sm text-slate-400 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-300/80 max-w-xl font-normal leading-relaxed">
               Offres exclusives à durée limitée et quantités contingentées. Commandez immédiatement en ligne ou directement via WhatsApp.
             </p>
           </div>
