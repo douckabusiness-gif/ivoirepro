@@ -4,7 +4,8 @@ import {
   answerTelegramCallbackQuery, 
   editTelegramMessageText, 
   sendTelegramMessage, 
-  escapeTelegramHtml 
+  escapeTelegramHtml,
+  verifyTelegramWebhookSecret
 } from '@/lib/telegram';
 
 export const dynamic = 'force-dynamic';
@@ -26,6 +27,20 @@ export async function POST(request: Request) {
 
     const botToken = settings.telegramBotToken.trim();
     const authorizedChatId = settings.telegramChatId?.trim();
+
+    // Sécurité : rejeter toute requête qui ne provient pas de Telegram
+    // (le secret est envoyé par Telegram dans ce header, cf. setWebhook.secret_token).
+    const providedSecret = request.headers.get('x-telegram-bot-api-secret-token');
+    if (!verifyTelegramWebhookSecret(botToken, providedSecret)) {
+      return NextResponse.json({ error: 'Webhook non autorisé.' }, { status: 401 });
+    }
+
+    // Sécurité : si un chat administrateur est défini, ignorer tous les autres chats
+    // (y compris les messages texte, pas seulement les clics sur boutons).
+    const incomingChatId = body.callback_query?.message?.chat?.id ?? body.message?.chat?.id;
+    if (authorizedChatId && incomingChatId !== undefined && String(incomingChatId) !== String(authorizedChatId)) {
+      return NextResponse.json({ ok: true, skipped: 'Chat non autorisé' });
+    }
 
     // 1. GESTION DES CLICS SUR LES BOUTONS INTERACTIFS (callback_query)
     if (body.callback_query) {

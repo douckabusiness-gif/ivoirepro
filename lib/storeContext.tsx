@@ -237,6 +237,24 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
+// Browser notification helper (module-level: no component state needed)
+function showBrowserCallNotification(title: string, body: string) {
+  if (typeof window === 'undefined' || !('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    try {
+      new Notification(title, { body, icon: '/favicon.ico' });
+    } catch {}
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        try {
+          new Notification(title, { body, icon: '/favicon.ico' });
+        } catch {}
+      }
+    });
+  }
+}
+
 export const StoreProvider = ({ children, initialView }: { children: ReactNode; initialView?: AppView }) => {
   // Navigation
   const [currentView, setCurrentViewState] = useState<AppView>(initialView || 'home');
@@ -1892,24 +1910,6 @@ export const StoreProvider = ({ children, initialView }: { children: ReactNode; 
       window.speechSynthesis.speak(utterance);
     } catch (err) {
       console.warn('Speech synthesis error:', err);
-    }
-  };
-
-  // Browser notification helper
-  const showBrowserCallNotification = (title: string, body: string) => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-    if (Notification.permission === 'granted') {
-      try {
-        new Notification(title, { body, icon: '/favicon.ico' });
-      } catch {}
-    } else if (Notification.permission !== 'denied') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          try {
-            new Notification(title, { body, icon: '/favicon.ico' });
-          } catch {}
-        }
-      });
     }
   };
 

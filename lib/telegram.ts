@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import type { Order, StoreSettings, Product } from './types';
 
 const TELEGRAM_MESSAGE_LIMIT = 4096;
@@ -304,6 +305,28 @@ export async function sendTelegramDailyReport(
 }
 
 /** Configure Webhook on Telegram */
+
+/**
+ * Secret partagé avec Telegram (header X-Telegram-Bot-Api-Secret-Token).
+ * Dérivé de JWT_SECRET + token du bot : aucune colonne DB supplémentaire,
+ * et il change automatiquement si l'un des deux est renouvelé.
+ */
+export function getTelegramWebhookSecret(botToken: string): string {
+  const base = process.env.JWT_SECRET?.trim();
+  if (!base) {
+    throw new Error('JWT_SECRET est requis pour sécuriser le webhook Telegram.');
+  }
+  return crypto.createHmac('sha256', base).update(`telegram-webhook:${botToken.trim()}`).digest('hex');
+}
+
+export function verifyTelegramWebhookSecret(botToken: string, provided: string | null): boolean {
+  if (!provided) return false;
+  const expected = getTelegramWebhookSecret(botToken);
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
 export async function setTelegramWebhook(botToken: string, webhookUrl: string) {
   if (!botToken || !webhookUrl) {
     throw new Error('Bot token et URL de webhook requis.');
@@ -314,6 +337,7 @@ export async function setTelegramWebhook(botToken: string, webhookUrl: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       url: webhookUrl,
+      secret_token: getTelegramWebhookSecret(botToken),
       drop_pending_updates: false,
       allowed_updates: ['message', 'callback_query'],
     }),

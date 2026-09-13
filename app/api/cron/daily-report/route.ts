@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
 import { sendTelegramDailyReport } from '@/lib/telegram';
 
 export const dynamic = 'force-dynamic';
@@ -12,7 +13,23 @@ export async function POST(request: Request) {
   return handleDailyReport(request);
 }
 
+function isCronAuthorized(request: Request): boolean {
+  const secret = process.env.CRON_SECRET?.trim();
+  if (!secret) return false;
+  const header = request.headers.get('authorization') || '';
+  const provided = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  if (!provided) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(secret);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
 async function handleDailyReport(request: Request) {
+  // Sécurité : cette route est appelée par un planificateur (cron), jamais par le public.
+  if (!isCronAuthorized(request)) {
+    return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 });
+  }
+
   try {
     const settings = await prisma.storeSettings.findUnique({
       where: { id: 'default_settings' },
