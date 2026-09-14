@@ -26,6 +26,7 @@ function PartnerStorefrontContent({ slug }: { slug: string }) {
   const { currentView, setActiveReferral, settings } = useStore();
 
   useEffect(() => {
+    if (settings?.partnerProgramEnabled === false) return;
     if (slug) {
       fetch('/api/partners/click', {
         method: 'POST',

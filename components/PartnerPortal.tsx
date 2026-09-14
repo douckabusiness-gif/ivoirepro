@@ -54,6 +54,11 @@ import confetti from 'canvas-confetti';
 export const PartnerPortal = () => {
   const { products, settings, formatPrice, setCurrentView, isDarkMode } = useStore();
 
+  // Safeguard: si le programme partenaire est désactivé, ne rien afficher
+  if (settings?.partnerProgramEnabled === false) {
+    return null;
+  }
+
   // Auth & Session state
   const [partner, setPartner] = useState<Partner | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState(true);

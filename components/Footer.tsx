@@ -135,11 +135,13 @@ export const Footer = () => {
             </div>
 
             <ul className="space-y-2 pt-1">
-              <li>
-                <button onClick={() => setCurrentView('partenaire')} className="text-amber-400 hover:text-amber-300 font-bold transition cursor-pointer flex items-center gap-1.5">
-                  <span>🤝 Espace Partenaire / Affilié</span>
-                </button>
-              </li>
+              {settings.partnerProgramEnabled !== false && (
+                <li>
+                  <a href="/partenaire" className="text-amber-400 hover:text-amber-300 font-bold transition cursor-pointer flex items-center gap-1.5">
+                    <span>🤝 Espace Partenaire / Affilié</span>
+                  </a>
+                </li>
+              )}
               <li>
                 <button onClick={() => setCurrentView('delivery')} className="hover:text-indigo-400 transition cursor-pointer">
                   Livraison & Retours

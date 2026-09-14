@@ -7,7 +7,7 @@ import { Sparkles, CheckCircle2, X, Store, ExternalLink } from 'lucide-react';
 export const PartnerBanner = () => {
   const { activeReferral, clearActiveReferral, settings } = useStore();
 
-  if (!activeReferral) return null;
+  if (!activeReferral || settings.partnerProgramEnabled === false) return null;
 
   return (
     <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-indigo-600 text-white shadow-md text-xs relative z-40 animate-in slide-in-from-top duration-300">

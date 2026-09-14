@@ -7,8 +7,19 @@ import { enforceRateLimit } from '@/lib/rateLimit';
 export async function POST(request: Request) {
   try {
     const limited = enforceRateLimit(request, { keyPrefix: 'partner-login', max: 10, windowMs: 15 * 60 * 1000 });
-    if (limited) return limited;
     const { email, password, isDemo } = await request.json();
+
+    const settings = await prisma.storeSettings.findUnique({
+      where: { id: 'default_settings' },
+      select: { partnerProgramEnabled: true },
+    });
+
+    if (settings && settings.partnerProgramEnabled === false) {
+      return NextResponse.json(
+        { error: 'Le programme de partenariat est actuellement désactivé par l\'administrateur.' },
+        { status: 403 }
+      );
+    }
 
     if (isDemo && !isDemoModeEnabled()) {
       return NextResponse.json({ error: 'Le mode démo est désactivé.' }, { status: 403 });
