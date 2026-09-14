@@ -40,7 +40,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addToCart(product, 1);
+    const defaultColor = product.colors && product.colors.length > 0 ? product.colors[0] : undefined;
+    const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined;
+    addToCart(product, 1, defaultColor, defaultSize);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1200);
   };

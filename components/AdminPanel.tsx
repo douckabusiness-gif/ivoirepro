@@ -633,10 +633,12 @@ export const AdminPanel = () => {
     rating: 4.9,
     reviewCount: 5,
     badgeText: 'NOUVEAU',
-    colors: ['Noir', 'Argent'],
+    colors: [],
     sizes: []
   });
 
+  const [newColorInput, setNewColorInput] = useState('');
+  const [newSizeInput, setNewSizeInput] = useState('');
   const [customUrlInput, setCustomUrlInput] = useState('');
   const [isUploadingProductImage, setIsUploadingProductImage] = useState(false);
   const [productImageError, setProductImageError] = useState('');
@@ -989,6 +991,71 @@ export const AdminPanel = () => {
       images: [...(prev.images || []), customUrlInput.trim()]
     }));
     setCustomUrlInput('');
+  };
+
+  // Product Variants Handlers (Colors & Sizes / Pointures)
+  const handleAddColor = (colorName: string) => {
+    const trimmed = colorName.trim();
+    if (!trimmed) return;
+    const current = productForm.colors || [];
+    if (!current.some(c => c.toLowerCase() === trimmed.toLowerCase())) {
+      setProductForm(prev => ({
+        ...prev,
+        colors: [...(prev.colors || []), trimmed]
+      }));
+    }
+    setNewColorInput('');
+  };
+
+  const handleRemoveColor = (indexToRemove: number) => {
+    setProductForm(prev => ({
+      ...prev,
+      colors: (prev.colors || []).filter((_, idx) => idx !== indexToRemove)
+    }));
+  };
+
+  const handleClearColors = () => {
+    setProductForm(prev => ({ ...prev, colors: [] }));
+  };
+
+  const handleAddSize = (sizeName: string) => {
+    const trimmed = sizeName.trim();
+    if (!trimmed) return;
+    const current = productForm.sizes || [];
+    if (!current.some(s => s.toLowerCase() === trimmed.toLowerCase())) {
+      setProductForm(prev => ({
+        ...prev,
+        sizes: [...(prev.sizes || []), trimmed]
+      }));
+    }
+    setNewSizeInput('');
+  };
+
+  const handleRemoveSize = (indexToRemove: number) => {
+    setProductForm(prev => ({
+      ...prev,
+      sizes: (prev.sizes || []).filter((_, idx) => idx !== indexToRemove)
+    }));
+  };
+
+  const handleClearSizes = () => {
+    setProductForm(prev => ({ ...prev, sizes: [] }));
+  };
+
+  const applySizePreset = (preset: 'shoes' | 'clothes' | 'kids') => {
+    let presetSizes: string[] = [];
+    if (preset === 'shoes') {
+      presetSizes = ['38', '39', '40', '41', '42', '43', '44', '45'];
+    } else if (preset === 'clothes') {
+      presetSizes = ['S', 'M', 'L', 'XL', 'XXL'];
+    } else if (preset === 'kids') {
+      presetSizes = ['28', '30', '32', '34', '36'];
+    }
+    setProductForm(prev => {
+      const existing = prev.sizes || [];
+      const merged = Array.from(new Set([...existing, ...presetSizes]));
+      return { ...prev, sizes: merged };
+    });
   };
 
   // Category & Subcategory Image Upload
@@ -1580,8 +1647,11 @@ export const AdminPanel = () => {
                         rating: 4.9,
                         reviewCount: 5,
                         badgeText: 'NOUVEAU',
-                        colors: ['Noir', 'Argent']
+                        colors: [],
+                        sizes: []
                       });
+                      setNewColorInput('');
+                      setNewSizeInput('');
                       setIsAddingProduct(true);
                       setActiveTab('products');
                     }}
@@ -3098,8 +3168,11 @@ export const AdminPanel = () => {
                       rating: 4.9,
                       reviewCount: 5,
                       badgeText: 'NOUVEAU',
-                      colors: ['Noir', 'Argent']
+                      colors: [],
+                      sizes: []
                     });
+                    setNewColorInput('');
+                    setNewSizeInput('');
                     setIsAddingProduct(true);
                   }}
                   className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer self-start sm:self-auto"
@@ -3312,6 +3385,267 @@ export const AdminPanel = () => {
                         )}
                       </div>
 
+                      {/* Section Variantes : Couleurs & Tailles / Pointures */}
+                      <div className="sm:col-span-2 lg:col-span-3 p-5 sm:p-6 bg-slate-950/90 border border-slate-800 rounded-2xl space-y-6">
+                        
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                              <Palette className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wide flex items-center gap-2">
+                                Variantes : Couleurs & Tailles / Pointures
+                              </h4>
+                              <p className="text-[11px] text-slate-400 mt-0.5">
+                                Idéal pour les chaussures, vêtements et articles ayant plusieurs coloris ou pointures.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-xs font-bold shrink-0">
+                            <span className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-indigo-300">
+                              🎨 {productForm.colors?.length || 0} couleur{(productForm.colors?.length || 0) > 1 ? 's' : ''}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-amber-300">
+                              👟 {productForm.sizes?.length || 0} taille{(productForm.sizes?.length || 0) > 1 ? 's' : ''}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                          {/* 1. Bloc Couleurs */}
+                          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-4 flex flex-col justify-between">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <label className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                                  <span>🎨 Couleurs Disponibles</span>
+                                </label>
+                                {productForm.colors && productForm.colors.length > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={handleClearColors}
+                                    className="text-[11px] font-bold text-rose-400 hover:text-rose-300 hover:underline transition cursor-pointer"
+                                  >
+                                    Effacer tout
+                                  </button>
+                                )}
+                              </div>
+
+                              <p className="text-[11px] text-slate-400">
+                                Le client pourra choisir sa couleur préférée avant la commande.
+                              </p>
+
+                              {/* Input ajout couleur */}
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={newColorInput}
+                                  onChange={(e) => setNewColorInput(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      handleAddColor(newColorInput);
+                                    }
+                                  }}
+                                  placeholder="Ex: Noir, Rouge, Bleu Nuit..."
+                                  className="flex-1 px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddColor(newColorInput)}
+                                  disabled={!newColorInput.trim()}
+                                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1 shrink-0"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  <span>Ajouter</span>
+                                </button>
+                              </div>
+
+                              {/* Suggestions rapides de couleurs courantes */}
+                              <div className="space-y-1.5 pt-1">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Couleurs fréquentes (1 clic) :</span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {['Noir', 'Blanc', 'Rouge', 'Bleu', 'Gris', 'Vert', 'Marron', 'Beige', 'Rose', 'Or', 'Argent'].map((col) => {
+                                    const isSelected = productForm.colors?.some(c => c.toLowerCase() === col.toLowerCase());
+                                    return (
+                                      <button
+                                        key={col}
+                                        type="button"
+                                        onClick={() => {
+                                          if (isSelected) {
+                                            const idx = productForm.colors?.findIndex(c => c.toLowerCase() === col.toLowerCase()) ?? -1;
+                                            if (idx >= 0) handleRemoveColor(idx);
+                                          } else {
+                                            handleAddColor(col);
+                                          }
+                                        }}
+                                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer border ${
+                                          isSelected 
+                                            ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs' 
+                                            : 'bg-slate-950 text-slate-300 border-slate-700 hover:border-slate-500 hover:text-white'
+                                        }`}
+                                      >
+                                        {isSelected ? `✓ ${col}` : `+ ${col}`}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Liste des couleurs configurées */}
+                            <div className="pt-3 border-t border-slate-800">
+                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                                Couleurs associées au produit ({productForm.colors?.length || 0}) :
+                              </label>
+                              {(!productForm.colors || productForm.colors.length === 0) ? (
+                                <div className="p-3 rounded-lg bg-slate-950/60 border border-dashed border-slate-800 text-center text-xs text-slate-400 italic">
+                                  Aucune couleur spécifique (modèle unique / sans sélecteur)
+                                </div>
+                              ) : (
+                                <div className="flex flex-wrap gap-2">
+                                  {productForm.colors.map((c, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-white shadow-xs group"
+                                    >
+                                      <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                      <span>{c}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveColor(idx)}
+                                        className="p-0.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 transition cursor-pointer"
+                                        title={`Supprimer ${c}`}
+                                      >
+                                        <X className="w-3 h-3" />
+                                      </button>
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                          </div>
+
+                          {/* 2. Bloc Tailles / Pointures */}
+                          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-4 flex flex-col justify-between">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <label className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                                  <span>👟 Tailles & Pointures</span>
+                                </label>
+                                {productForm.sizes && productForm.sizes.length > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={handleClearSizes}
+                                    className="text-[11px] font-bold text-rose-400 hover:text-rose-300 hover:underline transition cursor-pointer"
+                                  >
+                                    Effacer tout
+                                  </button>
+                                )}
+                              </div>
+
+                              <p className="text-[11px] text-slate-400">
+                                Définissez les pointures (ex: chaussures 38 à 45) ou tailles (S, M, L, XL).
+                              </p>
+
+                              {/* Input ajout taille */}
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={newSizeInput}
+                                  onChange={(e) => setNewSizeInput(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      handleAddSize(newSizeInput);
+                                    }
+                                  }}
+                                  placeholder="Ex: 38, 39, 40 ou S, M, L, XL..."
+                                  className="flex-1 px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddSize(newSizeInput)}
+                                  disabled={!newSizeInput.trim()}
+                                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1 shrink-0"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  <span>Ajouter</span>
+                                </button>
+                              </div>
+
+                              {/* Packs en 1 clic pour Chaussures et Vêtements */}
+                              <div className="space-y-1.5 pt-1">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Packs rapides (1 clic) :</span>
+                                <div className="flex flex-wrap gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => applySizePreset('shoes')}
+                                    className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 border border-amber-800/80 transition cursor-pointer flex items-center gap-1"
+                                    title="Ajouter automatiquement pointures 38, 39, 40, 41, 42, 43, 44, 45"
+                                  >
+                                    <span>👟 Chaussures (38 à 45)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => applySizePreset('clothes')}
+                                    className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-950/60 hover:bg-indigo-900/80 text-indigo-300 border border-indigo-800/80 transition cursor-pointer flex items-center gap-1"
+                                    title="Ajouter automatiquement tailles S, M, L, XL, XXL"
+                                  >
+                                    <span>👕 Vêtements (S à XXL)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => applySizePreset('kids')}
+                                    className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-800/80 transition cursor-pointer flex items-center gap-1"
+                                    title="Ajouter automatiquement pointures enfants 28, 30, 32, 34, 36"
+                                  >
+                                    <span>👶 Enfants (28 à 36)</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Liste des tailles configurées */}
+                            <div className="pt-3 border-t border-slate-800">
+                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                                Tailles / Pointures associées au produit ({productForm.sizes?.length || 0}) :
+                              </label>
+                              {(!productForm.sizes || productForm.sizes.length === 0) ? (
+                                <div className="p-3 rounded-lg bg-slate-950/60 border border-dashed border-slate-800 text-center text-xs text-slate-400 italic">
+                                  Aucune taille spécifique (taille unique / sans sélecteur)
+                                </div>
+                              ) : (
+                                <div className="flex flex-wrap gap-2">
+                                  {productForm.sizes.map((s, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-amber-300 shadow-xs group"
+                                    >
+                                      <span>{s}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveSize(idx)}
+                                        className="p-0.5 rounded-full hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 transition cursor-pointer"
+                                        title={`Supprimer ${s}`}
+                                      >
+                                        <X className="w-3 h-3" />
+                                      </button>
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
                       {/* Product Images Upload */}
                       <div className="space-y-4 sm:col-span-2 lg:col-span-3 pt-2">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2">
@@ -3440,6 +3774,20 @@ export const AdminPanel = () => {
                             <div className="min-w-0">
                               <p className="font-bold text-white truncate max-w-xs">{p.title}</p>
                               <p className="text-[11px] text-slate-400 truncate">{p.shortDescription || p.description}</p>
+                              {((p.colors && p.colors.length > 0) || (p.sizes && p.sizes.length > 0)) && (
+                                <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                                  {p.colors && p.colors.length > 0 && (
+                                    <span className="text-[9px] font-bold text-indigo-300 bg-indigo-950/80 px-1.5 py-0.5 rounded border border-indigo-800/60">
+                                      🎨 {p.colors.slice(0, 3).join(', ')}{p.colors.length > 3 ? '...' : ''}
+                                    </span>
+                                  )}
+                                  {p.sizes && p.sizes.length > 0 && (
+                                    <span className="text-[9px] font-bold text-amber-300 bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-800/60">
+                                      👟 {p.sizes.slice(0, 4).join(', ')}{p.sizes.length > 4 ? '...' : ''}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </td>
                           <td className="p-4 font-bold text-indigo-400">{p.categoryName}</td>
@@ -3492,7 +3840,13 @@ export const AdminPanel = () => {
                               <button
                                 onClick={() => {
                                   setEditingProductId(p.id);
-                                  setProductForm(p);
+                                  setProductForm({
+                                    ...p,
+                                    colors: p.colors || [],
+                                    sizes: p.sizes || []
+                                  });
+                                  setNewColorInput('');
+                                  setNewSizeInput('');
                                   setIsAddingProduct(true);
                                   window.scrollTo({ top: 0, behavior: 'smooth' });
                                 }}

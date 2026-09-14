@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/storeContext';
 import { 
@@ -59,6 +59,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [quantity, setQuantity] = useState(1);
   const [isAddedSuccess, setIsAddedSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'reviews'>('desc');
+
+  useEffect(() => {
+    if (product) {
+      setActiveImageIndex(0);
+      setSelectedColor(product.colors && product.colors.length > 0 ? product.colors[0] : undefined);
+      setSelectedSize(product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined);
+      setQuantity(1);
+    }
+  }, [product?.id]);
 
   if (!product) return null;
 

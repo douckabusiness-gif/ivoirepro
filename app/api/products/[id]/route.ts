@@ -45,6 +45,16 @@ export async function PUT(
     if (updateData.reviewCount !== undefined) updateData.reviewCount = Number(updateData.reviewCount);
     if (updateData.flashSaleEndsAt) updateData.flashSaleEndsAt = new Date(updateData.flashSaleEndsAt);
     if (updateData.tierPricingEnabled !== undefined) updateData.tierPricingEnabled = Boolean(updateData.tierPricingEnabled);
+    if (updateData.colors !== undefined) {
+      updateData.colors = Array.isArray(updateData.colors)
+        ? updateData.colors.map((c: any) => String(c).trim()).filter(Boolean)
+        : [];
+    }
+    if (updateData.sizes !== undefined) {
+      updateData.sizes = Array.isArray(updateData.sizes)
+        ? updateData.sizes.map((s: any) => String(s).trim()).filter(Boolean)
+        : [];
+    }
 
     const updated = await prisma.product.update({
       where: { id },
