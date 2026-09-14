@@ -11,9 +11,7 @@ import {
   Star, 
   Check, 
   Flame,
-  ShieldCheck,
-  Truck,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 
 interface ProductCardProps {
@@ -52,58 +50,87 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setCurrentView('product-detail');
   };
 
+  // Wholesale / Tier price calculation if enabled
+  const wholesalePrice = product.tierPricingEnabled 
+    ? Math.round(product.price * 0.85)
+    : null;
+
   return (
     <div 
       onClick={handleCardClick}
       data-analytics-product-id={product.id}
       data-analytics-product-title={product.title}
       data-analytics-label={`Produit: ${product.title}`}
-      className="group bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer relative"
+      className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer relative select-none"
     >
-      {/* Image Area */}
-      <div className="relative aspect-square w-full bg-slate-100 overflow-hidden">
+      {/* 1. Zone Image Premium */}
+      <div className="relative aspect-square w-full bg-slate-50 dark:bg-slate-950/60 overflow-hidden">
         <img
           src={product.images[currentImageIndex] || product.images[0]}
           alt={product.title}
+          loading="lazy"
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
         />
 
-        {/* Badges Overlay */}
-        <div className="absolute top-2.5 sm:top-3 left-2.5 sm:left-3 flex flex-col gap-1 z-10">
-          {product.badgeText ? (
-            <span className="bg-slate-900 text-indigo-300 text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
-              {product.badgeText}
+        {/* Floating Badges Overlay (Haut Gauche) */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
+          {product.isFlashSale ? (
+            <span className="bg-gradient-to-r from-rose-600 to-amber-500 text-white font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1 uppercase tracking-wider">
+              <Flame className="w-2.5 h-2.5 fill-white animate-pulse" />
+              <span>Flash</span>
             </span>
           ) : discount ? (
-            <span className="bg-rose-600 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-lg shadow-sm">
+            <span className="bg-rose-600 text-white font-black text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md shadow-xs">
               -{discount}%
             </span>
+          ) : product.badgeText ? (
+            <span className="bg-indigo-600 text-white font-black text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md uppercase tracking-wider shadow-xs">
+              {product.badgeText}
+            </span>
           ) : product.isNew ? (
-            <span className="bg-emerald-600 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-lg shadow-sm">
+            <span className="bg-emerald-600 text-white font-black text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md shadow-xs">
               NOUVEAU
             </span>
           ) : null}
         </div>
 
-        {/* Wishlist Button */}
+        {/* Bouton Favoris / Wishlist (Haut Droite) */}
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             toggleWishlist(product.id);
           }}
-          className={`absolute top-2.5 sm:top-3 right-2.5 sm:right-3 p-2 rounded-xl backdrop-blur-md transition shadow-xs z-10 cursor-pointer ${
+          className={`absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition shadow-xs z-10 cursor-pointer ${
             inWishlist 
-              ? 'bg-rose-500 text-white' 
-              : 'bg-white/80 hover:bg-white text-slate-600 hover:text-rose-500'
+              ? 'bg-rose-500 text-white shadow-rose-500/30' 
+              : 'bg-white/85 dark:bg-slate-900/80 text-slate-500 hover:text-rose-500 hover:bg-white'
           }`}
           title={inWishlist ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
-          <Heart className={`w-4 h-4 ${inWishlist ? 'fill-white' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${inWishlist ? 'fill-white' : ''}`} />
         </button>
 
-        {/* Multi-Image Preview Indicators */}
+        {/* Badge Variantes (Bas Gauche sur l'image style Alibaba) */}
+        {((product.colors && product.colors.length > 0) || (product.sizes && product.sizes.length > 0)) && (
+          <div className="absolute bottom-2 left-2 z-10 pointer-events-none">
+            <span className="px-1.5 py-0.5 rounded-md bg-slate-950/75 backdrop-blur-sm text-white text-[9px] font-bold border border-white/10 flex items-center gap-1 shadow-2xs">
+              {product.colors && product.colors.length > 0 && (
+                <span>{product.colors.length} col.</span>
+              )}
+              {product.colors && product.colors.length > 0 && product.sizes && product.sizes.length > 0 && (
+                <span>•</span>
+              )}
+              {product.sizes && product.sizes.length > 0 && (
+                <span>{product.sizes.length} tailles</span>
+              )}
+            </span>
+          </div>
+        )}
+
+        {/* Multi-Image Preview Indicators Desktop */}
         {product.images && product.images.length > 1 && (
-          <div className="absolute bottom-2 inset-x-0 flex justify-center gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute bottom-2 inset-x-0 hidden sm:flex justify-center gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
             {product.images.slice(0, 4).map((_, imgIdx) => (
               <span
                 key={imgIdx}
@@ -119,116 +146,117 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         )}
 
-        {/* Quick View Hover Trigger */}
+        {/* Aperçu rapide desktop */}
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             setQuickViewProduct(product);
           }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-900/85 hover:bg-slate-950 text-white text-xs font-bold rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-200 hidden sm:flex items-center gap-1.5 z-10 shadow-lg cursor-pointer"
+          className="absolute bottom-3 right-2 px-2.5 py-1 bg-slate-900/85 hover:bg-slate-950 text-white text-[11px] font-bold rounded-lg backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hidden sm:flex items-center gap-1 z-10 shadow-md cursor-pointer"
         >
-          <Eye className="w-3.5 h-3.5" />
+          <Eye className="w-3 h-3" />
           <span>Aperçu</span>
         </button>
       </div>
 
-      {/* Product Content Body */}
-      <div className="p-4 sm:p-4.5 flex-1 flex flex-col justify-between space-y-2.5">
+      {/* 2. Contenu Texte & Infos (Inspiré Alibaba, ultra-propre et aéré) */}
+      <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col justify-between gap-2">
         
-        <div className="space-y-1.5">
-          {/* Category & Rating */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/40 px-2.5 py-0.5 rounded-md uppercase tracking-wider truncate">
+        <div className="space-y-1">
+          
+          {/* Ligne Catégorie & Note Étoile */}
+          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold">
+            <span className="text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-wider truncate max-w-[105px]">
               {product.categoryName}
             </span>
-            <div className="flex items-center gap-1 text-amber-500 text-xs font-bold shrink-0">
-              <Star className="w-3.5 h-3.5 fill-amber-400" />
-              <span>{product.rating}</span>
-              <span className="text-slate-400 font-normal text-[11px]">({product.reviewCount})</span>
+            <div className="flex items-center gap-0.5 text-amber-500 shrink-0">
+              <Star className="w-3 h-3 fill-amber-400" />
+              <span>{product.rating || 4.9}</span>
+              <span className="text-slate-400 font-normal text-[9px]">({product.reviewCount || 12})</span>
             </div>
           </div>
 
-          {/* Title */}
-          <h3 className="font-semibold text-sm sm:text-[15px] text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-snug">
+          {/* Titre Produit (2 lignes clampées nettes style Alibaba) */}
+          <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug">
             {product.title}
           </h3>
 
-          {/* Short Description */}
-          <p className="text-xs text-slate-500 line-clamp-1 mt-0.5 leading-normal">
-            {product.shortDescription || product.description}
-          </p>
-
-          {/* Alibaba MOQ & Verification Bar */}
-          <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
-            <span className="font-semibold text-slate-700">MOQ: 1 pièce</span>
-            <span className="text-emerald-600 font-bold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Qualité Certifiée</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Price & Stock status */}
-        <div className="pt-3 border-t border-slate-100 space-y-2">
-          <div className="flex items-baseline justify-between">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-base sm:text-lg font-extrabold text-slate-900">
+          {/* Bloc Prix Principal & Remise */}
+          <div className="pt-0.5">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              <span className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
-                <span className="text-xs text-slate-400 line-through font-normal">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 line-through font-normal">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
             </div>
 
-            {product.inStock ? (
-              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md">
-                En Stock ({product.stockCount})
-              </span>
-            ) : (
-              <span className="text-[11px] font-semibold text-rose-700 bg-rose-50 border border-rose-200/80 px-2 py-0.5 rounded-md">
-                Épuisé
-              </span>
+            {/* Mention Prix de gros si activé */}
+            {wholesalePrice && (
+              <p className="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5 flex items-center gap-1">
+                <span>Dès {formatPrice(wholesalePrice)} en gros</span>
+              </p>
             )}
           </div>
 
-          {/* Action Buttons: Add To Cart & WhatsApp Order */}
-          <div className="grid grid-cols-2 gap-2 pt-0.5">
-            <button
-              onClick={handleAddToCart}
-              disabled={!product.inStock}
-              className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs ${
-                isAdded 
-                  ? 'bg-emerald-600 text-white' 
-                  : 'bg-slate-950 hover:bg-indigo-600 text-white disabled:bg-slate-200 disabled:text-slate-400'
-              }`}
-            >
-              {isAdded ? (
-                <>
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Ajouté !</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingBag className="w-3.5 h-3.5 text-white" />
-                  <span>Panier</span>
-                </>
-              )}
-            </button>
-
-            <a
-              href={generateWhatsAppProductLink(product)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs hover:scale-[1.02] active:scale-95"
-              title="Commander directement sur WhatsApp"
-            >
-              <MessageCircle className="w-4 h-4 fill-white" />
-              <span>WhatsApp</span>
-            </a>
+          {/* Badges de Confiance & Réachat style Alibaba */}
+          <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 pt-0.5 flex-wrap">
+            <span className="text-indigo-600 dark:text-indigo-400 font-black bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200/60 dark:border-indigo-800/50 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+              <ShieldCheck className="w-2.5 h-2.5 text-indigo-500" />
+              <span>Certifié</span>
+            </span>
+            <span>•</span>
+            {product.inStock ? (
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-0.5">
+                <Check className="w-2.5 h-2.5" />
+                <span>En stock</span>
+              </span>
+            ) : (
+              <span className="text-rose-500 font-bold">Épuisé</span>
+            )}
+            <span>•</span>
+            <span className="truncate">Livraison 24h</span>
           </div>
+
+        </div>
+
+        {/* 3. Boutons d'Action Compacts & Ergonomiques Mobile */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/70 flex items-center gap-1.5">
+          {/* Bouton WhatsApp direct */}
+          <a
+            href={generateWhatsAppProductLink(product)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 py-1.5 sm:py-2 px-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 transition shadow-xs hover:scale-[1.02] active:scale-95 cursor-pointer truncate"
+            title="Commander directement sur WhatsApp"
+          >
+            <MessageCircle className="w-3.5 h-3.5 fill-white shrink-0" />
+            <span className="truncate">WhatsApp</span>
+          </a>
+
+          {/* Bouton Panier Rapide */}
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={!product.inStock}
+            className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-xl flex items-center justify-center transition shadow-2xs shrink-0 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+              isAdded
+                ? 'bg-emerald-600 text-white'
+                : 'bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white'
+            }`}
+            title="Ajouter au panier"
+          >
+            {isAdded ? (
+              <Check className="w-3.5 h-3.5 text-white" />
+            ) : (
+              <ShoppingBag className="w-3.5 h-3.5" />
+            )}
+          </button>
         </div>
 
       </div>
