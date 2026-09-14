@@ -622,12 +622,10 @@ export const AdminPanel = () => {
     description: '',
     shortDescription: '',
     price: 15000,
-    originalPrice: 20000,
     categoryId: categories[0]?.id || '',
     subcategoryId: undefined,
     subcategoryName: undefined,
     images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80'],
-    stockCount: 10,
     inStock: true,
     featured: true,
     isNew: true,
@@ -1030,7 +1028,8 @@ export const AdminPanel = () => {
     e.preventDefault();
     const title = productForm.title?.trim() || '';
     const price = Number(productForm.price);
-    const stockCount = Number(productForm.stockCount ?? 10);
+    const rawStock = productForm.stockCount;
+    const stockCount = (rawStock === undefined || rawStock === null || (rawStock as any) === '') ? 100 : Number(rawStock);
     const currentCat = categories.find(c => c.id === productForm.categoryId);
     if (!title || !Number.isFinite(price) || price <= 0 || !currentCat) {
       setSaveErrorMsg('Renseignez un titre, un prix supérieur à zéro et sélectionnez un rayon existant.');
@@ -1567,6 +1566,22 @@ export const AdminPanel = () => {
                   <button
                     onClick={() => {
                       setEditingProductId(null);
+                      setProductForm({
+                        title: '',
+                        description: '',
+                        shortDescription: '',
+                        price: 25000,
+                        categoryId: categories[0]?.id || '',
+                        images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80'],
+                        inStock: true,
+                        featured: true,
+                        isNew: true,
+                        isFlashSale: false,
+                        rating: 4.9,
+                        reviewCount: 5,
+                        badgeText: 'NOUVEAU',
+                        colors: ['Noir', 'Argent']
+                      });
                       setIsAddingProduct(true);
                       setActiveTab('products');
                     }}
@@ -3074,10 +3089,8 @@ export const AdminPanel = () => {
                       description: '',
                       shortDescription: '',
                       price: 25000,
-                      originalPrice: 35000,
                       categoryId: categories[0].id,
                       images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80'],
-                      stockCount: 10,
                       inStock: true,
                       featured: true,
                       isNew: true,
@@ -3171,23 +3184,15 @@ export const AdminPanel = () => {
                         />
                       </div>
 
-                      <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-300">Prix Original / Barré</label>
+                      <div className="space-y-1 sm:col-span-1 lg:col-span-2">
+                        <label className="text-xs font-bold text-slate-300">
+                          Quantité en Stock <span className="text-slate-400 font-normal text-[11px]">(facultatif)</span>
+                        </label>
                         <input
                           type="number"
-                          value={productForm.originalPrice || ''}
-                          onChange={(e) => setProductForm({ ...productForm, originalPrice: Number(e.target.value) })}
-                          className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-300">Quantité en Stock *</label>
-                        <input
-                          type="number"
-                          required
-                          value={productForm.stockCount || ''}
-                          onChange={(e) => setProductForm({ ...productForm, stockCount: Number(e.target.value) })}
+                          value={productForm.stockCount !== undefined && productForm.stockCount !== null ? productForm.stockCount : ''}
+                          onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value === '' ? undefined : Number(e.target.value) })}
+                          placeholder="Ex: 100 (facultatif)"
                           className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                         />
                       </div>
