@@ -60,7 +60,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     : (currentView === 'shop');
 
   // Sort State
-  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating' | 'newest'>('featured');
+  const [sortBy, setSortBy] = useState<'featured' | 'sales' | 'price-asc' | 'price-desc' | 'rating' | 'newest'>('featured');
   
   // Advanced Filter States
   const [onlyPromos, setOnlyPromos] = useState(false);
@@ -173,6 +173,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       }
       return true;
     }).sort((a, b) => {
+      if (sortBy === 'sales') return (b.reviewCount || 0) - (a.reviewCount || 0) || b.rating - a.rating;
       if (sortBy === 'price-asc') return a.price - b.price;
       if (sortBy === 'price-desc') return b.price - a.price;
       if (sortBy === 'rating') return b.rating - a.rating;
@@ -565,6 +566,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                 className="bg-transparent focus:outline-hidden cursor-pointer dark:text-slate-200"
               >
                 <option value="featured" className="dark:bg-slate-800">Recommandations</option>
+                <option value="sales" className="dark:bg-slate-800">🔥 Meilleures Ventes</option>
                 <option value="price-asc" className="dark:bg-slate-800">Prix : Croissant</option>
                 <option value="price-desc" className="dark:bg-slate-800">Prix : Décroissant</option>
                 <option value="rating" className="dark:bg-slate-800">Mieux Notés (Avis)</option>
@@ -654,6 +656,97 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           {/* PRODUCTS LISTING / GRID */}
           <div className="flex-1 w-full min-w-0">
             
+            {/* Quick Filter & Popularity Tabs (Tous, Meilleures Ventes, Mieux Notés, Nouveautés, Promos) */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none select-none">
+              <button
+                type="button"
+                onClick={() => {
+                  setSortBy('featured');
+                  setOnlyPromos(false);
+                  setMinRating(null);
+                }}
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                  sortBy === 'featured' && !onlyPromos && minRating === null
+                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border-slate-950 dark:border-white shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <Boxes className="w-3.5 h-3.5" />
+                <span>Tous les Articles</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSortBy('sales');
+                  setOnlyPromos(false);
+                  setMinRating(null);
+                }}
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                  sortBy === 'sales'
+                    ? 'bg-amber-500 text-slate-950 border-amber-500 font-extrabold shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span>🔥 Meilleures Ventes</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSortBy('rating');
+                  setMinRating(4.5);
+                  setOnlyPromos(false);
+                }}
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                  sortBy === 'rating' && minRating !== null
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                <span>⭐ Mieux Notés (4.5+)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSortBy('newest');
+                  setOnlyPromos(false);
+                  setMinRating(null);
+                }}
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                  sortBy === 'newest'
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                <span>✨ Nouveautés</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setOnlyPromos(!onlyPromos);
+                }}
+                className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                  onlyPromos
+                    ? 'bg-rose-600 text-white border-rose-600 shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <Percent className="w-3.5 h-3.5 text-rose-500" />
+                <span>🏷️ Offres & Promos</span>
+                {promosCount > 0 && (
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${onlyPromos ? 'bg-white/20 text-white' : 'bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-300 font-bold'}`}>
+                    {promosCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
             {/* Results Count & Quick Status */}
             <div className="flex items-center justify-between mb-4 px-1">
               <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
