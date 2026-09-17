@@ -1165,7 +1165,7 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-4 md:gap-5">
               {relatedProducts.map((relProduct) => (
                 <ProductCard key={relProduct.id} product={relProduct} />
               ))}

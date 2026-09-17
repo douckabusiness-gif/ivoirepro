@@ -499,7 +499,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       className="py-8 sm:py-12 transition-colors"
       style={currentView === 'home' ? { backgroundColor: 'var(--home-muted-color, var(--site-body-color, #f8fafc))' } : undefined}
     >
-      <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-2 sm:px-6 lg:px-8">
         
         {/* Header Title & Sorting / Actions Section */}
         <div 
@@ -764,10 +764,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             </div>
 
             {filteredProducts.length > 0 ? (
-              <div className={`grid gap-3 sm:gap-5 ${
+              <div className={`grid gap-1.5 sm:gap-4 md:gap-5 ${
                 shouldShowFilters 
-                  ? 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6' 
-                  : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6'
+                  ? 'grid-cols-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6' 
+                  : 'grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6'
               }`}>
                 {filteredProducts.flatMap((product, idx) => {
                   const elements = [

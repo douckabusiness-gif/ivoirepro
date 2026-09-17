@@ -89,7 +89,7 @@ export const FlashSaleSection = () => {
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-2 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header with Flash Branding & Digital Countdown Timer */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 sm:mb-8 gap-4 pb-6 border-b border-slate-800/80">
@@ -193,8 +193,8 @@ export const FlashSaleSection = () => {
           })}
         </div>
 
-        {/* 6-COLUMN FLASH SALE PRODUCT CARDS GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-2.5 sm:gap-3.5 lg:gap-4">
+        {/* 6-COLUMN FLASH SALE PRODUCT CARDS GRID (3 COLS ON MOBILE) */}
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-1.5 sm:gap-3.5 lg:gap-4">
           {flashProducts.map((product) => {
             const discount = product.discountPercent || (product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 25);
             const stockRemaining = product.stockCount || 5;
@@ -209,11 +209,11 @@ export const FlashSaleSection = () => {
                   setSelectedProductId(product.id);
                   setCurrentView('product-detail');
                 }}
-                className="group bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-rose-500/70 p-2.5 sm:p-3 flex flex-col justify-between transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-rose-950/40 cursor-pointer relative overflow-hidden"
+                className="group bg-slate-900/90 rounded-xl sm:rounded-2xl border border-slate-800 hover:border-rose-500/70 p-1.5 sm:p-3 flex flex-col justify-between transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-rose-950/40 cursor-pointer relative overflow-hidden"
               >
                 <div>
                   {/* Image Area with Badges & Action Overlays */}
-                  <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-950 mb-2.5">
+                  <div className="relative aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-slate-950 mb-1.5 sm:mb-2.5">
                     <img
                       src={product.images[0]}
                       alt={product.title}
@@ -222,9 +222,9 @@ export const FlashSaleSection = () => {
                     />
                     
                     {/* Discount & Flash Badge */}
-                    <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-                      <div className="bg-gradient-to-r from-rose-600 to-amber-600 text-white font-black text-[10px] sm:text-xs px-2 py-0.5 rounded-md shadow-lg flex items-center gap-0.5">
-                        <Flame className="w-3 h-3 fill-white" />
+                    <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex flex-col gap-0.5 sm:gap-1 z-10">
+                      <div className="bg-gradient-to-r from-rose-600 to-amber-600 text-white font-black text-[8px] sm:text-xs px-1 sm:px-2 py-0.5 rounded shadow-lg flex items-center gap-0.5">
+                        <Flame className="w-2 h-2 sm:w-3 sm:h-3 fill-white" />
                         <span>-{discount}%</span>
                       </div>
                     </div>
@@ -235,23 +235,23 @@ export const FlashSaleSection = () => {
                         e.stopPropagation();
                         toggleWishlist(product.id);
                       }}
-                      className={`absolute top-2 right-2 p-1.5 rounded-lg backdrop-blur-md transition shadow-md z-10 cursor-pointer ${
+                      className={`absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-lg backdrop-blur-md transition shadow-md z-10 cursor-pointer flex items-center justify-center ${
                         inWishlist 
                           ? 'bg-rose-600 text-white' 
                           : 'bg-slate-950/70 hover:bg-slate-900 text-slate-300 hover:text-rose-400'
                       }`}
                       title={inWishlist ? "Retirer des favoris" : "Ajouter aux favoris"}
                     >
-                      <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-white' : ''}`} />
+                      <Heart className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${inWishlist ? 'fill-white' : ''}`} />
                     </button>
 
                     {/* Stock Remaining Pill */}
-                    <div className="absolute bottom-2 left-2 right-2 bg-slate-950/85 backdrop-blur-xs text-[10px] font-bold text-amber-300 px-2 py-0.5 rounded-md flex items-center justify-between border border-slate-800">
-                      <span className="flex items-center gap-1">
-                        <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400 animate-pulse" />
-                        <span>{stockRemaining} restants</span>
+                    <div className="absolute bottom-1 inset-x-1 sm:bottom-2 sm:inset-x-2 bg-slate-950/85 backdrop-blur-xs text-[7.5px] sm:text-[10px] font-bold text-amber-300 px-1 sm:px-2 py-0.2 sm:py-0.5 rounded flex items-center justify-between border border-slate-800">
+                      <span className="flex items-center gap-0.5">
+                        <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-amber-400 fill-amber-400 animate-pulse shrink-0" />
+                        <span className="truncate">{stockRemaining} rest.</span>
                       </span>
-                      <span className="text-[9px] text-slate-400 font-semibold">{Math.round(claimedPercent)}% pris</span>
+                      <span className="text-[7.5px] sm:text-[9px] text-slate-400 font-semibold">{Math.round(claimedPercent)}%</span>
                     </div>
 
                     {/* Quick View Button on Hover */}
@@ -260,7 +260,7 @@ export const FlashSaleSection = () => {
                         e.stopPropagation();
                         setQuickViewProduct(product);
                       }}
-                      className="absolute inset-0 m-auto w-9 h-9 bg-slate-900/90 hover:bg-rose-600 text-white rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center shadow-xl cursor-pointer"
+                      className="absolute inset-0 m-auto w-9 h-9 bg-slate-900/90 hover:bg-rose-600 text-white rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hidden sm:flex items-center justify-center shadow-xl cursor-pointer"
                       title="Aperçu rapide"
                     >
                       <Eye className="w-4 h-4" />
@@ -268,43 +268,41 @@ export const FlashSaleSection = () => {
                   </div>
 
                   {/* Product Metadata */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between gap-1 text-[10px]">
-                      <span className="font-extrabold text-rose-400 uppercase tracking-wider truncate">
+                  <div className="space-y-0.5 sm:space-y-1">
+                    <div className="flex items-center justify-between gap-1 text-[8.5px] sm:text-[10px]">
+                      <span className="font-extrabold text-rose-400 uppercase tracking-wider truncate max-w-[65px] sm:max-w-none">
                         {product.categoryName}
                       </span>
                       <div className="flex items-center gap-0.5 text-amber-400 font-bold shrink-0">
-                        <Star className="w-3 h-3 fill-amber-400" />
+                        <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />
                         <span>{product.rating}</span>
                       </div>
                     </div>
 
-                    <h3 className="font-bold text-xs sm:text-sm text-white group-hover:text-rose-300 transition-colors line-clamp-1 leading-snug">
+                    <h3 className="font-bold text-[10.5px] sm:text-xs md:text-sm text-white group-hover:text-rose-300 transition-colors line-clamp-1 leading-tight sm:leading-snug">
                       {product.title}
                     </h3>
 
-                    <p className="text-[11px] text-slate-400 line-clamp-1">
+                    <p className="hidden sm:block text-[11px] text-slate-400 line-clamp-1">
                       {product.shortDescription || product.description}
                     </p>
                   </div>
 
                   {/* Price Comparison */}
-                  <div className="flex items-baseline justify-between gap-1 pt-2">
-                    <div className="flex flex-col">
-                      <span className="text-sm sm:text-base font-black text-white leading-tight">
-                        {formatPrice(product.price)}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5 pt-1 sm:pt-2">
+                    <span className="text-xs sm:text-sm md:text-base font-black text-white leading-tight">
+                      {formatPrice(product.price)}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-[8.5px] sm:text-xs font-semibold text-slate-500 line-through">
+                        {formatPrice(product.originalPrice)}
                       </span>
-                      {product.originalPrice && (
-                        <span className="text-[10px] sm:text-xs font-semibold text-slate-500 line-through">
-                          {formatPrice(product.originalPrice)}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
 
                   {/* Stock Claimed Progress Bar */}
-                  <div className="pt-2 space-y-1">
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="pt-1 sm:pt-2 space-y-0.5 sm:space-y-1">
+                    <div className="w-full h-1 sm:h-1.5 bg-slate-800 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 rounded-full transition-all duration-700" 
                         style={{ width: `${claimedPercent}%` }}
@@ -314,39 +312,34 @@ export const FlashSaleSection = () => {
                 </div>
 
                 {/* Actions: Add to Cart & WhatsApp Link */}
-                <div className="grid grid-cols-2 gap-1.5 pt-3 mt-2 border-t border-slate-800/80">
-                  <button
-                    onClick={(e) => handleAddToCart(product, e)}
-                    className={`py-2 px-1.5 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 transition cursor-pointer border ${
-                      isAdded 
-                        ? 'bg-emerald-600 border-emerald-600 text-white' 
-                        : 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700 hover:border-slate-600'
-                    }`}
-                  >
-                    {isAdded ? (
-                      <>
-                        <Check className="w-3 h-3 text-white" />
-                        <span className="hidden sm:inline">Ajouté</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-3 h-3 text-rose-400" />
-                        <span>Panier</span>
-                      </>
-                    )}
-                  </button>
-
+                <div className="flex items-center gap-1 pt-1.5 sm:pt-3 mt-1.5 border-t border-slate-800/80">
                   <a
                     href={generateWhatsAppProductLink(product)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="py-2 px-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-sm"
+                    className="flex-1 py-1 sm:py-2 px-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg sm:rounded-xl text-[9px] sm:text-[11px] font-bold flex items-center justify-center gap-0.5 sm:gap-1 transition cursor-pointer shadow-sm truncate"
                     title="Commander via WhatsApp"
                   >
-                    <MessageCircle className="w-3 h-3 fill-white" />
-                    <span>WhatsApp</span>
+                    <MessageCircle className="w-3 h-3 fill-white shrink-0" />
+                    <span className="truncate">WhatsApp</span>
                   </a>
+
+                  <button
+                    onClick={(e) => handleAddToCart(product, e)}
+                    className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl text-[11px] font-bold flex items-center justify-center shrink-0 transition cursor-pointer border ${
+                      isAdded 
+                        ? 'bg-emerald-600 border-emerald-600 text-white' 
+                        : 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700 hover:border-slate-600'
+                    }`}
+                    title="Ajouter au panier"
+                  >
+                    {isAdded ? (
+                      <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
+                    ) : (
+                      <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-rose-400" />
+                    )}
+                  </button>
                 </div>
 
               </div>
