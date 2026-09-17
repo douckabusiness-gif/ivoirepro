@@ -135,6 +135,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   // Filtered & Sorted Products
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
+      // Exclure strictement les articles en précommande Dubaï du catalogue général
+      if (p.isDubaiPreorder) {
+        return false;
+      }
       // Category filter
       if (selectedCategoryFilter && p.categoryId !== selectedCategoryFilter) {
         return false;

@@ -2,8 +2,6 @@ import React from 'react';
 import { Metadata } from 'next';
 import { getHomeInitialData, getPublicSettings } from '@/lib/publicData';
 import { StoreProvider } from '@/lib/storeContext';
-import { TopBanner } from '@/components/TopBanner';
-import { Navbar } from '@/components/Navbar';
 import { DubaiPreorderPage } from '@/components/DubaiPreorderPage';
 import { ProductDetailModal } from '@/components/ProductDetailModal';
 import { CartDrawer } from '@/components/CartDrawer';
@@ -11,8 +9,6 @@ import { CheckoutModal } from '@/components/CheckoutModal';
 import { OrderSuccessModal } from '@/components/OrderSuccessModal';
 import { CartToast } from '@/components/CartToast';
 import { FloatingChatWidget } from '@/components/FloatingChatWidget';
-import { Footer } from '@/components/Footer';
-import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { AnalyticsTracker } from '@/components/AnalyticsTracker';
 
 export const dynamic = 'force-dynamic';
@@ -59,9 +55,7 @@ export default async function DubaiPage() {
   return (
     <StoreProvider initialData={initialData}>
       <AnalyticsTracker />
-      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950 pb-16 sm:pb-0">
-        <TopBanner />
-        <Navbar />
+      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
         <main className="flex-1">
           <DubaiPreorderPage />
         </main>
@@ -71,8 +65,6 @@ export default async function DubaiPage() {
         <OrderSuccessModal />
         <CartToast />
         <FloatingChatWidget />
-        <Footer />
-        <MobileBottomNav />
       </div>
     </StoreProvider>
   );

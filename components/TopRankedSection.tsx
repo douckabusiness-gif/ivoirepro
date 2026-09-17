@@ -39,7 +39,7 @@ export const TopRankedSection = () => {
     }, 1200);
   };
 
-  const rankedProducts = [...products].sort((a, b) => {
+  const rankedProducts = products.filter(p => !p.isDubaiPreorder).sort((a, b) => {
     if (activeTab === 'rating') return b.rating - a.rating;
     if (activeTab === 'trending') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
     return (b.reviewCount || 0) - (a.reviewCount || 0);

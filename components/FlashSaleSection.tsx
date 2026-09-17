@@ -47,9 +47,9 @@ export const FlashSaleSection = () => {
     }, 1200);
   };
 
-  // Filter flash products: STRICTEMENT réservé aux produits dont l'administrateur a coché "isFlashSale"
+  // Filter flash products: STRICTEMENT réservé aux produits classiques dont l'administrateur a coché "isFlashSale"
   const allFlashProducts = useMemo(() => {
-    return products.filter(p => Boolean(p.isFlashSale));
+    return products.filter(p => Boolean(p.isFlashSale) && !p.isDubaiPreorder);
   }, [products]);
 
   const flashProducts = useMemo(() => {
