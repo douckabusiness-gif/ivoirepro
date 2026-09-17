@@ -8131,7 +8131,28 @@ export const AdminPanel = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLocalSettings({
+                            ...localSettings,
+                            seoTitle: "Ivoire Djassa | Boutique en Ligne N°1 à Abidjan & Côte d'Ivoire",
+                            seoDescription: "Boutique en ligne N°1 en Côte d'Ivoire. Mode, chaussures, sneakers & high-tech à Abidjan. Livraison express 24h, paiement Wave, Orange Money & à la livraison.",
+                            seoKeywords: "ivoire djassa, ivoireci, boutique en ligne abidjan, site e-commerce cote d'ivoire, achat en ligne abidjan, vente en ligne cote d'ivoire, shopping en ligne abidjan, djassa abidjan, djassa en ligne, marche abidjan, chaussures homme abidjan, chaussures femme abidjan, sneakers abidjan, baskets tendance cote d'ivoire, mocassins homme abidjan, vetements tendance abidjan, mode abidjan, montres luxe abidjan, montres connectees ci, smartphones abidjan, electronique cote d'ivoire, accessoires mode abidjan, sacs a main abidjan, parfums originaux abidjan, livraison express abidjan 24h, livraison domicile abidjan, livraison cocody, livraison yopougon, livraison marcory, livraison plateau, livraison koumassi, livraison treichville, livraison abobo, livraison bingerville, livraison grand-bassam, livraison yamoussoukro, livraison bouake, livraison san-pedro, livraison korhogo, paiement a la livraison abidjan, paiement wave cote d'ivoire, orange money abidjan, mtn momo cote d'ivoire, moov money ci, cash on delivery abidjan, commande whatsapp abidjan, prix en fcfa, boutique fiable abidjan, meilleur site e-commerce abidjan, promotions abidjan, soldes cote d'ivoire",
+                            seoCanonicalUrl: "https://www.ivoireci.com",
+                            seoOgImage: localSettings.seoOgImage || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80"
+                          });
+                          setSaveSuccessMsg("✨ Mots-clés SEO d'élite injectés ! Cliquez sur 'Enregistrer le Référencement' pour valider.");
+                          setTimeout(() => setSaveSuccessMsg(''), 4000);
+                        }}
+                        className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-indigo-600/20 transition cursor-pointer"
+                        title="Remplir automatiquement avec les 50+ mots-clés les plus recherchés en Côte d'Ivoire"
+                      >
+                        <Sparkles className="w-4 h-4 text-amber-300" />
+                        <span>⚡ Remplir Mots-Clés N°1 Google</span>
+                      </button>
+
                       <button
                         type="button"
                         onClick={handleSaveSettings}
@@ -8207,7 +8228,7 @@ export const AdminPanel = () => {
                           rows={3}
                           value={localSettings.seoDescription || ''}
                           onChange={(e) => setLocalSettings({ ...localSettings, seoDescription: e.target.value })}
-                          placeholder="Ex: Découvrez les meilleures collections de vêtements, chaussures et accessoires à Dakar. Livraison express en 24h et paiement à la livraison sécurisé."
+                          placeholder="Ex: Découvrez les meilleures collections de mode, chaussures et high-tech à Abidjan. Livraison express 24h et paiement Wave, Orange Money ou à la livraison."
                           className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 resize-none"
                         />
                         <p className="text-[11px] text-slate-500">
@@ -8225,7 +8246,7 @@ export const AdminPanel = () => {
                             type="text"
                             value={localSettings.seoKeywords || ''}
                             onChange={(e) => setLocalSettings({ ...localSettings, seoKeywords: e.target.value })}
-                            placeholder="mode dakar, boutique sénégal, achat en ligne cfa, livraison express"
+                            placeholder="ivoire djassa, boutique en ligne abidjan, achat en ligne cote d'ivoire, chaussures abidjan, sneakers"
                             className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                           />
                         </div>
@@ -8238,7 +8259,7 @@ export const AdminPanel = () => {
                             type="text"
                             value={localSettings.seoCanonicalUrl || ''}
                             onChange={(e) => setLocalSettings({ ...localSettings, seoCanonicalUrl: e.target.value })}
-                            placeholder="https://maboutique.sn"
+                            placeholder="https://www.ivoireci.com"
                             className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                           />
                           <p className="text-[11px] text-slate-500">

@@ -1226,11 +1226,11 @@ Pour exercer ce droit, il vous suffit de contacter notre service client par What
   telegramNotifyNewOrder: true,
 
   // SEO & Webmaster Configuration
-  seoTitle: 'ELITE BOUTIQUE | Mode, High-Tech & Shopping Premium en Côte d\'Ivoire',
-  seoDescription: 'Boutique en ligne haut de gamme en Côte d\'Ivoire. Mode, montres, sneakers et high-tech avec livraison express 24h et paiement sécurisé Wave, Orange Money et à la livraison.',
-  seoKeywords: 'boutique en ligne, abidjan, côte d\'ivoire, mode, sneakers, high-tech, livraison express, wave, orange money, shopping afrique',
-  seoOgImage: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&auto=format&fit=crop&q=80',
-  seoCanonicalUrl: 'https://eliteboutique.ci',
+  seoTitle: 'Ivoire Djassa | Boutique en Ligne N°1 à Abidjan & Côte d\'Ivoire',
+  seoDescription: 'Boutique en ligne N°1 en Côte d\'Ivoire. Mode, chaussures, sneakers & high-tech à Abidjan. Livraison express 24h, paiement Wave, Orange Money & à la livraison.',
+  seoKeywords: 'ivoire djassa, ivoireci, boutique en ligne abidjan, site e-commerce cote d\'ivoire, achat en ligne abidjan, vente en ligne cote d\'ivoire, shopping en ligne abidjan, djassa abidjan, djassa en ligne, marche abidjan, chaussures homme abidjan, chaussures femme abidjan, sneakers abidjan, baskets tendance cote d\'ivoire, mocassins homme abidjan, vetements tendance abidjan, mode abidjan, montres luxe abidjan, montres connectees ci, smartphones abidjan, electronique cote d\'ivoire, accessoires mode abidjan, sacs a main abidjan, parfums originaux abidjan, livraison express abidjan 24h, livraison domicile abidjan, livraison cocody, livraison yopougon, livraison marcory, livraison plateau, livraison koumassi, livraison treichville, livraison abobo, livraison bingerville, livraison grand-bassam, livraison yamoussoukro, livraison bouake, livraison san-pedro, livraison korhogo, paiement a la livraison abidjan, paiement wave cote d\'ivoire, orange money abidjan, mtn momo cote d\'ivoire, moov money ci, cash on delivery abidjan, commande whatsapp abidjan, prix en fcfa, boutique fiable abidjan, meilleur site e-commerce abidjan, promotions abidjan, soldes cote d\'ivoire',
+  seoOgImage: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80',
+  seoCanonicalUrl: 'https://www.ivoireci.com',
   seoGoogleVerification: '',
   seoGoogleAnalyticsId: '',
   seoFacebookPixelId: ''

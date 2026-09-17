@@ -44,8 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (e) {}
 
   const s = settings || initialStoreSettings;
-  const baseUrl = (s.seoCanonicalUrl?.trim() || 'https://eliteboutique.ci').replace(/\/+$/, '');
-  const storeName = s.storeName?.trim() || 'Boutique';
+  const baseUrl = (s.seoCanonicalUrl?.trim() || 'https://www.ivoireci.com').replace(/\/+$/, '');
+  const storeName = s.storeName?.trim() || 'Ivoire Djassa';
   const title = s.seoTitle?.trim() || `${storeName} - Ventes Flash, Mode & Shopping`;
   const description = s.seoDescription?.trim() || s.storeSlogan?.trim() || 'Boutique en ligne en Côte d\'Ivoire avec livraison 24h.';
   const ogImage = s.seoOgImage || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&auto=format&fit=crop&q=80';

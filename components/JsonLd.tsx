@@ -17,8 +17,8 @@ function serializeJsonLd(value: unknown) {
 }
 
 export function StoreJsonLd({ settings }: JsonLdProps) {
-  const baseUrl = settings.seoCanonicalUrl || 'https://eliteboutique.ci';
-  const storeName = settings.storeName || 'ELITE BOUTIQUE';
+  const baseUrl = settings.seoCanonicalUrl || 'https://www.ivoireci.com';
+  const storeName = settings.storeName || 'Ivoire Djassa';
   const description = settings.seoDescription || settings.storeSlogan || 'Boutique en ligne premium';
   const logo = settings.storeLogoUrl || settings.seoOgImage || `${baseUrl}/icons/icon-512x512.svg`;
 
@@ -83,7 +83,7 @@ export function StoreJsonLd({ settings }: JsonLdProps) {
 }
 
 export function ProductJsonLd({ product, storeSettings }: { product: any; storeSettings: StoreSettings }) {
-  const baseUrl = storeSettings.seoCanonicalUrl || 'https://eliteboutique.ci';
+  const baseUrl = storeSettings.seoCanonicalUrl || 'https://www.ivoireci.com';
   const currency = storeSettings.currency || 'FCFA';
 
   const productSchema = {
@@ -95,7 +95,7 @@ export function ProductJsonLd({ product, storeSettings }: { product: any; storeS
     sku: product.id,
     brand: {
       '@type': 'Brand',
-      name: storeSettings.storeName || 'ELITE BOUTIQUE',
+      name: storeSettings.storeName || 'Ivoire Djassa',
     },
     offers: {
       '@type': 'Offer',

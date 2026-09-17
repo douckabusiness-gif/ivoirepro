@@ -50,9 +50,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const storeName = settings?.storeName || 'ELITE BOUTIQUE';
+  const storeName = settings?.storeName || 'Ivoire Djassa';
   const priceFormatted = `${product.price.toLocaleString('fr-FR')} FCFA`;
-  const canonicalUrl = `${(settings?.seoCanonicalUrl || 'https://eliteboutique.ci').replace(/\/+$/, '')}/produit/${product.slug}`;
+  const canonicalUrl = `${(settings?.seoCanonicalUrl || 'https://www.ivoireci.com').replace(/\/+$/, '')}/produit/${product.slug}`;
   const primaryImage = product.images && product.images.length > 0 ? product.images[0] : settings?.seoOgImage || '';
 
   const metaTitle = `${product.title} — ${priceFormatted} | ${storeName}`;
