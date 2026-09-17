@@ -1,10 +1,10 @@
 -- AlterTable
-ALTER TABLE \ Product\ ADD COLUMN IF NOT EXISTS \isDubaiPreorder\ BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE \Product\ ADD COLUMN IF NOT EXISTS \dubaiDeliveryDays\ TEXT DEFAULT '7 ‡ 10 jours ouvrÈs';
-ALTER TABLE \Product\ ADD COLUMN IF NOT EXISTS \dubaiBatchDate\ TEXT;
+ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "isDubaiPreorder" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "dubaiDeliveryDays" TEXT DEFAULT '7 √† 10 jours ouvr√©s';
+ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "dubaiBatchDate" TEXT;
 
 -- AlterTable
-ALTER TABLE \StoreSettings\ ADD COLUMN IF NOT EXISTS \dubaiPageEnabled\ BOOLEAN NOT NULL DEFAULT true;
-ALTER TABLE \StoreSettings\ ADD COLUMN IF NOT EXISTS \dubaiPageTitle\ TEXT NOT NULL DEFAULT 'Espace DubaÔ VIP ï PrÈcommandes & Arrivages Directs ??';
-ALTER TABLE \StoreSettings\ ADD COLUMN IF NOT EXISTS \dubaiPageSubtitle\ TEXT NOT NULL DEFAULT 'Commandez vos articles authentiques importÈs de DubaÔ avec paiement sÈcurisÈ et livraison garantie ‡ Abidjan.';
-ALTER TABLE \StoreSettings\ ADD COLUMN IF NOT EXISTS \dubaiNextFlightDate\ TEXT NOT NULL DEFAULT 'Vol Cargo chaque mardi & vendredi';
+ALTER TABLE "StoreSettings" ADD COLUMN IF NOT EXISTS "dubaiPageEnabled" BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE "StoreSettings" ADD COLUMN IF NOT EXISTS "dubaiPageTitle" TEXT NOT NULL DEFAULT 'Espace Duba√Ø VIP ‚Ä¢ Pr√©commandes & Arrivages Directs ‚úàÔ∏è';
+ALTER TABLE "StoreSettings" ADD COLUMN IF NOT EXISTS "dubaiPageSubtitle" TEXT NOT NULL DEFAULT 'Commandez vos articles authentiques import√©s de Duba√Ø avec paiement s√©curis√© et livraison garantie √† Abidjan.';
+ALTER TABLE "StoreSettings" ADD COLUMN IF NOT EXISTS "dubaiNextFlightDate" TEXT NOT NULL DEFAULT 'Vol Cargo chaque mardi & vendredi';
