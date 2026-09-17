@@ -95,6 +95,9 @@ export interface Product {
   sizes?: string[];
   tierPricingEnabled?: boolean;
   priceTiers?: PriceTier[];
+  isDubaiPreorder?: boolean;
+  dubaiDeliveryDays?: string;
+  dubaiBatchDate?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -402,6 +405,12 @@ export interface StoreSettings {
   seoGoogleVerification?: string;
   seoGoogleAnalyticsId?: string;
   seoFacebookPixelId?: string;
+
+  // Espace Dubaï Pre-orders Configuration
+  dubaiPageEnabled?: boolean;
+  dubaiPageTitle?: string;
+  dubaiPageSubtitle?: string;
+  dubaiNextFlightDate?: string;
 }
 
 export type SpecializedAgentId = 'orchestrator' | 'sales' | 'support' | 'copywriter' | 'promo' | 'satisfaction' | string;

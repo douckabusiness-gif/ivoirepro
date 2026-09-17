@@ -226,6 +226,26 @@ export const CheckoutModal = () => {
             </div>
           )}
 
+          {/* Banner d'information Précommande Dubaï */}
+          {cart.some(item => item.product.isDubaiPreorder) && (
+            <div className="p-4 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-yellow-500/15 border-2 border-amber-500/40 rounded-2xl flex items-start gap-3 text-xs animate-in fade-in">
+              <span className="text-2xl shrink-0">✈️</span>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-black text-amber-950 uppercase tracking-wider text-[11px]">
+                    Précommande Dubaï Incluse
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-extrabold text-[10px]">
+                    Délai : {cart.find(i => i.product.isDubaiPreorder && i.product.dubaiDeliveryDays)?.product.dubaiDeliveryDays || '7 à 10 jours ouvrés'}
+                  </span>
+                </div>
+                <p className="text-slate-700 leading-relaxed text-[11px]">
+                  Votre commande comporte un ou plusieurs articles importés directement de Dubaï. Votre règlement sécurisé (Wave, Orange, MTN, Moov) valide l'achat immédiat de vos produits aux Émirats et leur embarquement sur le prochain vol cargo.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Section 1: Informations Client */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-wider">

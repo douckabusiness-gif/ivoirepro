@@ -26,6 +26,7 @@ export async function GET(request: Request) {
     const featured = searchParams.get('featured');
     const isFlashSale = searchParams.get('isFlashSale');
     const isNew = searchParams.get('isNew');
+    const isDubaiPreorder = searchParams.get('isDubaiPreorder');
     const search = searchParams.get('search');
     const sortBy = searchParams.get('sortBy');
 
@@ -45,6 +46,9 @@ export async function GET(request: Request) {
     }
     if (isNew === 'true') {
       where.isNew = true;
+    }
+    if (isDubaiPreorder === 'true') {
+      where.isDubaiPreorder = true;
     }
     if (search) {
       where.OR = [
@@ -240,6 +244,9 @@ export async function POST(request: Request) {
         sizes: stringArray(body.sizes),
         tierPricingEnabled: Boolean(body.tierPricingEnabled),
         priceTiers: body.priceTiers ? (body.priceTiers as any) : undefined,
+        isDubaiPreorder: Boolean(body.isDubaiPreorder),
+        dubaiDeliveryDays: typeof body.dubaiDeliveryDays === 'string' && body.dubaiDeliveryDays.trim() ? body.dubaiDeliveryDays.trim() : '7 à 10 jours ouvrés',
+        dubaiBatchDate: typeof body.dubaiBatchDate === 'string' && body.dubaiBatchDate.trim() ? body.dubaiBatchDate.trim() : null,
       },
     });
 

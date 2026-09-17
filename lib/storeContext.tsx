@@ -988,11 +988,19 @@ export const StoreProvider = ({
 
     let text = customMsg;
     if (!text) {
-      text = `Bonjour ${settings.storeName} !\n\nJe souhaite commander l'article suivant :\n👉 *${product.title}*\n💰 Prix : *${formattedPrice}*\n🔗 Lien produit : ${productUrl}`;
-      if (imageUrl) {
-        text += `\n🖼️ Photo : ${imageUrl}`;
+      if (product.isDubaiPreorder) {
+        text = `Bonjour ${settings.storeName} !\n\n✈️ Je souhaite *PRÉCOMMANDER* cet article d'importation Dubaï :\n👉 *${product.title}*\n💰 Prix : *${formattedPrice}*\n⏱️ Délai de livraison estimé : *${product.dubaiDeliveryDays || '7 à 10 jours ouvrés'}*\n🔗 Lien : ${productUrl}`;
+        if (imageUrl) {
+          text += `\n🖼️ Photo : ${imageUrl}`;
+        }
+        text += `\n\nMerci de m'indiquer la procédure de paiement (Wave/Orange Money/MTN) pour valider ma précommande Dubaï !`;
+      } else {
+        text = `Bonjour ${settings.storeName} !\n\nJe souhaite commander l'article suivant :\n👉 *${product.title}*\n💰 Prix : *${formattedPrice}*\n🔗 Lien produit : ${productUrl}`;
+        if (imageUrl) {
+          text += `\n🖼️ Photo : ${imageUrl}`;
+        }
+        text += `\n\nPouvez-vous me confirmer la disponibilité et le délai de livraison ? Merci !`;
       }
-      text += `\n\nPouvez-vous me confirmer la disponibilité et le délai de livraison ? Merci !`;
     } else {
       if (!text.includes(productUrl) && !text.includes('Lien produit')) {
         text += `\n🔗 Lien produit : ${productUrl}`;

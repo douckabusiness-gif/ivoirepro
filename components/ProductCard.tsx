@@ -74,7 +74,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Floating Badges Overlay (Haut Gauche) */}
         <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex flex-col gap-0.5 sm:gap-1 z-10 pointer-events-none">
-          {product.isFlashSale ? (
+          {product.isDubaiPreorder ? (
+            <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-slate-950 font-black text-[7.5px] sm:text-[9.5px] px-1 sm:px-1.5 py-0.5 rounded shadow-xs flex items-center gap-0.5 uppercase tracking-wider border border-amber-300/40">
+              <span>✈️ Dubaï</span>
+            </span>
+          ) : product.isFlashSale ? (
             <span className="bg-gradient-to-r from-rose-600 to-amber-500 text-white font-black text-[8px] sm:text-[10px] px-1 sm:px-2 py-0.5 rounded shadow-xs flex items-center gap-0.5 uppercase tracking-wider">
               <Flame className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-white animate-pulse" />
               <span>Flash</span>
@@ -201,6 +205,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <p className="text-[7.5px] sm:text-[9.5px] font-bold text-amber-600 dark:text-amber-400 mt-0.5 truncate hidden sm:block">
                 Dès {formatPrice(wholesalePrice)} en gros
               </p>
+            )}
+
+            {/* Mention Précommande Dubaï & Délai de livraison */}
+            {product.isDubaiPreorder && (
+              <div className="pt-0.5">
+                <span className="inline-flex items-center gap-1 text-[7.5px] sm:text-[9px] font-extrabold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/25 px-1 sm:px-1.5 py-0.2 rounded leading-tight">
+                  <span>⏱️</span>
+                  <span className="truncate">Livraison : {product.dubaiDeliveryDays || '7 à 10j'}</span>
+                </span>
+              </div>
             )}
           </div>
 

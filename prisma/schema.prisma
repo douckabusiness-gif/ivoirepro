@@ -187,6 +187,12 @@ model StoreSettings {
   seoGoogleAnalyticsId  String @default("")
   seoFacebookPixelId    String @default("")
 
+  // Espace Dubaï Pre-orders Configuration
+  dubaiPageEnabled      Boolean @default(true)
+  dubaiPageTitle        String  @default("Espace Dubaï VIP • Précommandes & Arrivages Directs ✈️")
+  dubaiPageSubtitle     String  @default("Commandez vos articles authentiques importés de Dubaï avec paiement sécurisé et livraison garantie à Abidjan.") @db.Text
+  dubaiNextFlightDate   String  @default("Vol Cargo chaque mardi & vendredi")
+
   faqList FAQItem[]
 
   updatedAt DateTime @updatedAt
@@ -261,6 +267,9 @@ model Product {
   sizes            String[]
   tierPricingEnabled Boolean    @default(false)
   priceTiers         Json?
+  isDubaiPreorder    Boolean    @default(false)
+  dubaiDeliveryDays  String?    @default("7 à 10 jours ouvrés")
+  dubaiBatchDate     String?
   orderItems       OrderItem[]
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt

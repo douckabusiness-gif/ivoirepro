@@ -612,6 +612,7 @@ export const AdminPanel = () => {
   const [filterCategoryInProducts, setFilterCategoryInProducts] = useState<string>('all');
   const [filterSubcategoryInProducts, setFilterSubcategoryInProducts] = useState<string>('all');
   const [filterStockInProducts, setFilterStockInProducts] = useState<string>('all');
+  const [filterDubaiOnly, setFilterDubaiOnly] = useState<boolean>(false);
   const [productSearch, setProductSearch] = useState('');
 
   // Product Form State
@@ -1143,7 +1144,10 @@ export const AdminPanel = () => {
       sizes: productForm.sizes || [],
       tags: productForm.tags || [categoryName.toLowerCase()],
       tierPricingEnabled: Boolean(productForm.tierPricingEnabled),
-      priceTiers: productForm.priceTiers || undefined
+      priceTiers: productForm.priceTiers || undefined,
+      isDubaiPreorder: Boolean(productForm.isDubaiPreorder),
+      dubaiDeliveryDays: productForm.dubaiDeliveryDays || '7 à 10 jours ouvrés',
+      dubaiBatchDate: productForm.dubaiBatchDate || undefined
     };
 
     setSaveErrorMsg('');
@@ -1217,8 +1221,9 @@ export const AdminPanel = () => {
       (filterStockInProducts === 'instock' && p.stockCount > 5) ||
       (filterStockInProducts === 'lowstock' && p.stockCount <= 5 && p.stockCount > 0) ||
       (filterStockInProducts === 'outofstock' && p.stockCount === 0);
+    const matchesDubai = !filterDubaiOnly || Boolean(p.isDubaiPreorder);
 
-    return matchesSearch && matchesCat && matchesSub && matchesStock;
+    return matchesSearch && matchesCat && matchesSub && matchesStock && matchesDubai;
   });
 
   // Filter orders
@@ -3169,7 +3174,10 @@ export const AdminPanel = () => {
                       reviewCount: 5,
                       badgeText: 'NOUVEAU',
                       colors: [],
-                      sizes: []
+                      sizes: [],
+                      isDubaiPreorder: false,
+                      dubaiDeliveryDays: '7 à 10 jours ouvrés',
+                      dubaiBatchDate: ''
                     });
                     setNewColorInput('');
                     setNewSizeInput('');
@@ -3381,6 +3389,71 @@ export const AdminPanel = () => {
                             <p className="text-[10px] text-slate-500 italic">
                               💡 Les clients visualisent ce bloc sombre exactement sous le titre et la note du produit, et peuvent commander en 1 clic au tarif de gros.
                             </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Section Précommande Dubaï (Import Direct ✈️) */}
+                      <div className="sm:col-span-2 lg:col-span-3 p-5 sm:p-6 bg-gradient-to-r from-amber-950/40 via-slate-950 to-slate-900 border-2 border-amber-500/40 rounded-2xl space-y-4 shadow-xl">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+                              <Plane className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wide">
+                                  Article en Précommande Dubaï (Import Direct ✈️)
+                                </h4>
+                                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">
+                                  Page /dubai
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 mt-0.5">
+                                Cet article sera mis en avant sur la page dédiée <strong>/dubai</strong> avec indication du délai de livraison. Le client commande et paye en ligne.
+                              </p>
+                            </div>
+                          </div>
+
+                          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(productForm.isDubaiPreorder)}
+                              onChange={(e) => setProductForm({ ...productForm, isDubaiPreorder: e.target.checked })}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-slate-800 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                            <span className="ml-2 text-xs font-bold text-amber-300">
+                              {productForm.isDubaiPreorder ? 'Précommande Dubaï Active' : 'Désactivé'}
+                            </span>
+                          </label>
+                        </div>
+
+                        {productForm.isDubaiPreorder && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-amber-500/20 animate-in fade-in duration-200">
+                            <div className="space-y-1">
+                              <label className="text-xs font-bold text-amber-300">Délai de Livraison Estimé *</label>
+                              <input
+                                type="text"
+                                value={productForm.dubaiDeliveryDays || '7 à 10 jours ouvrés'}
+                                onChange={(e) => setProductForm({ ...productForm, dubaiDeliveryDays: e.target.value })}
+                                placeholder="Ex: 7 à 10 jours ouvrés"
+                                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white focus:ring-2 focus:ring-amber-500 focus:outline-hidden font-bold"
+                              />
+                              <p className="text-[10px] text-slate-400">Affiché sur la carte produit, la fiche et dans le panier.</p>
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-xs font-bold text-amber-300">Date Prochain Vol / Clôture (Optionnel)</label>
+                              <input
+                                type="text"
+                                value={productForm.dubaiBatchDate || ''}
+                                onChange={(e) => setProductForm({ ...productForm, dubaiBatchDate: e.target.value })}
+                                placeholder="Ex: Vol Cargo du 28 Septembre"
+                                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+                              />
+                              <p className="text-[10px] text-slate-400">Aide les acheteurs à commander avant l'embarquement du vol.</p>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -3744,6 +3817,18 @@ export const AdminPanel = () => {
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
+
+                  <button
+                    type="button"
+                    onClick={() => setFilterDubaiOnly(!filterDubaiOnly)}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer shrink-0 ${
+                      filterDubaiOnly
+                        ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
+                        : 'bg-slate-950 border-slate-700 text-amber-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    <span>✈️ Dubaï ({products.filter(p => p.isDubaiPreorder).length})</span>
+                  </button>
                 </div>
 
                 <div className="text-xs font-bold text-slate-400">
@@ -3772,7 +3857,14 @@ export const AdminPanel = () => {
                           <td className="p-4 flex items-center gap-3">
                             <img src={p.images[0]} alt={p.title} className="w-12 h-12 object-cover rounded-xl bg-slate-950 border border-slate-800 shrink-0" />
                             <div className="min-w-0">
-                              <p className="font-bold text-white truncate max-w-xs">{p.title}</p>
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <p className="font-bold text-white truncate max-w-xs">{p.title}</p>
+                                {p.isDubaiPreorder && (
+                                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-black uppercase whitespace-nowrap">
+                                    ✈️ Dubaï ({p.dubaiDeliveryDays || '7-10j'})
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-[11px] text-slate-400 truncate">{p.shortDescription || p.description}</p>
                               {((p.colors && p.colors.length > 0) || (p.sizes && p.sizes.length > 0)) && (
                                 <div className="flex flex-wrap items-center gap-1.5 mt-1">

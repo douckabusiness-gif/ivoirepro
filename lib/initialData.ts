@@ -1233,5 +1233,11 @@ Pour exercer ce droit, il vous suffit de contacter notre service client par What
   seoCanonicalUrl: 'https://www.ivoireci.com',
   seoGoogleVerification: '',
   seoGoogleAnalyticsId: '',
-  seoFacebookPixelId: ''
+  seoFacebookPixelId: '',
+
+  // Espace Dubaï Pre-orders Configuration
+  dubaiPageEnabled: true,
+  dubaiPageTitle: 'Espace Dubaï VIP • Précommandes & Arrivages Directs ✈️',
+  dubaiPageSubtitle: 'Commandez vos articles authentiques importés de Dubaï avec paiement sécurisé et livraison garantie à Abidjan.',
+  dubaiNextFlightDate: 'Vol Cargo chaque mardi & vendredi'
 };
