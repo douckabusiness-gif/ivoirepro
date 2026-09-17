@@ -1246,7 +1246,7 @@ export const AdminPanel = () => {
         { id: 'dashboard', label: 'Tableau de Bord', icon: <LayoutDashboard className="w-4 h-4" />, badge: null },
         { id: 'orders', label: 'Commandes', icon: <ShoppingBag className="w-4 h-4" />, badge: pendingOrdersCount > 0 ? `${pendingOrdersCount} new` : `${orders.length}` },
         { id: 'delivery', label: 'Livraison Autonome 🇨🇮', icon: <Bike className="w-4 h-4 text-amber-400" />, badge: `${deliveryPersons.length} coursiers` },
-        { id: 'dubai', label: 'Espace Dubaï VIP 🇦🇪', icon: <Plane className="w-4 h-4 text-amber-400" />, badge: `${products.filter(p => p.isDubaiPreorder).length} articles` },
+        { id: 'dubai', label: 'Espace Dubaï VIP 🇦🇪', icon: <Plane className="w-4 h-4 text-amber-400" />, badge: localSettings.dubaiPageEnabled !== false ? '🟢 Actif' : '🔴 Désactivé' },
         { id: 'products', label: 'Produits & Catalogue', icon: <Package className="w-4 h-4" />, badge: `${products.length}` },
         { id: 'categories', label: 'Rayons & Catégories', icon: <Layers className="w-4 h-4" />, badge: `${categories.length}` },
         { id: 'chat', label: 'Support & Chat Direct', icon: <MessageSquare className="w-4 h-4" />, badge: unreadAdminChatCount > 0 ? `${unreadAdminChatCount} new` : (chatConversations.length > 0 ? `${chatConversations.length}` : null) },

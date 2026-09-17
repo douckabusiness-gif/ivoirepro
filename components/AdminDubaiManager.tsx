@@ -43,7 +43,8 @@ import {
   Save,
   CheckCircle,
   Scale,
-  Truck
+  Truck,
+  Power
 } from 'lucide-react';
 
 const DUBAI_LUXURY_COLLECTIONS = [
@@ -165,6 +166,30 @@ export const AdminDubaiManager: React.FC = () => {
   const [dubaiNextFlight, setDubaiNextFlight] = useState<string>(settings.dubaiNextFlightDate || 'Vol Cargo chaque mardi & vendredi');
   const [dubaiGlobalAedRate, setDubaiGlobalAedRate] = useState<number>(settings.dubaiAedRate || 168.0);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [isTogglingDubai, setIsTogglingDubai] = useState(false);
+
+  // Fast One-Click Toggle for Dubai Page Activation/Deactivation
+  const handleToggleDubaiPage = async () => {
+    const nextState = !dubaiEnabled;
+    setIsTogglingDubai(true);
+    setDubaiEnabled(nextState);
+    try {
+      await updateSettings({
+        dubaiPageEnabled: nextState
+      });
+      showToast(
+        nextState 
+          ? "✅ Espace Dubaï VIP ACTIVÉ avec succès ! (Accessible sur https://www.ivoireci.com/dubai)" 
+          : "🔴 Espace Dubaï VIP DÉSACTIVÉ ! (/dubai est désormais suspendu pour le public)",
+        nextState ? 'success' : 'error'
+      );
+    } catch (err: any) {
+      setDubaiEnabled(!nextState); // Rollback on failure
+      showToast(err.message || 'Erreur lors de la mise à jour de la page Dubaï.', 'error');
+    } finally {
+      setIsTogglingDubai(false);
+    }
+  };
 
   // Sync settings when loaded
   useEffect(() => {
@@ -470,9 +495,17 @@ export const AdminDubaiManager: React.FC = () => {
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-wider">
                 <Plane className="w-3.5 h-3.5" /> Dubaï VIP Hub 🇦🇪
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
-                <CheckCircle className="w-3 h-3" /> Fret Aérien Actif
+
+              {/* Dynamic Live Status Badge */}
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border transition-all ${
+                dubaiEnabled 
+                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 shadow-sm shadow-emerald-500/20' 
+                  : 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+              }`}>
+                <span className={`w-2 h-2 rounded-full ${dubaiEnabled ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`} />
+                <span>{dubaiEnabled ? 'Page /dubai en Ligne (Active)' : 'Page /dubai Suspendue (Hors-Ligne)'}</span>
               </span>
+
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold">
                 1 AED = {dubaiGlobalAedRate} FCFA
               </span>
@@ -482,29 +515,74 @@ export const AdminDubaiManager: React.FC = () => {
               Gestionnaire Espace Dubaï VIP
             </h1>
             <p className="text-slate-300 text-sm max-w-2xl leading-relaxed">
-              Pilotez l'importation de Dubaï vers la Côte d'Ivoire. Convertissez les devises émiraties (AED),
+              Pilotez l'importation de Dubaï vers la Côte d'Ivoire. Activez ou désactivez la page publique Dubaï, convertissez les devises émiraties (AED),
               calculez vos marges de fret aérien et publiez des articles luxueux en précommande.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="/dubai"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-xs font-bold transition shadow-sm"
-            >
-              <ExternalLink className="w-4 h-4 text-amber-400" />
-              <span>Voir /dubai en direct</span>
-            </a>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            
+            {/* BOUTON ON / OFF MASTER SWITCH DE LA PAGE DUBAÏ */}
+            <div className={`flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl border transition-all duration-300 ${
+              dubaiEnabled
+                ? 'bg-slate-950/90 border-emerald-500/50 shadow-lg shadow-emerald-950/30 ring-1 ring-emerald-500/30'
+                : 'bg-slate-950/90 border-rose-500/50 shadow-lg shadow-rose-950/30 ring-1 ring-rose-500/30'
+            }`}>
+              <div className="flex items-center gap-2.5">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${
+                  dubaiEnabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                }`}>
+                  <Power className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-black text-white">
+                    {dubaiEnabled ? 'Page Dubaï Active' : 'Page Dubaï Désactivée'}
+                  </div>
+                  <div className={`text-[10px] font-bold ${dubaiEnabled ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {dubaiEnabled ? 'Accessible au public' : 'Accès public suspendu'}
+                  </div>
+                </div>
+              </div>
 
-            <button
-              onClick={() => handleOpenCreateModal()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black shadow-lg shadow-amber-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Ajouter un Article Dubaï</span>
-            </button>
+              <button
+                type="button"
+                onClick={handleToggleDubaiPage}
+                disabled={isTogglingDubai}
+                className={`relative inline-flex h-7 w-14 shrink-0 items-center rounded-full transition-colors cursor-pointer border-2 focus:outline-none ${
+                  dubaiEnabled
+                    ? 'bg-emerald-500 border-emerald-400'
+                    : 'bg-slate-800 border-slate-700'
+                }`}
+                title={dubaiEnabled ? 'Cliquer pour DÉSACTIVER la page Dubaï' : 'Cliquer pour ACTIVER la page Dubaï'}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-200 ${
+                    dubaiEnabled ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="/dubai"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-xs font-bold transition shadow-sm"
+              >
+                <ExternalLink className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">Voir /dubai</span>
+              </a>
+
+              <button
+                onClick={() => handleOpenCreateModal()}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black shadow-lg shadow-amber-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>+ Produit Dubaï</span>
+              </button>
+            </div>
+
           </div>
         </div>
 
@@ -1219,21 +1297,32 @@ export const AdminDubaiManager: React.FC = () => {
             <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-950 border border-slate-800">
               <div className="space-y-0.5">
                 <div className="text-xs font-black text-white flex items-center gap-2">
-                  <span>Activer la Page Espace Dubaï VIP</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">/dubai</span>
+                  <span>Activer / Désactiver la Page Espace Dubaï VIP</span>
+                  <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                    dubaiEnabled ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'
+                  }`}>
+                    {dubaiEnabled ? '🟢 EN LIGNE' : '🔴 HORS-LIGNE'}
+                  </span>
                 </div>
                 <div className="text-xs text-slate-400">
-                  Si activé, la page <code className="text-amber-400">/dubai</code> est accessible aux visiteurs et propose le catalogue en précommande.
+                  {dubaiEnabled
+                    ? 'La page /dubai est actuellement ouverte et visible par tous les clients.'
+                    : 'La page /dubai est suspendue et affiche un message de maintenance.'}
                 </div>
               </div>
               <button
                 type="button"
-                onClick={() => setDubaiEnabled(!dubaiEnabled)}
-                className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                  dubaiEnabled ? 'bg-amber-500 justify-end' : 'bg-slate-800 justify-start'
+                onClick={handleToggleDubaiPage}
+                disabled={isTogglingDubai}
+                className={`relative inline-flex h-7 w-14 shrink-0 items-center rounded-full transition-colors cursor-pointer border-2 focus:outline-none ${
+                  dubaiEnabled ? 'bg-emerald-500 border-emerald-400' : 'bg-slate-800 border-slate-700'
                 }`}
               >
-                <div className="w-4 h-4 rounded-full bg-slate-950 shadow-md transform transition" />
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-200 ${
+                    dubaiEnabled ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
               </button>
             </div>
 

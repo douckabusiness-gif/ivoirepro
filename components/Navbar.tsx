@@ -529,16 +529,18 @@ export const Navbar = () => {
               })}
 
               {/* Espace Dubaï VIP Link */}
-              <a
-                href="/dubai"
-                className="shrink-0 ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:to-amber-800 text-white text-xs font-black flex items-center gap-1.5 shadow-sm shadow-amber-500/20 transition-all hover:scale-105 cursor-pointer whitespace-nowrap border border-amber-400/40"
-              >
-                <span>✈️</span>
-                <span>Espace Dubaï</span>
-                <span className="text-[9px] bg-black/30 px-1.5 py-0.2 rounded font-extrabold uppercase text-amber-200">
-                  Précommandes
-                </span>
-              </a>
+              {settings.dubaiPageEnabled !== false && (
+                <a
+                  href="/dubai"
+                  className="shrink-0 ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:to-amber-800 text-white text-xs font-black flex items-center gap-1.5 shadow-sm shadow-amber-500/20 transition-all hover:scale-105 cursor-pointer whitespace-nowrap border border-amber-400/40"
+                >
+                  <span>✈️</span>
+                  <span>Espace Dubaï</span>
+                  <span className="text-[9px] bg-black/30 px-1.5 py-0.2 rounded font-extrabold uppercase text-amber-200">
+                    Précommandes
+                  </span>
+                </a>
+              )}
             </div>
 
           </div>
@@ -606,17 +608,19 @@ export const Navbar = () => {
                 </button>
 
                 {/* Espace Dubaï VIP Mobile */}
-                <a
-                  href="/dubai"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full px-3 py-2.5 rounded-xl font-black text-amber-900 dark:text-amber-200 bg-gradient-to-r from-amber-500/20 via-amber-500/15 to-transparent border border-amber-500/30 flex items-center justify-between transition cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-base">✈️</span>
-                    <span>Espace Dubaï (Précommandes)</span>
-                  </div>
-                  <span className="px-1.5 py-0.2 text-[9px] bg-amber-500 text-slate-950 rounded-md font-black uppercase">VIP</span>
-                </a>
+                {settings.dubaiPageEnabled !== false && (
+                  <a
+                    href="/dubai"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full px-3 py-2.5 rounded-xl font-black text-amber-900 dark:text-amber-200 bg-gradient-to-r from-amber-500/20 via-amber-500/15 to-transparent border border-amber-500/30 flex items-center justify-between transition cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-base">✈️</span>
+                      <span>Espace Dubaï (Précommandes)</span>
+                    </div>
+                    <span className="px-1.5 py-0.2 text-[9px] bg-amber-500 text-slate-950 rounded-md font-black uppercase">VIP</span>
+                  </a>
+                )}
 
                 <button
                   onClick={() => handleNavigate('shop')}
