@@ -4,8 +4,12 @@ import React, { useState, useMemo } from 'react';
 import { useStore } from '@/lib/storeContext';
 import { ProductCard } from '@/components/ProductCard';
 import { DubaiNavbar } from '@/components/DubaiNavbar';
-import { DubaiHeroBanner } from '@/components/DubaiHeroBanner';
-import { DubaiFlightTicker } from '@/components/DubaiFlightTicker';
+import { DubaiJumiaHero } from '@/components/DubaiJumiaHero';
+import { DubaiCategoryCircles } from '@/components/DubaiCategoryCircles';
+import { DubaiFlashSaleBar } from '@/components/DubaiFlashSaleBar';
+import { DubaiDuoBanners } from '@/components/DubaiDuoBanners';
+import { DubaiShelfSection } from '@/components/DubaiShelfSection';
+import { DubaiReassuranceRibbon } from '@/components/DubaiReassuranceRibbon';
 import { DubaiFooter } from '@/components/DubaiFooter';
 import { 
   Plane, 
@@ -28,7 +32,9 @@ import {
   ExternalLink,
   SlidersHorizontal,
   Star,
-  Quote
+  Quote,
+  Layers,
+  X
 } from 'lucide-react';
 
 export const DubaiPreorderPage: React.FC = () => {
@@ -37,7 +43,6 @@ export const DubaiPreorderPage: React.FC = () => {
     categories, 
     settings, 
     formatPrice, 
-    generateWhatsAppGeneralLink, 
     setSelectedProductId, 
     setCurrentView 
   } = useStore();
@@ -46,45 +51,70 @@ export const DubaiPreorderPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [showSeoGuide, setShowSeoGuide] = useState<boolean>(false);
 
   // 1. STRICT FILTERING: Only items marked as isDubaiPreorder (NEVER regular store products)
   const dubaiProducts = useMemo(() => {
     return products.filter((p) => Boolean(p.isDubaiPreorder));
   }, [products]);
 
-  // 2. Filter by category & search query
+  // Themed Category Splitting for Jumia Shelves
+  const perfumeProducts = useMemo(() => {
+    return dubaiProducts.filter((p) => {
+      const t = p.title.toLowerCase();
+      const d = (p.description || '').toLowerCase();
+      const c = (p.categoryName || '').toLowerCase();
+      return t.includes('parfum') || t.includes('oud') || t.includes('khamrah') || t.includes('asad') || t.includes('lattafa') ||
+             d.includes('parfum') || d.includes('oud') || c.includes('beauté') || c.includes('parfum') || p.categoryId === 'cat-beauty';
+    });
+  }, [dubaiProducts]);
+
+  const watchProducts = useMemo(() => {
+    return dubaiProducts.filter((p) => {
+      const t = p.title.toLowerCase();
+      const d = (p.description || '').toLowerCase();
+      const c = (p.categoryName || '').toLowerCase();
+      return t.includes('montre') || t.includes('gold') || t.includes('bijoux') || t.includes('parure') ||
+             d.includes('montre') || d.includes('gold') || c.includes('montre') || p.categoryId === 'cat-watches';
+    });
+  }, [dubaiProducts]);
+
+  const abayaProducts = useMemo(() => {
+    return dubaiProducts.filter((p) => {
+      const t = p.title.toLowerCase();
+      const d = (p.description || '').toLowerCase();
+      const c = (p.categoryName || '').toLowerCase();
+      return t.includes('abaya') || t.includes('soie') || t.includes('robe') || t.includes('voile') ||
+             d.includes('abaya') || d.includes('soie') || c.includes('mode') || p.categoryId === 'cat-fashion' || p.categoryId.includes('cat-0e460830');
+    });
+  }, [dubaiProducts]);
+
+  const highTechProducts = useMemo(() => {
+    return dubaiProducts.filter((p) => {
+      const t = p.title.toLowerCase();
+      const d = (p.description || '').toLowerCase();
+      const c = (p.categoryName || '').toLowerCase();
+      return t.includes('iphone') || t.includes('apple') || t.includes('tech') || t.includes('pro max') ||
+             d.includes('iphone') || d.includes('apple') || c.includes('téléphone') || p.categoryId === 'cat-phones';
+    });
+  }, [dubaiProducts]);
+
+  // Filter for the main general catalog section
   const displayProducts = useMemo(() => {
     let list = [...dubaiProducts];
 
     // Category filter
     if (selectedCategory !== 'all') {
       if (selectedCategory === 'parfum') {
-        list = list.filter((p) => 
-          p.categoryId === 'cat-beauty' || 
-          p.title.toLowerCase().includes('parfum') || 
-          p.title.toLowerCase().includes('oud') ||
-          p.tags?.some(t => t.toLowerCase().includes('parfum') || t.toLowerCase().includes('oud'))
-        );
+        list = perfumeProducts;
       } else if (selectedCategory === 'montre') {
-        list = list.filter((p) => 
-          p.categoryId === 'cat-watches' || 
-          p.title.toLowerCase().includes('montre') ||
-          p.tags?.some(t => t.toLowerCase().includes('montre'))
-        );
+        list = watchProducts;
       } else if (selectedCategory === 'mode') {
-        list = list.filter((p) => 
-          p.categoryId === 'cat-fashion' || 
-          p.title.toLowerCase().includes('abaya') || 
-          p.title.toLowerCase().includes('robe') ||
-          p.tags?.some(t => t.toLowerCase().includes('abaya') || t.toLowerCase().includes('mode'))
-        );
+        list = abayaProducts;
       } else if (selectedCategory === 'high-tech') {
-        list = list.filter((p) => 
-          p.categoryId === 'cat-phones' || 
-          p.categoryId === 'cat-computers' || 
-          p.categoryId === 'cat-electronics' ||
-          p.tags?.some(t => t.toLowerCase().includes('tech') || t.toLowerCase().includes('iphone'))
-        );
+        list = highTechProducts;
+      } else if (selectedCategory === 'bakhoor') {
+        list = list.filter((p) => p.title.toLowerCase().includes('bakhoor') || p.title.toLowerCase().includes('encens'));
       } else {
         list = list.filter((p) => p.categoryId === selectedCategory);
       }
@@ -95,9 +125,9 @@ export const DubaiPreorderPage: React.FC = () => {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter((p) => 
         p.title.toLowerCase().includes(q) || 
-        p.description?.toLowerCase().includes(q) ||
-        p.categoryName?.toLowerCase().includes(q) ||
-        p.tags?.some(t => t.toLowerCase().includes(q))
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        (p.categoryName && p.categoryName.toLowerCase().includes(q)) ||
+        (p.tags && p.tags.some(t => t.toLowerCase().includes(q)))
       );
     }
 
@@ -110,12 +140,15 @@ export const DubaiPreorderPage: React.FC = () => {
     });
 
     return list;
-  }, [dubaiProducts, selectedCategory, searchQuery, sortBy]);
+  }, [dubaiProducts, selectedCategory, searchQuery, sortBy, perfumeProducts, watchProducts, abayaProducts, highTechProducts]);
 
-  // Flash / Featured pre-orders
-  const dubaiFlashProducts = useMemo(() => {
-    return dubaiProducts.filter(p => p.isFlashSale || (p.discountPercent && p.discountPercent > 0)).slice(0, 6);
-  }, [dubaiProducts]);
+  const handleShelfViewAll = (catKey: string) => {
+    setSelectedCategory(catKey);
+    const catalogEl = document.getElementById('dubai-catalog');
+    if (catalogEl) {
+      catalogEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const personalShopperWhatsApp = () => {
     const phone = settings.whatsappNumber || '2250700000000';
@@ -155,7 +188,7 @@ export const DubaiPreorderPage: React.FC = () => {
   return (
     <div className="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-amber-500 selection:text-slate-950">
       
-      {/* 1. Dedicated Luxury Dubaï Navbar */}
+      {/* 1. Header & Navigation (Jumia E-Commerce Header with Dubaï Luxury Accent) */}
       <DubaiNavbar 
         onSelectCategory={setSelectedCategory}
         selectedCategory={selectedCategory}
@@ -163,229 +196,156 @@ export const DubaiPreorderPage: React.FC = () => {
         searchQuery={searchQuery}
       />
 
-      {/* 2. Prestige Dubai Hero Carousel */}
-      <DubaiHeroBanner />
+      {/* 2. JUMIA-STYLE 3-COLUMN HERO SECTION (Categories Left • Main Slider Center • Promo Cards Right) */}
+      <DubaiJumiaHero 
+        onSelectCategory={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
 
-      {/* 3. Live Flight & Air Cargo Ticker (DXB ➔ ABJ) */}
-      <DubaiFlightTicker />
+      {/* 3. JUMIA-STYLE HORIZONTAL CATEGORY CIRCLE BUBBLES */}
+      <DubaiCategoryCircles 
+        onSelectCategory={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
 
-      {/* 4. Visual Dubai Categories Showcase */}
-      <section className="py-10 sm:py-14 bg-slate-950 border-b border-amber-500/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10 space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Les Trésors des Émirats</span>
-            </div>
-            <h2 className="text-xl sm:text-3xl font-black text-white">
-              Explorez nos Rayons Spécial Dubaï
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              Des collections sélectionnées sur place auprès des plus prestigieuses maisons de Dubaï.
-            </p>
-          </div>
+      {/* 4. JUMIA-STYLE "VENTES FLASH" BAR WITH DIGITAL TIMER & STOCK PROGRESS BARS */}
+      <DubaiFlashSaleBar products={dubaiProducts} />
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
-            
-            {/* Category Card 1 */}
-            <button
-              onClick={() => { setSelectedCategory('parfum'); const el = document.getElementById('dubai-catalog'); el?.scrollIntoView({ behavior: 'smooth' }); }}
-              className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-slate-900/60 p-4 sm:p-6 text-left transition hover:border-amber-400 hover:shadow-xl hover:shadow-amber-500/10 cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition">
-                <span className="text-2xl">🏺</span>
-              </div>
-              <h3 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-400 transition">
-                Parfums & Ouds
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
-                Lattafa, Maison Alhambra, Afnan et extraits d'Orient.
-              </p>
-              <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
-                Explorer <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition" />
-              </span>
-            </button>
-
-            {/* Category Card 2 */}
-            <button
-              onClick={() => { setSelectedCategory('montre'); const el = document.getElementById('dubai-catalog'); el?.scrollIntoView({ behavior: 'smooth' }); }}
-              className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-slate-900/60 p-4 sm:p-6 text-left transition hover:border-amber-400 hover:shadow-xl hover:shadow-amber-500/10 cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition">
-                <span className="text-2xl">⌚</span>
-              </div>
-              <h3 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-400 transition">
-                Montres & Bijoux Or
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
-                Mouvements automatiques et finitions or 24K des Souks de Deira.
-              </p>
-              <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
-                Explorer <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition" />
-              </span>
-            </button>
-
-            {/* Category Card 3 */}
-            <button
-              onClick={() => { setSelectedCategory('mode'); const el = document.getElementById('dubai-catalog'); el?.scrollIntoView({ behavior: 'smooth' }); }}
-              className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-slate-900/60 p-4 sm:p-6 text-left transition hover:border-amber-400 hover:shadow-xl hover:shadow-amber-500/10 cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition">
-                <span className="text-2xl">🧕</span>
-              </div>
-              <h3 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-400 transition">
-                Abayas & Soie
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
-                Soie de Médine, coupes papillon et broderies de prestige.
-              </p>
-              <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
-                Explorer <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition" />
-              </span>
-            </button>
-
-            {/* Category Card 4 */}
-            <button
-              onClick={() => { setSelectedCategory('high-tech'); const el = document.getElementById('dubai-catalog'); el?.scrollIntoView({ behavior: 'smooth' }); }}
-              className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-slate-900/60 p-4 sm:p-6 text-left transition hover:border-amber-400 hover:shadow-xl hover:shadow-amber-500/10 cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition">
-                <span className="text-2xl">📱</span>
-              </div>
-              <h3 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-400 transition">
-                High-Tech Spéc. DXB
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
-                iPhones Dual SIM physique et matériel électronique certifié.
-              </p>
-              <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
-                Explorer <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition" />
-              </span>
-            </button>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Ventes Flash & Exclusivités du Vol Cargo (si articles en promotion) */}
-      {dubaiFlashProducts.length > 0 && (
-        <section className="py-8 sm:py-12 bg-gradient-to-b from-slate-950 via-amber-950/20 to-slate-950 border-b border-amber-500/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center justify-between gap-4 mb-6">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                  <Flame className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-base sm:text-xl font-black text-white">
-                    🔥 Exclusivités & Offres Vol Cargo
-                  </h3>
-                  <p className="text-xs text-amber-300">
-                    Tarifs réduits limités aux places disponibles dans le prochain conteneur aérien
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1.5 sm:gap-4">
-              {dubaiFlashProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
+      {/* 5. JUMIA SHELF 1: PARFUMS & OUDS D'ORIENT */}
+      {perfumeProducts.length > 0 && (
+        <DubaiShelfSection
+          title="Parfums & Ouds d'Exception"
+          subtitle="Lattafa, Asad, Khamrah, Oud for Glory et fragrances orientales de Dubaï"
+          icon="🏺"
+          categoryKey="parfum"
+          badgeText="Sillage 48h"
+          products={perfumeProducts}
+          onViewAll={handleShelfViewAll}
+        />
       )}
 
-      {/* 6. Catalogue Complet Dubaï (#dubai-catalog) */}
-      <section id="dubai-catalog" className="py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* 6. JUMIA-STYLE DUO PROMOTIONAL BANNERS */}
+      <DubaiDuoBanners onSelectCategory={setSelectedCategory} />
+
+      {/* 7. JUMIA SHELF 2: MONTRES & JOAILLERIE OR 24K */}
+      {watchProducts.length > 0 && (
+        <DubaiShelfSection
+          title="Horlogerie Prestige & Gold Souk"
+          subtitle="Montres automatiques squelette, parures dorées et finitions de luxe"
+          icon="⌚"
+          categoryKey="montre"
+          badgeText="Gold Souk Deira"
+          products={watchProducts}
+          onViewAll={handleShelfViewAll}
+        />
+      )}
+
+      {/* 8. JUMIA SHELF 3: ABAYAS & HAUTE COUTURE DUBAÏ */}
+      {abayaProducts.length > 0 && (
+        <DubaiShelfSection
+          title="Abayas & Haute Couture Émiratie"
+          subtitle="Soie de Médine, confections papillon et broderies faites main à Dubaï"
+          icon="🧕"
+          categoryKey="mode"
+          badgeText="Soie de Médine"
+          products={abayaProducts}
+          onViewAll={handleShelfViewAll}
+        />
+      )}
+
+      {/* 9. JUMIA SHELF 4: HIGH-TECH DXB & APPLE */}
+      {highTechProducts.length > 0 && (
+        <DubaiShelfSection
+          title="High-Tech DXB & Apple"
+          subtitle="iPhones versions internationales double SIM physique et électronique de pointe"
+          icon="📱"
+          categoryKey="high-tech"
+          badgeText="Spéc. DXB"
+          products={highTechProducts}
+          onViewAll={handleShelfViewAll}
+        />
+      )}
+
+      {/* 10. JUMIA-STYLE 4-PILLAR REASSURANCE STRIP */}
+      <DubaiReassuranceRibbon />
+
+      {/* 11. CATALOGUE OFFICIEL COMPLET & RECHERCHE AVANCÉE (#dubai-catalog) */}
+      <section id="dubai-catalog" className="py-10 sm:py-14 bg-slate-950">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
           
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 text-xs font-black text-amber-400 uppercase tracking-wide">
-                <Plane className="w-3.5 h-3.5" />
-                <span>Catalogue Officiel Précommandes Dubaï</span>
+          {/* Catalog Header */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-6 shadow-xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-wide">
+                  <Plane className="w-3.5 h-3.5" />
+                  <span>Catalogue Général des Précommandes</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-white">
+                  Tous les Articles Importés de Dubaï ({displayProducts.length})
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Sélectionnez vos articles pour le prochain vol cargo. Dédouanement et livraison garantis sous 7 à 10 jours ouvrés.
+                </p>
               </div>
-              <h2 className="text-xl sm:text-3xl font-black text-white">
-                Articles Disponibles à l'Importation
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-400">
-                Paiement en ligne sécurisé • Expédition aérienne garantie sous 7 à 10 jours ouvrés à Abidjan.
-              </p>
+
+              {/* Sorting & Filter Controls */}
+              <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs">
+                  <span className="text-slate-400 font-medium">Trier :</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    className="bg-transparent text-white font-bold focus:outline-none cursor-pointer"
+                  >
+                    <option value="featured" className="bg-slate-900 text-white">Populaires & Recommandés</option>
+                    <option value="price-asc" className="bg-slate-900 text-white">Prix : Moins cher au plus cher</option>
+                    <option value="price-desc" className="bg-slate-900 text-white">Prix : Plus cher au moins cher</option>
+                    <option value="rating" className="bg-slate-900 text-white">Meilleures notes clients</option>
+                  </select>
+                </div>
+              </div>
+
             </div>
 
-            {/* Sorting */}
-            <div className="flex items-center gap-3 shrink-0">
-              <label className="text-xs text-slate-400 font-medium">Trier par :</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-slate-900 border border-amber-500/30 text-white text-xs rounded-xl px-3 py-2 focus:outline-hidden focus:border-amber-400 cursor-pointer"
-              >
-                <option value="featured">Populaires & Recommandés</option>
-                <option value="price-asc">Prix : Moins cher au plus cher</option>
-                <option value="price-desc">Prix : Plus cher au moins cher</option>
-                <option value="rating">Meilleures notes clients</option>
-              </select>
+            {/* Filter Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pt-4 mt-4 border-t border-slate-800/80 scrollbar-none">
+              {[
+                { id: 'all', label: `Tous (${dubaiProducts.length})` },
+                { id: 'parfum', label: "🏺 Parfums & Ouds" },
+                { id: 'montre', label: '⌚ Montres 24K' },
+                { id: 'mode', label: '🧕 Abayas & Soie' },
+                { id: 'high-tech', label: '📱 High-Tech DXB' },
+                { id: 'bakhoor', label: '🪵 Bakhoors Royaux' }
+              ].map((pill) => (
+                <button
+                  key={pill.id}
+                  onClick={() => setSelectedCategory(pill.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                    selectedCategory === pill.id
+                      ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
+                      : 'bg-slate-950 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+                  }`}
+                >
+                  {pill.label}
+                </button>
+              ))}
+
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-300 text-xs font-bold border border-rose-500/30 flex items-center gap-1"
+                >
+                  <X className="w-3 h-3" />
+                  <span>Effacer recherche</span>
+                </button>
+              )}
             </div>
+
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                selectedCategory === 'all'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-800'
-              }`}
-            >
-              Tous les Articles ({dubaiProducts.length})
-            </button>
-            <button
-              onClick={() => setSelectedCategory('parfum')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                selectedCategory === 'parfum'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-800'
-              }`}
-            >
-              🏺 Parfums & Ouds d'Orient
-            </button>
-            <button
-              onClick={() => setSelectedCategory('montre')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                selectedCategory === 'montre'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-800'
-              }`}
-            >
-              ⌚ Montres & Bijoux de Luxe
-            </button>
-            <button
-              onClick={() => setSelectedCategory('mode')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                selectedCategory === 'mode'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-800'
-              }`}
-            >
-              🧕 Abayas Dubaï & Soie
-            </button>
-            <button
-              onClick={() => setSelectedCategory('high-tech')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                selectedCategory === 'high-tech'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:text-white border border-slate-800'
-              }`}
-            >
-              📱 High-Tech DXB
-            </button>
-          </div>
-
-          {/* Product Grid (3 cards per row on mobile) */}
+          {/* Product Grid (3 cards per row on mobile, 4-6 on desktop) */}
           {displayProducts.length > 0 ? (
             <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1.5 sm:gap-4">
               {displayProducts.map((product) => (
@@ -399,7 +359,7 @@ export const DubaiPreorderPage: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="text-base sm:text-lg font-black text-white">
-                  Aucun article trouvé dans cette sélection
+                  Aucun article trouvé pour cette sélection
                 </h3>
                 <p className="text-xs text-slate-400 max-w-md mx-auto">
                   {searchQuery 
@@ -421,7 +381,7 @@ export const DubaiPreorderPage: React.FC = () => {
                   className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Demander un article spécifique</span>
+                  <span>Demander un article sur WhatsApp</span>
                 </a>
               </div>
             </div>
@@ -430,10 +390,10 @@ export const DubaiPreorderPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. Comment Fonctionne la Précommande (3 Étapes de Confiance) */}
-      <section id="dubai-how-it-works" className="py-14 sm:py-20 bg-slate-900/70 border-y border-amber-500/20">
+      {/* 12. GUIDE DE CONFIANCE EN 3 ÉTAPES */}
+      <section className="py-12 sm:py-16 bg-slate-900/60 border-t border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
+          <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
             <span className="text-xs font-black text-amber-400 uppercase tracking-widest">
               Processus 100% Transparent
             </span>
@@ -445,55 +405,55 @@ export const DubaiPreorderPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             
             {/* Step 1 */}
-            <div className="relative bg-slate-950 p-6 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-lg">
+            <div className="bg-slate-950 p-6 rounded-2xl border border-amber-500/30 space-y-3 shadow-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-base">
                 1
               </div>
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-sm sm:text-base font-black text-white">
                 Sélection & Règlement Sécurisé
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Vous choisissez vos articles d'exception sur notre vitrine Dubaï et validez votre précommande en réglant par <strong>Wave, Orange Money, MTN, Moov</strong> ou Carte. Le paiement préalable réserve immédiatement votre lot pour le prochain vol cargo.
+                Vous choisissez vos articles d'exception sur notre vitrine Dubaï et validez votre précommande en réglant par <strong>Wave, Orange Money, MTN, Moov</strong> ou Carte. Le paiement préalable bloque immédiatement votre lot pour le prochain vol cargo.
               </p>
-              <div className="pt-2 flex items-center gap-2 text-[11px] text-amber-400 font-bold">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="pt-1 flex items-center gap-1.5 text-[11px] text-amber-400 font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Reçu & Confirmation instantanés</span>
               </div>
             </div>
 
             {/* Step 2 */}
-            <div className="relative bg-slate-950 p-6 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-lg">
+            <div className="bg-slate-950 p-6 rounded-2xl border border-amber-500/30 space-y-3 shadow-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-base">
                 2
               </div>
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-sm sm:text-base font-black text-white">
                 Achat Officiel & Fret Aérien
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
                 Notre équipe sur place à Dubaï achète votre article directement auprès des distributeurs agréés, effectue un <strong>contrôle qualité rigoureux</strong>, prend en photo votre colis et l'embarque dans notre conteneur aérien sécurisé.
               </p>
-              <div className="pt-2 flex items-center gap-2 text-[11px] text-amber-400 font-bold">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="pt-1 flex items-center gap-1.5 text-[11px] text-amber-400 font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Colis scellé avec photo WhatsApp</span>
               </div>
             </div>
 
             {/* Step 3 */}
-            <div className="relative bg-slate-950 p-6 rounded-2xl border border-amber-500/30 space-y-4 shadow-xl">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-lg">
+            <div className="bg-slate-950 p-6 rounded-2xl border border-amber-500/30 space-y-3 shadow-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-base">
                 3
               </div>
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-sm sm:text-base font-black text-white">
                 Arrivée à Abidjan & Livraison
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
                 À l'atterrissage du vol cargo à Abidjan, le colis est dédouané par nos soins sans aucun frais caché supplémentaire. Notre coursier autonome vous livre directement en main propre sous <strong>7 à 10 jours ouvrés</strong>.
               </p>
-              <div className="pt-2 flex items-center gap-2 text-[11px] text-amber-400 font-bold">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="pt-1 flex items-center gap-1.5 text-[11px] text-amber-400 font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Livraison partout à Abidjan & Intérieur</span>
               </div>
             </div>
@@ -502,25 +462,25 @@ export const DubaiPreorderPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. Service Personal Shopper & Conciergerie */}
-      <section className="py-12 sm:py-16 bg-slate-950">
+      {/* 13. BANNIÈRE PERSONAL SHOPPER & CONCIERGERIE */}
+      <section id="dubai-personal-shopper" className="py-10 sm:py-14 bg-slate-950">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="bg-gradient-to-r from-amber-950/60 via-slate-900 to-amber-950/60 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               
-              <div className="space-y-3 max-w-xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-black uppercase">
+              <div className="space-y-2 max-w-xl">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-black uppercase">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Service Exclusif Sur-Mesure</span>
                 </div>
-                <h3 className="text-xl sm:text-3xl font-black text-white">
+                <h3 className="text-lg sm:text-2xl font-black text-white">
                   Vous cherchez un article précis à Dubaï ?
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  Une montre rare, un parfum oriental introuvable, une abaya de couturier ou du matériel spécifique ? Notre acheteur dédié parcourt les centres commerciaux de Dubaï pour vous.
+                  Une montre rare, un parfum oriental introuvable, une abaya de couturier ou du matériel spécifique ? Notre acheteur dédié parcourt les souks et centres commerciaux de Dubaï pour vous.
                 </p>
-                <div className="flex items-center gap-4 pt-2 text-xs text-amber-300">
-                  <span>📸 Envoyez une simple photo</span>
+                <div className="flex items-center gap-3 pt-1 text-xs text-amber-300 font-medium">
+                  <span>📸 Envoyez une photo sur WhatsApp</span>
                   <span>•</span>
                   <span>⚡ Devis tout inclus sous 2h</span>
                 </div>
@@ -531,10 +491,10 @@ export const DubaiPreorderPage: React.FC = () => {
                   href={personalShopperWhatsApp()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <MessageCircle className="w-5 h-5" />
-                  <span>Parler à un Personal Shopper Dubaï</span>
+                  <span>Parler à notre acheteur Dubaï</span>
                 </a>
               </div>
 
@@ -543,21 +503,21 @@ export const DubaiPreorderPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 9. Témoignages & Déballages Réels */}
-      <section className="py-12 sm:py-16 bg-slate-900/40 border-y border-amber-500/10">
+      {/* 14. TÉMOIGNAGES CLIENTS ABIDJAN */}
+      <section className="py-10 sm:py-14 bg-slate-900/40 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-xl mx-auto mb-10 space-y-1">
+          <div className="text-center max-w-xl mx-auto mb-8 space-y-1">
             <span className="text-xs font-black text-amber-400 uppercase tracking-widest">
               Retours d'Expérience
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-white">
+            <h2 className="text-lg sm:text-2xl font-black text-white">
               Ce que nos clients d'Abidjan en disent
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             
-            <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-3">
+            <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-2.5">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -572,7 +532,7 @@ export const DubaiPreorderPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-3">
+            <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-2.5">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -587,7 +547,7 @@ export const DubaiPreorderPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-3">
+            <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-2.5">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -606,19 +566,19 @@ export const DubaiPreorderPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 10. FAQ Interactive (#dubai-faq) */}
-      <section id="dubai-faq" className="py-14 sm:py-20 bg-slate-950">
+      {/* 15. FAQ INTERACTIVE ACCORDÉON */}
+      <section id="dubai-faq" className="py-12 sm:py-16 bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10 space-y-2">
+          <div className="text-center mb-8 space-y-1">
             <span className="text-xs font-black text-amber-400 uppercase tracking-widest">
               Questions Fréquentes
             </span>
-            <h2 className="text-xl sm:text-3xl font-black text-white">
+            <h2 className="text-xl sm:text-2xl font-black text-white">
               Tout Savoir sur nos Précommandes Dubaï
             </h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {faqs.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
@@ -628,7 +588,7 @@ export const DubaiPreorderPage: React.FC = () => {
                 >
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between p-4 sm:p-5 text-left text-xs sm:text-sm font-bold text-white hover:text-amber-400 transition cursor-pointer"
+                    className="w-full flex items-center justify-between p-4 text-left text-xs sm:text-sm font-bold text-white hover:text-amber-400 transition cursor-pointer"
                   >
                     <span>{faq.q}</span>
                     {isOpen ? (
@@ -639,7 +599,7 @@ export const DubaiPreorderPage: React.FC = () => {
                   </button>
 
                   {isOpen && (
-                    <div className="px-4 sm:px-5 pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/60 pt-3">
+                    <div className="px-4 pb-4 text-xs text-slate-300 leading-relaxed border-t border-slate-800/60 pt-3">
                       {faq.a}
                     </div>
                   )}
@@ -650,7 +610,47 @@ export const DubaiPreorderPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 11. Dedicated Dubai Luxury Footer */}
+      {/* 16. JUMIA-STYLE SEO & INFORMATIVE MARKETPLACE BLOCK (Collapsible) */}
+      <section className="py-8 bg-slate-950 border-t border-slate-900 text-xs text-slate-400">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="bg-slate-900/40 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider">
+                À propos de l'Espace Dubaï VIP d'IvoirePro — Votre Pont Direct avec les Émirats
+              </h4>
+              <button
+                onClick={() => setShowSeoGuide(!showSeoGuide)}
+                className="text-[11px] font-bold text-amber-400 hover:underline"
+              >
+                {showSeoGuide ? 'Réduire ▲' : 'Lire la suite ▼'}
+              </button>
+            </div>
+
+            <p className="leading-relaxed">
+              L'Espace Dubaï VIP d'IvoirePro est la première plateforme e-commerce en Côte d'Ivoire dédiée à l'importation directe et à la précommande d'articles authentiques depuis Dubaï (Émirats Arabes Unis).
+            </p>
+
+            {showSeoGuide && (
+              <div className="space-y-3 pt-2 border-t border-slate-800 text-slate-300 animate-in fade-in duration-200">
+                <p>
+                  <strong>Pourquoi précommander à Dubaï avec IvoirePro ?</strong><br />
+                  Dubaï est le carrefour mondial des plus prestigieuses maisons de parfumerie orientale (Lattafa, Asad, Khamrah, Swiss Arabian, Armaf), du légendaire Gold Souk de Deira pour l'horlogerie et les bijoux en or 24K, et de la haute couture émiratie (abayas en véritable soie de Médine et tissus Nidha). Grâce à notre bureau d'achat permanent à Dubaï, vous bénéficiez des tarifs officiels des grossistes émiratis sans intermédiaire.
+                </p>
+                <p>
+                  <strong>Logistique & Fret Aérien Régulier :</strong><br />
+                  Chaque semaine, nos conteneurs aériens décollent de l'aéroport international de Dubaï (DXB) vers l'aéroport Félix Houphouët-Boigny d'Abidjan (ABJ). Les formalités douanières sont intégralement prises en charge par notre équipe logistique, vous assurant une livraison sécurisée à Abidjan sous 7 à 10 jours ouvrés sans frais imprévus.
+                </p>
+                <p>
+                  <strong>Moyens de Paiement Disponibles :</strong><br />
+                  Réglez vos précommandes en toute sérénité via Mobile Money (Wave, Orange Money, MTN Mobile Money, Moov Money) ou Carte Bancaire internationale.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 17. LUXURY DUBAI FOOTER */}
       <DubaiFooter />
 
     </div>
