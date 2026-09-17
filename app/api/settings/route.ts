@@ -37,6 +37,7 @@ const STORE_SETTINGS_FIELDS = new Set([
   'smtpOrderStatusUpdateCustomer', 'smtpAdminRecipientEmail', 'telegramEnabled', 'telegramBotToken',
   'telegramChatId', 'telegramNotifyNewOrder', 'seoTitle', 'seoDescription', 'seoKeywords', 'seoOgImage',
   'seoCanonicalUrl', 'seoGoogleVerification', 'seoGoogleAnalyticsId', 'seoFacebookPixelId',
+  'dubaiPageEnabled', 'dubaiPageTitle', 'dubaiPageSubtitle', 'dubaiNextFlightDate',
 ]);
 
 function pickStoreSettingsFields(input: Record<string, unknown>) {

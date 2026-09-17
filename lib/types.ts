@@ -98,6 +98,7 @@ export interface Product {
   isDubaiPreorder?: boolean;
   dubaiDeliveryDays?: string;
   dubaiBatchDate?: string;
+  aedPurchasePrice?: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -411,6 +412,7 @@ export interface StoreSettings {
   dubaiPageTitle?: string;
   dubaiPageSubtitle?: string;
   dubaiNextFlightDate?: string;
+  dubaiAedRate?: number;
 }
 
 export type SpecializedAgentId = 'orchestrator' | 'sales' | 'support' | 'copywriter' | 'promo' | 'satisfaction' | string;
@@ -560,6 +562,7 @@ export const ROLE_DEFINITIONS: Record<UserRole, {
       'analytics',
       'orders', 
       'delivery', 
+      'dubai',
       'products', 
       'categories', 
       'chat', 
@@ -581,7 +584,7 @@ export const ROLE_DEFINITIONS: Record<UserRole, {
     badge: '💼 Vendeur',
     description: 'Traitement des commandes, relance WhatsApp, Live Chat client et gestion du catalogue.',
     color: 'from-emerald-600 to-teal-600',
-    allowedTabs: ['dashboard', 'orders', 'chat', 'products', 'categories']
+    allowedTabs: ['dashboard', 'orders', 'chat', 'dubai', 'products', 'categories']
   },
   gestionnaire_stock: {
     label: 'Gestionnaire de Stock / Magasinier',
@@ -589,7 +592,7 @@ export const ROLE_DEFINITIONS: Record<UserRole, {
     badge: '📦 Stock',
     description: 'Inventaire, niveaux de stock, alertes rupture, gestion des produits et rayons.',
     color: 'from-blue-600 to-cyan-600',
-    allowedTabs: ['dashboard', 'products', 'categories']
+    allowedTabs: ['dashboard', 'dubai', 'products', 'categories']
   },
   support: {
     label: 'Support Client & SAV',

@@ -101,6 +101,7 @@ import { initialStoreSettings } from '@/lib/initialData';
 import { MarketingStudio } from '@/components/MarketingStudio';
 import { AdminPartnersManager } from '@/components/AdminPartnersManager';
 import { AdminDeliveryManager } from '@/components/AdminDeliveryManager';
+import { AdminDubaiManager } from '@/components/AdminDubaiManager';
 import { AdminBannerStudio } from '@/components/AdminBannerStudio';
 import { InGridPromoBanner } from '@/components/InGridPromoBanner';
 import { AdminTeamManager } from '@/components/AdminTeamManager';
@@ -163,7 +164,7 @@ export const AdminPanel = () => {
 
   // Admin Active Tab
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'analytics' | 'chat' | 'agent' | 'products' | 'categories' | 'orders' | 'delivery' | 'banners' | 'partners' | 'marketing' | 'payments' | 'whatsapp' | 'branding' | 'appearance' | 'cms' | 'pages-explorer' | 'settings' | 'team'
+    'dashboard' | 'analytics' | 'chat' | 'agent' | 'products' | 'categories' | 'orders' | 'delivery' | 'dubai' | 'banners' | 'partners' | 'marketing' | 'payments' | 'whatsapp' | 'branding' | 'appearance' | 'cms' | 'pages-explorer' | 'settings' | 'team'
   >('dashboard');
 
   // Store Settings Local State & Sub-pages
@@ -1245,6 +1246,7 @@ export const AdminPanel = () => {
         { id: 'dashboard', label: 'Tableau de Bord', icon: <LayoutDashboard className="w-4 h-4" />, badge: null },
         { id: 'orders', label: 'Commandes', icon: <ShoppingBag className="w-4 h-4" />, badge: pendingOrdersCount > 0 ? `${pendingOrdersCount} new` : `${orders.length}` },
         { id: 'delivery', label: 'Livraison Autonome 🇨🇮', icon: <Bike className="w-4 h-4 text-amber-400" />, badge: `${deliveryPersons.length} coursiers` },
+        { id: 'dubai', label: 'Espace Dubaï VIP 🇦🇪', icon: <Plane className="w-4 h-4 text-amber-400" />, badge: `${products.filter(p => p.isDubaiPreorder).length} articles` },
         { id: 'products', label: 'Produits & Catalogue', icon: <Package className="w-4 h-4" />, badge: `${products.length}` },
         { id: 'categories', label: 'Rayons & Catégories', icon: <Layers className="w-4 h-4" />, badge: `${categories.length}` },
         { id: 'chat', label: 'Support & Chat Direct', icon: <MessageSquare className="w-4 h-4" />, badge: unreadAdminChatCount > 0 ? `${unreadAdminChatCount} new` : (chatConversations.length > 0 ? `${chatConversations.length}` : null) },
@@ -1513,6 +1515,7 @@ export const AdminPanel = () => {
                 {activeTab === 'products' && 'Gestion Produits & Catalogue'}
                 {activeTab === 'categories' && 'Rayons & Catégories'}
                 {activeTab === 'orders' && 'Commandes & Livraisons'}
+                {activeTab === 'dubai' && 'Espace Dubaï VIP • Précommandes & Fret Aérien'}
                 {activeTab === 'partners' && 'Partenaires & Affiliation (Micro-Franchise)'}
                 {activeTab === 'banners' && 'Studio Pro Bannières & Publicités'}
                 {activeTab === 'payments' && 'Moyens de Paiement & Liens'}
@@ -8693,6 +8696,13 @@ export const AdminPanel = () => {
           {/* ========================================================================= */}
           {activeTab === 'delivery' && (
             <AdminDeliveryManager />
+          )}
+
+          {/* ========================================================================= */}
+          {/* TAB: ESPACE DUBAÏ VIP (IMPORTATION DIRECTE & PRÉCOMMANDES) */}
+          {/* ========================================================================= */}
+          {activeTab === 'dubai' && (
+            <AdminDubaiManager />
           )}
 
           {/* ========================================================================= */}
