@@ -93,7 +93,8 @@ import {
   Banknote,
   Landmark,
   Wallet,
-  Film
+  Film,
+  Plane
 } from 'lucide-react';
 import { ChatMessage, ChatConversation } from '@/lib/types';
 import { initialStoreSettings } from '@/lib/initialData';
