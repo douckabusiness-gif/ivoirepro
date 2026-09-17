@@ -34,7 +34,9 @@ import {
   Star,
   Quote,
   Layers,
-  X
+  X,
+  Smartphone,
+  Tag
 } from 'lucide-react';
 
 export const DubaiPreorderPage: React.FC = () => {
@@ -48,6 +50,7 @@ export const DubaiPreorderPage: React.FC = () => {
   } = useStore();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedPhoneBrand, setSelectedPhoneBrand] = useState<'all' | 'apple' | 'samsung' | 'xiaomi' | 'google'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -94,10 +97,28 @@ export const DubaiPreorderPage: React.FC = () => {
       const t = p.title.toLowerCase();
       const d = (p.description || '').toLowerCase();
       const c = (p.categoryName || '').toLowerCase();
-      return t.includes('iphone') || t.includes('apple') || t.includes('tech') || t.includes('pro max') ||
-             d.includes('iphone') || d.includes('apple') || c.includes('téléphone') || p.categoryId === 'cat-phones';
+      const isTech = t.includes('iphone') || t.includes('apple') || t.includes('samsung') || t.includes('galaxy') ||
+                     t.includes('xiaomi') || t.includes('poco') || t.includes('pixel') || t.includes('tech') || 
+                     t.includes('pro max') || t.includes('smartphone') || d.includes('iphone') || d.includes('apple') || 
+                     d.includes('samsung') || d.includes('galaxy') || d.includes('xiaomi') || d.includes('pixel') || 
+                     c.includes('téléphone') || p.categoryId === 'cat-phones';
+      if (!isTech) return false;
+
+      if (selectedPhoneBrand === 'apple') {
+        return t.includes('apple') || t.includes('iphone') || d.includes('apple');
+      }
+      if (selectedPhoneBrand === 'samsung') {
+        return t.includes('samsung') || t.includes('galaxy') || d.includes('samsung');
+      }
+      if (selectedPhoneBrand === 'xiaomi') {
+        return t.includes('xiaomi') || t.includes('poco') || t.includes('redmi') || d.includes('xiaomi');
+      }
+      if (selectedPhoneBrand === 'google') {
+        return t.includes('google') || t.includes('pixel') || d.includes('google');
+      }
+      return true;
     });
-  }, [dubaiProducts]);
+  }, [dubaiProducts, selectedPhoneBrand]);
 
   // Filter for the main general catalog section
   const displayProducts = useMemo(() => {
@@ -117,6 +138,19 @@ export const DubaiPreorderPage: React.FC = () => {
         list = list.filter((p) => p.title.toLowerCase().includes('bakhoor') || p.title.toLowerCase().includes('encens'));
       } else {
         list = list.filter((p) => p.categoryId === selectedCategory);
+      }
+    }
+
+    // Phone brand filter (applicable if selectedPhoneBrand !== 'all')
+    if (selectedPhoneBrand !== 'all') {
+      if (selectedPhoneBrand === 'apple') {
+        list = list.filter(p => p.title.toLowerCase().includes('apple') || p.title.toLowerCase().includes('iphone'));
+      } else if (selectedPhoneBrand === 'samsung') {
+        list = list.filter(p => p.title.toLowerCase().includes('samsung') || p.title.toLowerCase().includes('galaxy'));
+      } else if (selectedPhoneBrand === 'xiaomi') {
+        list = list.filter(p => p.title.toLowerCase().includes('xiaomi') || p.title.toLowerCase().includes('poco'));
+      } else if (selectedPhoneBrand === 'google') {
+        list = list.filter(p => p.title.toLowerCase().includes('google') || p.title.toLowerCase().includes('pixel'));
       }
     }
 
@@ -140,7 +174,7 @@ export const DubaiPreorderPage: React.FC = () => {
     });
 
     return list;
-  }, [dubaiProducts, selectedCategory, searchQuery, sortBy, perfumeProducts, watchProducts, abayaProducts, highTechProducts]);
+  }, [dubaiProducts, selectedCategory, selectedPhoneBrand, searchQuery, sortBy, perfumeProducts, watchProducts, abayaProducts, highTechProducts]);
 
   const handleShelfViewAll = (catKey: string) => {
     setSelectedCategory(catKey);
@@ -211,7 +245,186 @@ export const DubaiPreorderPage: React.FC = () => {
       {/* 4. JUMIA-STYLE "VENTES FLASH" BAR WITH DIGITAL TIMER & STOCK PROGRESS BARS */}
       <DubaiFlashSaleBar products={dubaiProducts} />
 
-      {/* 5. JUMIA SHELF 1: PARFUMS & OUDS D'ORIENT */}
+      {/* 5. MARQUES PHARES DE SMARTPHONES DUBAÏ (Apple UAE, Samsung Gulf, Xiaomi Leica, Google Pixel) */}
+      <section className="py-4 sm:py-6 bg-slate-950">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+          <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 border border-amber-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl">
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl sm:text-2xl p-1.5 rounded-xl bg-slate-950 border border-slate-800">📱</span>
+                  <h3 className="text-base sm:text-lg md:text-xl font-black text-white">
+                    Smartphones Dubaï par Marque Officielle
+                  </h3>
+                  <span className="hidden sm:inline-block text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Double SIM Physique & Snapdragon
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">
+                  Modèles originaux Émirats Arabes Unis (UAE) scellés en boîte, garantis 1 an et débloqués tous réseaux en Côte d'Ivoire.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs text-amber-400 font-bold flex items-center gap-1 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+                  <Plane className="w-3.5 h-3.5" />
+                  <span>Vol Cargo 7 à 10j inclus</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Interactive Brand Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+              
+              {/* Apple */}
+              <button
+                onClick={() => {
+                  setSelectedCategory('high-tech');
+                  setSelectedPhoneBrand('apple');
+                  handleShelfViewAll('high-tech');
+                }}
+                className={`text-left p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 group cursor-pointer ${
+                  selectedPhoneBrand === 'apple' && selectedCategory === 'high-tech'
+                    ? 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/40'
+                    : 'bg-slate-950/80 hover:bg-slate-900 border-slate-800 hover:border-amber-400/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    🍏
+                  </div>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    Dual SIM DXB
+                  </span>
+                </div>
+                <div className="text-sm font-black text-white group-hover:text-amber-400 transition-colors">
+                  Apple iPhone UAE
+                </div>
+                <div className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                  16 Pro Max, 16 Pro, 16, 15
+                </div>
+                <div className="mt-2 text-xs font-bold text-amber-400">
+                  Dès 590 000 FCFA
+                </div>
+              </button>
+
+              {/* Samsung */}
+              <button
+                onClick={() => {
+                  setSelectedCategory('high-tech');
+                  setSelectedPhoneBrand('samsung');
+                  handleShelfViewAll('high-tech');
+                }}
+                className={`text-left p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 group cursor-pointer ${
+                  selectedPhoneBrand === 'samsung' && selectedCategory === 'high-tech'
+                    ? 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/40'
+                    : 'bg-slate-950/80 hover:bg-slate-900 border-slate-800 hover:border-amber-400/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    🔷
+                  </div>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    Snapdragon
+                  </span>
+                </div>
+                <div className="text-sm font-black text-white group-hover:text-amber-400 transition-colors">
+                  Samsung Galaxy Gulf
+                </div>
+                <div className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                  S25 Ultra, S24 Ultra, Z Fold 6
+                </div>
+                <div className="mt-2 text-xs font-bold text-amber-400">
+                  Dès 580 000 FCFA
+                </div>
+              </button>
+
+              {/* Xiaomi & Poco */}
+              <button
+                onClick={() => {
+                  setSelectedCategory('high-tech');
+                  setSelectedPhoneBrand('xiaomi');
+                  handleShelfViewAll('high-tech');
+                }}
+                className={`text-left p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 group cursor-pointer ${
+                  selectedPhoneBrand === 'xiaomi' && selectedCategory === 'high-tech'
+                    ? 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/40'
+                    : 'bg-slate-950/80 hover:bg-slate-900 border-slate-800 hover:border-amber-400/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    🟠
+                  </div>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                    Leica & 120W
+                  </span>
+                </div>
+                <div className="text-sm font-black text-white group-hover:text-amber-400 transition-colors">
+                  Xiaomi & Poco DXB
+                </div>
+                <div className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                  14 Ultra Leica, Poco F6 Pro
+                </div>
+                <div className="mt-2 text-xs font-bold text-amber-400">
+                  Dès 340 000 FCFA
+                </div>
+              </button>
+
+              {/* Google Pixel */}
+              <button
+                onClick={() => {
+                  setSelectedCategory('high-tech');
+                  setSelectedPhoneBrand('google');
+                  handleShelfViewAll('high-tech');
+                }}
+                className={`text-left p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 group cursor-pointer ${
+                  selectedPhoneBrand === 'google' && selectedCategory === 'high-tech'
+                    ? 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/40'
+                    : 'bg-slate-950/80 hover:bg-slate-900 border-slate-800 hover:border-amber-400/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    🌐
+                  </div>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Gemini AI
+                  </span>
+                </div>
+                <div className="text-sm font-black text-white group-hover:text-amber-400 transition-colors">
+                  Google Pixel DXB
+                </div>
+                <div className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                  Pixel 9 Pro XL, Tensor G4
+                </div>
+                <div className="mt-2 text-xs font-bold text-amber-400">
+                  Dès 670 000 FCFA
+                </div>
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 6. JUMIA SHELF 1: SMARTPHONES DUBAÏ UAE & HIGH-TECH */}
+      {highTechProducts.length > 0 && (
+        <DubaiShelfSection
+          title="Smartphones Dubaï UAE & High-Tech"
+          subtitle="Apple iPhone Double SIM physique, Samsung Snapdragon UAE et flagships scellés"
+          icon="📱"
+          categoryKey="high-tech"
+          badgeText="Double SIM DXB"
+          products={highTechProducts}
+          onViewAll={handleShelfViewAll}
+        />
+      )}
+
+      {/* 7. JUMIA SHELF 2: PARFUMS & OUDS D'ORIENT */}
       {perfumeProducts.length > 0 && (
         <DubaiShelfSection
           title="Parfums & Ouds d'Exception"
@@ -224,10 +437,10 @@ export const DubaiPreorderPage: React.FC = () => {
         />
       )}
 
-      {/* 6. JUMIA-STYLE DUO PROMOTIONAL BANNERS */}
+      {/* 8. JUMIA-STYLE DUO PROMOTIONAL BANNERS */}
       <DubaiDuoBanners onSelectCategory={setSelectedCategory} />
 
-      {/* 7. JUMIA SHELF 2: MONTRES & JOAILLERIE OR 24K */}
+      {/* 9. JUMIA SHELF 3: MONTRES & JOAILLERIE OR 24K */}
       {watchProducts.length > 0 && (
         <DubaiShelfSection
           title="Horlogerie Prestige & Gold Souk"
@@ -240,7 +453,7 @@ export const DubaiPreorderPage: React.FC = () => {
         />
       )}
 
-      {/* 8. JUMIA SHELF 3: ABAYAS & HAUTE COUTURE DUBAÏ */}
+      {/* 10. JUMIA SHELF 4: ABAYAS & HAUTE COUTURE DUBAÏ */}
       {abayaProducts.length > 0 && (
         <DubaiShelfSection
           title="Abayas & Haute Couture Émiratie"
@@ -253,23 +466,10 @@ export const DubaiPreorderPage: React.FC = () => {
         />
       )}
 
-      {/* 9. JUMIA SHELF 4: HIGH-TECH DXB & APPLE */}
-      {highTechProducts.length > 0 && (
-        <DubaiShelfSection
-          title="High-Tech DXB & Apple"
-          subtitle="iPhones versions internationales double SIM physique et électronique de pointe"
-          icon="📱"
-          categoryKey="high-tech"
-          badgeText="Spéc. DXB"
-          products={highTechProducts}
-          onViewAll={handleShelfViewAll}
-        />
-      )}
-
-      {/* 10. JUMIA-STYLE 4-PILLAR REASSURANCE STRIP */}
+      {/* 11. JUMIA-STYLE 4-PILLAR REASSURANCE STRIP */}
       <DubaiReassuranceRibbon />
 
-      {/* 11. CATALOGUE OFFICIEL COMPLET & RECHERCHE AVANCÉE (#dubai-catalog) */}
+      {/* 12. CATALOGUE OFFICIEL COMPLET & RECHERCHE AVANCÉE (#dubai-catalog) */}
       <section id="dubai-catalog" className="py-10 sm:py-14 bg-slate-950">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
           
@@ -313,15 +513,18 @@ export const DubaiPreorderPage: React.FC = () => {
             <div className="flex items-center gap-2 overflow-x-auto pt-4 mt-4 border-t border-slate-800/80 scrollbar-none">
               {[
                 { id: 'all', label: `Tous (${dubaiProducts.length})` },
+                { id: 'high-tech', label: '📱 Téléphones & Tech DXB' },
                 { id: 'parfum', label: "🏺 Parfums & Ouds" },
                 { id: 'montre', label: '⌚ Montres 24K' },
                 { id: 'mode', label: '🧕 Abayas & Soie' },
-                { id: 'high-tech', label: '📱 High-Tech DXB' },
                 { id: 'bakhoor', label: '🪵 Bakhoors Royaux' }
               ].map((pill) => (
                 <button
                   key={pill.id}
-                  onClick={() => setSelectedCategory(pill.id)}
+                  onClick={() => {
+                    setSelectedCategory(pill.id);
+                    if (pill.id !== 'high-tech') setSelectedPhoneBrand('all');
+                  }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                     selectedCategory === pill.id
                       ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
@@ -342,6 +545,32 @@ export const DubaiPreorderPage: React.FC = () => {
                 </button>
               )}
             </div>
+
+            {/* Secondary Brand Pills when in High-Tech or when a brand is active */}
+            {(selectedCategory === 'high-tech' || selectedPhoneBrand !== 'all') && (
+              <div className="flex items-center gap-2 overflow-x-auto pt-3 mt-3 border-t border-slate-800/60 scrollbar-none animate-in fade-in duration-200">
+                <span className="text-[11px] font-bold text-amber-400 shrink-0">Marques :</span>
+                {[
+                  { id: 'all', label: 'Toutes les marques' },
+                  { id: 'apple', label: '🍏 Apple iPhone UAE' },
+                  { id: 'samsung', label: '🔷 Samsung Gulf' },
+                  { id: 'xiaomi', label: '🟠 Xiaomi & Poco' },
+                  { id: 'google', label: '🌐 Google Pixel' }
+                ].map((b) => (
+                  <button
+                    key={b.id}
+                    onClick={() => setSelectedPhoneBrand(b.id as any)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                      selectedPhoneBrand === b.id
+                        ? 'bg-amber-400 text-slate-950 font-black shadow-sm'
+                        : 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700'
+                    }`}
+                  >
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
           </div>
 

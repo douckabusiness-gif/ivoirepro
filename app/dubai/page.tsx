@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { getHomeInitialData, getPublicSettings } from '@/lib/publicData';
 import { StoreProvider } from '@/lib/storeContext';
-import { DubaiPreorderPage } from '@/components/DubaiPreorderPage';
+import { DubaiContainer } from '@/components/DubaiContainer';
 import { ProductDetailModal } from '@/components/ProductDetailModal';
 import { CartDrawer } from '@/components/CartDrawer';
 import { CheckoutModal } from '@/components/CheckoutModal';
@@ -20,14 +20,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Espace Dubaï VIP | Précommandes & Arrivages Directs à Abidjan — ${storeName}`,
-    description: `Précommandez vos articles authentiques importés directement de Dubaï : parfums orientaux Lattafa, montres de prestige, mode et high-tech. Paiement sécurisé Wave, Orange Money, MTN et livraison garantie à Abidjan sous 7 à 10 jours ouvrés.`,
-    keywords: `dubaï abidjan, précommande dubaï, arrivage dubaï abidjan, parfum dubaï original abidjan, lattafa abidjan, montre dubaï abidjan, import dubaï côte d'ivoire, fret aérien dubaï abidjan, shopping dubaï abidjan`,
+    description: `Précommandez vos articles authentiques importés directement de Dubaï : smartphones Apple iPhone & Samsung Galaxy UAE spec, parfums orientaux Lattafa, montres de prestige et mode. Paiement sécurisé Wave, Orange Money, MTN et livraison garantie à Abidjan sous 7 à 10 jours ouvrés.`,
+    keywords: `dubaï abidjan, précommande dubaï, iphone dubai double sim, samsung dxb snapdragon, parfum dubaï original abidjan, lattafa abidjan, montre dubaï abidjan, import dubaï côte d'ivoire, fret aérien dubaï abidjan, shopping dubaï abidjan`,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       title: `Espace Dubaï VIP | Précommandes & Arrivages Directs à Abidjan — ${storeName}`,
-      description: `Articles exclusifs et parfums d'Orient importés de Dubaï. Paiement sécurisé en ligne et livraison express à Abidjan sous 7 à 10 jours.`,
+      description: `Smartphones officiels UAE Dual SIM, parfums d'Orient et articles exclusifs importés de Dubaï. Paiement sécurisé et livraison express à Abidjan sous 7 à 10 jours.`,
       url: canonicalUrl,
       siteName: storeName,
       type: 'website',
@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: 'summary_large_image',
       title: `Espace Dubaï VIP | Précommandes & Arrivages Directs à Abidjan — ${storeName}`,
-      description: `Commandez vos articles authentiques de Dubaï avec livraison garantie à Abidjan.`,
+      description: `Commandez vos smartphones et articles authentiques de Dubaï avec livraison garantie à Abidjan.`,
       images: [settings?.seoOgImage || 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&auto=format&fit=crop&q=80'],
     },
   };
@@ -57,7 +57,7 @@ export default async function DubaiPage() {
       <AnalyticsTracker />
       <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
         <main className="flex-1">
-          <DubaiPreorderPage />
+          <DubaiContainer />
         </main>
         <ProductDetailModal />
         <CartDrawer />
