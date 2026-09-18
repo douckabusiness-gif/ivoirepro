@@ -65,7 +65,11 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: baseUrl,
     },
     verification: s.seoGoogleVerification ? {
-      google: s.seoGoogleVerification,
+      google: (() => {
+        const raw = String(s.seoGoogleVerification).trim();
+        const match = raw.match(/content=["']([^"']+)["']/i);
+        return match ? match[1] : raw.replace(/<[^>]*>/g, '').trim();
+      })(),
     } : undefined,
     appleWebApp: {
       capable: true,

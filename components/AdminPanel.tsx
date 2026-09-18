@@ -8444,18 +8444,34 @@ export const AdminPanel = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Google Search Console */}
                       <div className="space-y-1.5 p-4 bg-slate-950/60 rounded-xl border border-slate-800">
-                        <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                          <span>Google Search Console</span>
-                        </label>
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                            <span>Google Search Console</span>
+                          </label>
+                          <span className={`text-[10px] font-bold ${
+                            !localSettings.seoGoogleVerification ? 'text-slate-500' : 'text-emerald-400'
+                          }`}>
+                            {!localSettings.seoGoogleVerification ? 'Non configuré' : '✓ Code prêt'}
+                          </span>
+                        </div>
                         <input
                           type="text"
                           value={localSettings.seoGoogleVerification || ''}
-                          onChange={(e) => setLocalSettings({ ...localSettings, seoGoogleVerification: e.target.value })}
-                          placeholder="Code de validation (ex: abc123...)"
+                          onChange={(e) => {
+                            let val = e.target.value.trim();
+                            const match = val.match(/content=["']([^"']+)["']/i);
+                            if (match) {
+                              val = match[1];
+                            } else if (val.startsWith('<') && val.endsWith('>')) {
+                              val = val.replace(/<[^>]*>/g, '').trim();
+                            }
+                            setLocalSettings({ ...localSettings, seoGoogleVerification: val });
+                          }}
+                          placeholder="Code (ex: abc123...) ou balise <meta>"
                           className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 font-mono"
                         />
-                        <p className="text-[10px] text-slate-500">
-                          Balise HTML meta google-site-verification pour valider la propriété de votre site.
+                        <p className="text-[10px] text-slate-400">
+                          Collez le code de validation ou toute la balise <code className="text-indigo-300 font-mono">&lt;meta&gt;</code> (extraction automatique).
                         </p>
                       </div>
 
