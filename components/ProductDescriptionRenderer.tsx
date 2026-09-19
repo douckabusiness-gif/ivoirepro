@@ -49,9 +49,9 @@ function normalizeRawDescription(raw: string): string {
   if (!raw) return '';
   return raw
     // Convert <li>...</li> to bullet points
-    .replace(/<li[^>]*>(.*?)<\/li>/gis, (_, content) => `\n• ${content.trim()}`)
+    .replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, (_, content) => `\n• ${content.trim()}`)
     // Convert <strong> and <b> to markdown **...**
-    .replace(/<(?:strong|b)[^>]*>(.*?)<\/(?:strong|b)>/gis, (_, content) => `**${content.trim()}**`)
+    .replace(/<(?:strong|b)[^>]*>([\s\S]*?)<\/(?:strong|b)>/gi, (_, content) => `**${content.trim()}**`)
     // Convert <br> and </p> to linebreaks
     .replace(/<br\s*[\/]?>/gi, '\n')
     .replace(/<\/p>/gi, '\n\n')

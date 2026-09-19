@@ -67,7 +67,7 @@ export function sanitizeProductTitle(title: string): string {
 export function sanitizeProductDescription(desc: string): string {
   if (!desc) return '';
   return desc
-    .replace(/<li[^>]*>(.*?)<\/li>/gis, (_, content) => `\n• ${content.trim()}`)
+    .replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, (_, content) => `\n• ${content.trim()}`)
     .replace(/<li[^>]*>/gi, '• ')
     .replace(/<\/li>/gi, '\n')
     .replace(/<br\s*[\/]?>/gi, '\n')
