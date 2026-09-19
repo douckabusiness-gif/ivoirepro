@@ -325,25 +325,92 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
 
   // Fallback Heuristique intelligent si pas d'API IA ou indisponible
   let matchedCat = categories[0];
-  let matchedSub = null;
+  let matchedSub: any = null;
   const lowerCaption = caption.toLowerCase();
 
-  if (/chaussure|basket|sneaker|soulier|sandale/i.test(lowerCaption)) {
-    const fCat = categories.find(c => c.id === 'cat-fashion');
-    if (fCat) {
-      matchedCat = fCat;
-      matchedSub = fCat.subcategories.find(s => s.id === 'sub-mode-chaussures') || null;
+  // 1. Électroménager & Climatisation
+  if (/pain|machine\s*a\s*pain|four|micro-onde|friteuse|air\s*fryer|blender|mixeur|robot|cuiseur|gaziniere|plaque|refrigerateur|frigo|congelateur|climatiseur|clim|ventilateur|lave-linge|machine\s*a\s*laver|fer\s*a\s*repasser|bouilloire|electromenager|aspirateur|cuisine/i.test(lowerCaption)) {
+    const aCat = categories.find(c => c.id === 'cat-appliances');
+    if (aCat) {
+      matchedCat = aCat;
+      if (/air\s*fryer|friteuse|blender|mixeur|robot|pain|cuiseur/i.test(lowerCaption)) {
+        matchedSub = aCat.subcategories.find(s => s.id === 'sub-app-robots') || null;
+      } else if (/four|gaziniere|plaque|cuisiniere/i.test(lowerCaption)) {
+        matchedSub = aCat.subcategories.find(s => s.id === 'sub-app-cuisiniere') || null;
+      } else if (/clim|ventilateur/i.test(lowerCaption)) {
+        matchedSub = aCat.subcategories.find(s => s.id === 'sub-app-clim') || null;
+      } else if (/frigo|refrigerateur|congelateur/i.test(lowerCaption)) {
+        matchedSub = aCat.subcategories.find(s => s.id === 'sub-app-frigo') || null;
+      } else if (/lave-linge|machine\s*a\s*laver|seche-linge/i.test(lowerCaption)) {
+        matchedSub = aCat.subcategories.find(s => s.id === 'sub-app-lave-linge') || null;
+      } else if (/fer|bouilloire/i.test(lowerCaption)) {
+        matchedSub = aCat.subcategories.find(s => s.id === 'sub-app-fers') || null;
+      }
     }
-  } else if (/phone|iphone|samsung|pixel|portable|android|tablette/i.test(lowerCaption)) {
+  }
+  // 2. Téléphones & Tablettes
+  else if (/phone|iphone|samsung|galaxy|pixel|redmi|xiaomi|tecno|infinix|portable|smartphone|tablette|ipad|airpods|ecouteurs|montre\s*connectee|apple\s*watch/i.test(lowerCaption)) {
     const pCat = categories.find(c => c.id === 'cat-phones');
-    if (pCat) matchedCat = pCat;
-  } else if (/parfum|fragrance|oud|beaute|creme|soin/i.test(lowerCaption)) {
+    if (pCat) {
+      matchedCat = pCat;
+      if (/iphone|apple|ipad|airpods/i.test(lowerCaption)) {
+        matchedSub = pCat.subcategories.find(s => s.id === 'sub-phone-apple') || null;
+      } else if (/samsung|xiaomi|redmi|tecno|infinix|android/i.test(lowerCaption)) {
+        matchedSub = pCat.subcategories.find(s => s.id === 'sub-phone-android') || null;
+      } else if (/tablette|ipad/i.test(lowerCaption)) {
+        matchedSub = pCat.subcategories.find(s => s.id === 'sub-phone-tablettes') || null;
+      } else if (/ecouteurs|airpods|casque/i.test(lowerCaption)) {
+        matchedSub = pCat.subcategories.find(s => s.id === 'sub-phone-ecouteurs') || null;
+      }
+    }
+  }
+  // 3. Électronique & Son
+  else if (/tv|television|smart\s*tv|ecran\s*4k|home\s*cinema|baffle|enceinte|karaoke|sono|drone|camera|gopro|playstation|ps5|ps4|xbox|console/i.test(lowerCaption)) {
+    const eCat = categories.find(c => c.id === 'cat-electronics');
+    if (eCat) {
+      matchedCat = eCat;
+      if (/tv|television|smart\s*tv/i.test(lowerCaption)) {
+        matchedSub = eCat.subcategories.find(s => s.id === 'sub-elec-tv') || null;
+      } else if (/baffle|enceinte|sono/i.test(lowerCaption)) {
+        matchedSub = eCat.subcategories.find(s => s.id === 'sub-elec-speakers') || null;
+      } else if (/home\s*cinema|barre\s*de\s*son/i.test(lowerCaption)) {
+        matchedSub = eCat.subcategories.find(s => s.id === 'sub-elec-soundbars') || null;
+      } else if (/playstation|ps5|ps4|xbox|console/i.test(lowerCaption)) {
+        matchedSub = eCat.subcategories.find(s => s.id === 'sub-elec-gaming') || null;
+      }
+    }
+  }
+  // 4. Informatique & Bureautique
+  else if (/ordinateur|pc|laptop|macbook|dell|hp|lenovo|asus|clavier|souris|moniteur|imprimante|disque\s*dur|ssd|cle\s*usb|routeur|box\s*wifi/i.test(lowerCaption)) {
+    const cCat = categories.find(c => c.id === 'cat-computers');
+    if (cCat) matchedCat = cCat;
+  }
+  // 5. Beauté, Parfums & Bien-Être
+  else if (/parfum|eau\s*de\s*parfum|fragrance|oud|lattafa|creme|serum|visage|savon|lotion|maquillage|rouge\s*a\s*levres|perruque|meche|cheveux/i.test(lowerCaption)) {
     const bCat = categories.find(c => c.id === 'cat-beauty');
     if (bCat) matchedCat = bCat;
   }
+  // 6. Mode & Habillement
+  else if (/chaussure|basket|sneaker|soulier|sandale|talon|robe|combinaison|chemise|polo|pantalon|costume|t-shirt|jean|veste|sac\s*a\s*main|sacoche|boubou|wax|pagne|lingerie|pyjama|mode|vetement/i.test(lowerCaption)) {
+    const fCat = categories.find(c => c.id === 'cat-fashion');
+    if (fCat) {
+      matchedCat = fCat;
+      if (/chaussure|basket|sneaker|soulier|sandale|talon/i.test(lowerCaption)) {
+        matchedSub = fCat.subcategories.find(s => s.id === 'sub-mode-chaussures') || null;
+      } else if (/robe|combinaison|jupe/i.test(lowerCaption)) {
+        matchedSub = fCat.subcategories.find(s => s.id === 'sub-mode-femme') || null;
+      } else if (/chemise|polo|costume|pantalon/i.test(lowerCaption)) {
+        matchedSub = fCat.subcategories.find(s => s.id === 'sub-mode-homme') || null;
+      } else if (/boubou|wax|pagne/i.test(lowerCaption)) {
+        matchedSub = fCat.subcategories.find(s => s.id === 'sub-mode-wax') || null;
+      } else if (/sac/i.test(lowerCaption)) {
+        matchedSub = fCat.subcategories.find(s => s.id === 'sub-mode-sacs') || null;
+      }
+    }
+  }
 
   const finalPrice = userExplicitPrice || 25000;
-  const title = caption.length > 3 && caption.length < 70
+  const title = caption.length > 3 && caption.length < 80
     ? caption.charAt(0).toUpperCase() + caption.slice(1)
     : `Nouvel Arrivage ${matchedCat.name}`;
 
@@ -356,13 +423,13 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
     price: finalPrice,
     originalPrice: Math.round(finalPrice * 1.2 / 500) * 500,
     shortDescription: `Produit certifié de haute qualité. Disponible dès maintenant avec livraison express à Abidjan.`,
-    description: `Découvrez notre **${title}**, sélectionné avec rigueur pour sa qualité et son style irréprochable.\n\n` +
+    description: `Découvrez notre **${title}**, sélectionné avec rigueur pour sa qualité et sa durabilité.\n\n` +
       `✨ **Points Forts :**\n` +
-      `- Finition et durabilité garanties\n` +
-      `- Conforme aux standards internationaux\n\n` +
+      `- Conforme aux normes et standards de qualité\n` +
+      `- Idéal pour un usage quotidien fiable\n\n` +
       `🚚 **Livraison Express :** Partout à Abidjan sous 24h et en intérieur sous 48h.\n` +
-      `💳 **Paiement :** Wave, Orange Money, MTN Money ou à la livraison.`,
-    tags: [matchedCat.name.toLowerCase(), 'abidjan', 'nouveaute', 'luxe'],
+      `💳 **Paiement Sécurisé :** Wave, Orange Money, MTN Money ou à la livraison.`,
+    tags: [matchedCat.name.toLowerCase(), 'abidjan', 'nouveaute'],
     badgeText: 'Nouveau',
     isDubaiPreorder: false,
     specs: {
@@ -372,15 +439,152 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
   };
 }
 
+// Structures pour l'agrégation d'albums et lots de photos
+interface AlbumPhotoItem {
+  fileId: string;
+  caption?: string;
+  messageId: number;
+}
+
+interface AlbumQueueEntry {
+  groupKey: string;
+  chatId: number | string;
+  items: AlbumPhotoItem[];
+  caption: string;
+  settings: StoreSettings;
+  statusMsgId?: number;
+  timer: NodeJS.Timeout;
+}
+
+// Buffers en mémoire partagée
+const albumBuffers = new Map<string, AlbumQueueEntry>();
+const lastChatBatchKey = new Map<string | number, string>();
+
 /**
- * Point d'entrée principal : Traiter une photo reçue sur Telegram
+ * Mise en file d'attente d'une photo Telegram pour agrégation automatique en un seul produit
  */
-export async function handleTelegramProductPhoto(
+export async function queueTelegramProductPhoto(
   message: any,
   settings: StoreSettings
-): Promise<TelegramPhotoProcessResult> {
+): Promise<{ queued: boolean; count: number }> {
   const botToken = settings.telegramBotToken?.trim();
   const chatId = message.chat?.id;
+  if (!botToken || !chatId) return { queued: false, count: 0 };
+
+  // 1. Extraire la meilleure résolution de photo ou document image
+  const photos = message.photo;
+  const doc = message.document;
+  let fileId = '';
+
+  if (Array.isArray(photos) && photos.length > 0) {
+    fileId = photos[photos.length - 1].file_id;
+  } else if (doc && (doc.mime_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(doc.file_name || ''))) {
+    fileId = doc.file_id;
+  }
+
+  if (!fileId) return { queued: false, count: 0 };
+
+  const messageCaption = (message.caption || '').trim();
+  const mediaGroupId = message.media_group_id ? String(message.media_group_id) : null;
+
+  // Déterminer la clé de regroupement :
+  // Si media_group_id existe : regrouper par media_group_id
+  // Sinon : regrouper par lot consécutif du même chat (fenêtre de 2.5s)
+  let groupKey: string;
+  if (mediaGroupId) {
+    groupKey = `mg_${chatId}_${mediaGroupId}`;
+  } else {
+    const existingChatKey = lastChatBatchKey.get(chatId);
+    if (existingChatKey && albumBuffers.has(existingChatKey)) {
+      groupKey = existingChatKey;
+    } else {
+      groupKey = `chat_${chatId}_${Date.now()}`;
+      lastChatBatchKey.set(chatId, groupKey);
+    }
+  }
+
+  const existing = albumBuffers.get(groupKey);
+
+  if (existing) {
+    existing.items.push({ fileId, caption: messageCaption, messageId: message.message_id });
+    if (!existing.caption && messageCaption) {
+      existing.caption = messageCaption;
+    }
+    existing.settings = settings;
+
+    // Réinitialiser le timer avec debounce de 1.8s
+    clearTimeout(existing.timer);
+    existing.timer = setTimeout(() => {
+      processAlbumBatch(groupKey).catch(err => console.error('Erreur processAlbumBatch:', err));
+    }, 1800);
+
+    // Mettre à jour le message d'attente s'il existe
+    if (existing.statusMsgId) {
+      fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/editMessageText`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          message_id: existing.statusMsgId,
+          text: `🤖 <i>Agent IA : ${existing.items.length} photos du même produit reçues... Regroupement et publication en cours...</i>`,
+          parse_mode: 'HTML',
+        }),
+      }).catch(() => null);
+    }
+
+    console.log(`[Telegram Album] Photo ${existing.items.length} ajoutée au lot ${groupKey}`);
+    return { queued: true, count: existing.items.length };
+  } else {
+    // Premier élément du lot
+    let statusMsgId: number | undefined;
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: `🤖 <i>L'Agent IA détecte vos photos... Réception en cours...</i>`,
+          parse_mode: 'HTML',
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (data?.ok && data.result?.message_id) {
+        statusMsgId = data.result.message_id;
+      }
+    } catch {}
+
+    const newEntry: AlbumQueueEntry = {
+      groupKey,
+      chatId,
+      items: [{ fileId, caption: messageCaption, messageId: message.message_id }],
+      caption: messageCaption,
+      settings,
+      statusMsgId,
+      timer: setTimeout(() => {
+        processAlbumBatch(groupKey).catch(err => console.error('Erreur processAlbumBatch:', err));
+      }, 2400),
+    };
+
+    albumBuffers.set(groupKey, newEntry);
+    console.log(`[Telegram Album] Nouveau lot créé pour ${groupKey}`);
+    return { queued: true, count: 1 };
+  }
+}
+
+/**
+ * Traitement final d'un lot de photos regroupées en un SEUL produit
+ */
+async function processAlbumBatch(groupKey: string): Promise<TelegramPhotoProcessResult> {
+  const entry = albumBuffers.get(groupKey);
+  if (!entry) return { success: false, error: 'Lot introuvable' };
+
+  albumBuffers.delete(groupKey);
+  if (lastChatBatchKey.get(entry.chatId) === groupKey) {
+    lastChatBatchKey.delete(entry.chatId);
+  }
+
+  const { chatId, items, caption, settings, statusMsgId } = entry;
+  const botToken = settings.telegramBotToken?.trim();
   const baseUrl = (settings.seoCanonicalUrl || process.env.APP_URL || 'https://www.ivoireci.com').replace(/\/+$/, '');
   const currency = settings.currency || 'FCFA';
 
@@ -388,50 +592,37 @@ export async function handleTelegramProductPhoto(
     return { success: false, error: 'Bot token ou chatId manquant' };
   }
 
-  // 1. Extraire la meilleure résolution de photo
-  const photos = message.photo;
-  const doc = message.document;
-  let fileId = '';
-
-  if (Array.isArray(photos) && photos.length > 0) {
-    // La dernière entrée est la plus haute résolution
-    fileId = photos[photos.length - 1].file_id;
-  } else if (doc && doc.mime_type?.startsWith('image/')) {
-    fileId = doc.file_id;
+  if (statusMsgId) {
+    await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/editMessageText`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        message_id: statusMsgId,
+        text: `🤖 <i>L'Agent IA analyse ${items.length} photo(s) du produit, génère la fiche technique et publie sur ivoireci.com...</i>`,
+        parse_mode: 'HTML',
+      }),
+    }).catch(() => null);
   }
-
-  if (!fileId) {
-    return { success: false, error: 'Aucun fichier image trouvé dans le message' };
-  }
-
-  const caption = (message.caption || '').trim();
-
-  // 2. Envoyer une notification temporaire de traitement
-  const statusMsgRes = await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: `🤖 <i>L'Agent IA analyse votre photo en haute résolution, identifie le produit et configure la fiche en direct...</i>`,
-      parse_mode: 'HTML',
-    }),
-  }).catch(() => null);
-
-  const statusMsgData = await statusMsgRes?.json().catch(() => null);
-  const statusMsgId = statusMsgData?.result?.message_id;
 
   try {
-    // 3. Télécharger l'image depuis Telegram
-    const { buffer, filePath } = await downloadTelegramPhoto(fileId, botToken);
+    // 1. Télécharger toutes les photos en parallèle
+    const downloadedList = await Promise.all(
+      items.map(it => downloadTelegramPhoto(it.fileId, botToken))
+    );
 
-    // 4. Enregistrer localement pour la boutique web
-    const { filename, relativeUrl } = saveImageLocally(buffer, filePath);
-    const fullImageUrl = `${baseUrl}${relativeUrl}`;
+    // 2. Enregistrer localement toutes les photos et créer le tableau d'images
+    const imageUrls: string[] = [];
+    for (const d of downloadedList) {
+      const { relativeUrl } = saveImageLocally(d.buffer, d.filePath);
+      imageUrls.push(`${baseUrl}${relativeUrl}`);
+    }
 
-    // 5. Analyser avec l'IA
-    const aiData = await analyzeProductWithAi(buffer, caption, settings);
+    // 3. Analyser avec l'IA en utilisant la première image + la légende commune du lot
+    const primaryBuffer = downloadedList[0].buffer;
+    const aiData = await analyzeProductWithAi(primaryBuffer, caption, settings);
 
-    // Vérifier l'existence de la catégorie
+    // 4. Catégorisation
     let validCat = await prisma.category.findUnique({
       where: { id: aiData.categoryId },
       include: { subcategories: true }
@@ -454,7 +645,7 @@ export async function handleTelegramProductPhoto(
       : (validCat.subcategories[0]?.id || null);
     const subcategoryName = validCat.subcategories.find(s => s.id === subcategoryId)?.name || null;
 
-    // 6. Créer le produit dans la base de données
+    // 5. Créer l'unique produit avec TOUTES les images regroupées
     const slug = generateProductSlug(aiData.title);
     const discountPercent = aiData.originalPrice && aiData.originalPrice > aiData.price
       ? Math.round(((aiData.originalPrice - aiData.price) / aiData.originalPrice) * 100)
@@ -474,11 +665,11 @@ export async function handleTelegramProductPhoto(
         categoryName,
         subcategoryId,
         subcategoryName,
-        images: [fullImageUrl],
+        images: imageUrls, // TOUTES LES PHOTOS DANS LE MÊME PRODUIT !
         featured: false,
         isNew: true,
         isFlashSale: false,
-        isDubaiPreorder: false,
+        isDubaiPreorder: false, // EXCLUSIVEMENT SUR IVOIRECI.COM
         inStock: true,
         stockCount: 10,
         rating: 5.0,
@@ -495,7 +686,7 @@ export async function handleTelegramProductPhoto(
       data: { itemCount: { increment: 1 } }
     }).catch(() => null);
 
-    // 7. Supprimer le message d'attente
+    // Supprimer le message d'attente
     if (statusMsgId) {
       await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/deleteMessage`, {
         method: 'POST',
@@ -504,9 +695,8 @@ export async function handleTelegramProductPhoto(
       }).catch(() => null);
     }
 
-    // 8. Préparer le message final enrichi
+    // 6. Envoyer le message de confirmation avec la photo principale et les boutons
     const productUrl = `${baseUrl}/produit/${newProduct.slug}`;
-
     const priceText = `${newProduct.price.toLocaleString('fr-FR')} ${currency}`;
     const origPriceText = newProduct.originalPrice
       ? ` <s>${newProduct.originalPrice.toLocaleString('fr-FR')} ${currency}</s>`
@@ -516,6 +706,7 @@ export async function handleTelegramProductPhoto(
       `🎉 <b>PRODUIT PUBLIÉ EN DIRECT PAR L'AGENT IA !</b>`,
       '',
       `📸 <b>Titre :</b> ${escapeTelegramHtml(newProduct.title)}`,
+      `🖼️ <b>Photos :</b> ${imageUrls.length} photo(s) haute résolution regroupée(s)`,
       `📂 <b>Rayon :</b> ${escapeTelegramHtml(categoryName)}${subcategoryName ? ` › ${escapeTelegramHtml(subcategoryName)}` : ''}`,
       `💰 <b>Prix :</b> <b>${priceText}</b>${origPriceText}`,
       `📦 <b>Stock :</b> ${newProduct.stockCount} unités`,
@@ -543,13 +734,12 @@ export async function handleTelegramProductPhoto(
       ]
     };
 
-    // Envoyer la photo avec le clavier interactif
     await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/sendPhoto`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: chatId,
-        photo: fileId, // Réutilise directement le file_id Telegram (instantané)
+        photo: items[0].fileId,
         caption: captionText,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard,
@@ -566,9 +756,7 @@ export async function handleTelegramProductPhoto(
       currency,
     };
   } catch (error: any) {
-    console.error('Erreur traitement photo Telegram:', error);
-    
-    // Si échec, notifier l'administrateur
+    console.error('Erreur traitement lot de photos Telegram:', error);
     await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -581,4 +769,15 @@ export async function handleTelegramProductPhoto(
 
     return { success: false, error: error.message };
   }
+}
+
+/**
+ * Point d'entrée rétrocompatible
+ */
+export async function handleTelegramProductPhoto(
+  message: any,
+  settings: StoreSettings
+): Promise<TelegramPhotoProcessResult> {
+  await queueTelegramProductPhoto(message, settings);
+  return { success: true };
 }

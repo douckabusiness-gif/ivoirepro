@@ -7,7 +7,7 @@ import {
   escapeTelegramHtml,
   verifyTelegramWebhookSecret
 } from '@/lib/telegram';
-import { handleTelegramProductPhoto } from '@/lib/telegramProductPublisher';
+import { queueTelegramProductPhoto, handleTelegramProductPhoto } from '@/lib/telegramProductPublisher';
 
 export const dynamic = 'force-dynamic';
 
@@ -261,9 +261,9 @@ export async function POST(request: Request) {
     );
 
     if (isPhotoMessage) {
-      console.log(`[Telegram Webhook] Photo reçue de l'administrateur (${incomingChatId}), lancement de la publication IA sur ivoireci.com...`);
-      await handleTelegramProductPhoto(msg, settings as any);
-      return NextResponse.json({ ok: true });
+      console.log(`[Telegram Webhook] Photo reçue de l'administrateur (${incomingChatId}), mise en file d'attente pour lot/album...`);
+      await queueTelegramProductPhoto(msg, settings as any);
+      return NextResponse.json({ ok: true, queued: true });
     }
 
     // 3. GESTION DES COMMANDES TEXTES (/stats, /stock, /commandes, /aide)
