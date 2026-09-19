@@ -151,6 +151,7 @@ async function analyzeProductWithAi(
 
   const geminiKey = settings.geminiApiKey?.trim() || process.env.GEMINI_API_KEY?.trim() || '';
   const openaiKey = settings.openaiApiKey?.trim() || process.env.OPENAI_API_KEY?.trim() || '';
+  const groqKey = settings.groqApiKey?.trim() || process.env.GROQ_API_KEY?.trim() || '';
 
   const prompt = `Tu es l'agent IA expert e-commerce d'Ivoire Djassa à Abidjan (Côte d'Ivoire).
 Analyse cette photo de produit transmise par le commerçant sur Telegram.
@@ -281,6 +282,50 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
       }
     } catch (err) {
       console.warn('Erreur OpenAI Vision pour produit Telegram:', err);
+    }
+  }
+
+  // Tenter Groq Vision (Llama 3.2 Vision)
+  if (groqKey) {
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${groqKey}`,
+        },
+        body: JSON.stringify({
+          model: 'llama-3.2-11b-vision-preview',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                {
+                  type: 'image_url',
+                  image_url: { url: `data:${mimeType};base64,${base64Data}` }
+                }
+              ]
+            }
+          ],
+          temperature: 0.2,
+          max_tokens: 1000,
+          response_format: { type: 'json_object' }
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.choices?.[0]?.message?.content?.trim() || '';
+        const cleanJson = text.replace(/^```json/i, '').replace(/```$/i, '').trim();
+        const parsed = JSON.parse(cleanJson);
+        if (parsed.title && parsed.categoryId) {
+          if (userExplicitPrice) parsed.price = userExplicitPrice;
+          return parsed;
+        }
+      }
+    } catch (err) {
+      console.warn('Erreur Groq Vision pour produit Telegram:', err);
     }
   }
 
