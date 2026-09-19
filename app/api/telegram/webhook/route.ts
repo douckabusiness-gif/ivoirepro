@@ -7,6 +7,7 @@ import {
   escapeTelegramHtml,
   verifyTelegramWebhookSecret
 } from '@/lib/telegram';
+import { handleTelegramProductPhoto } from '@/lib/telegramProductPublisher';
 
 export const dynamic = 'force-dynamic';
 
@@ -159,11 +160,105 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: true });
       }
 
+      // Action: Supprimer un produit créé via Telegram
+      if (data.startsWith('tgprod_del:')) {
+        const prodId = data.replace('tgprod_del:', '');
+        const deleted = await prisma.product.delete({
+          where: { id: prodId }
+        }).catch(() => null);
+
+        if (deleted) {
+          await answerTelegramCallbackQuery(callbackId, 'Produit retiré de la boutique avec succès ! 🗑️', true, botToken);
+          await fetch(`https://api.telegram.org/bot${encodeURIComponent(botToken)}/editMessageCaption`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              message_id: messageId,
+              caption: `🗑️ <b>PRODUIT SUPPRIMÉ :</b> <s>${escapeTelegramHtml(deleted.title)}</s> a été retiré du catalogue en ligne.`,
+              parse_mode: 'HTML',
+            }),
+          }).catch(() => null);
+        } else {
+          await answerTelegramCallbackQuery(callbackId, 'Produit déjà supprimé ou introuvable.', true, botToken);
+        }
+        return NextResponse.json({ ok: true });
+      }
+
+      // Action: Basculer le stock d'un produit (En stock / Hors stock)
+      if (data.startsWith('tgprod_stock:')) {
+        const prodId = data.replace('tgprod_stock:', '');
+        const prod = await prisma.product.findUnique({ where: { id: prodId } });
+        if (prod) {
+          const nextStock = !prod.inStock;
+          await prisma.product.update({
+            where: { id: prodId },
+            data: { inStock: nextStock, stockCount: nextStock ? 10 : 0 }
+          });
+          const statusText = nextStock ? 'Remis en stock ✅' : 'Défini hors stock ⏸️';
+          await answerTelegramCallbackQuery(callbackId, statusText, false, botToken);
+        }
+        return NextResponse.json({ ok: true });
+      }
+
+      // Action: Appliquer une réduction de prix (-X%)
+      if (data.startsWith('tgprod_discount:')) {
+        const parts = data.split(':');
+        const prodId = parts[1];
+        const percent = parseInt(parts[2] || '10', 10);
+        const prod = await prisma.product.findUnique({ where: { id: prodId } });
+        if (prod) {
+          const newPrice = Math.max(500, Math.round((prod.price * (1 - percent / 100)) / 500) * 500);
+          await prisma.product.update({
+            where: { id: prodId },
+            data: {
+              price: newPrice,
+              originalPrice: prod.originalPrice || prod.price,
+              discountPercent: percent,
+              badgeText: `-${percent}%`
+            }
+          });
+          await answerTelegramCallbackQuery(callbackId, `Nouveau prix: ${newPrice.toLocaleString('fr-FR')} FCFA (-${percent}%) ✨`, true, botToken);
+        }
+        return NextResponse.json({ ok: true });
+      }
+
+      // Action: Ajuster le prix (+X FCFA)
+      if (data.startsWith('tgprod_adjprice:')) {
+        const parts = data.split(':');
+        const prodId = parts[1];
+        const delta = parseInt(parts[2] || '5000', 10);
+        const prod = await prisma.product.findUnique({ where: { id: prodId } });
+        if (prod) {
+          const newPrice = Math.max(500, prod.price + delta);
+          await prisma.product.update({
+            where: { id: prodId },
+            data: { price: newPrice }
+          });
+          await answerTelegramCallbackQuery(callbackId, `Prix ajusté à: ${newPrice.toLocaleString('fr-FR')} FCFA 💰`, true, botToken);
+        }
+        return NextResponse.json({ ok: true });
+      }
+
       await answerTelegramCallbackQuery(callbackId, 'Action reçue', false, botToken);
       return NextResponse.json({ ok: true });
     }
 
-    // 2. GESTION DES COMMANDES TEXTES (/stats, /stock, /commandes, /aide)
+    // 2. GESTION DES PHOTOS DE PRODUITS PAR L'AGENT IA (OPTION 1 : PUBLICATION DIRECTE)
+    if (body.message && (body.message.photo || (body.message.document && body.message.document.mime_type?.startsWith('image/')))) {
+      const msg = body.message;
+      const chatId = msg.chat?.id;
+
+      // Sécurité : autoriser uniquement le chat ID configuré
+      if (authorizedChatId && String(chatId) !== String(authorizedChatId)) {
+        return NextResponse.json({ ok: true, ignored: 'Chat non autorisé' });
+      }
+
+      await handleTelegramProductPhoto(msg, settings as any);
+      return NextResponse.json({ ok: true });
+    }
+
+    // 3. GESTION DES COMMANDES TEXTES (/stats, /stock, /commandes, /aide)
     if (body.message && body.message.text) {
       const msg = body.message;
       const chatId = msg.chat?.id;
@@ -191,15 +286,18 @@ export async function POST(request: Request) {
 
       // Message d'aide par défaut
       const helpText = [
-        `🤖 <b>ASSISTANT AUTONOME — ${escapeTelegramHtml(settings.storeName || 'Ivoire Djassa')}</b>`,
+        `🤖 <b>ASSISTANT AUTONOME & IA — ${escapeTelegramHtml(settings.storeName || 'Ivoire Djassa')}</b>`,
         '',
-        `Voici les commandes rapides disponibles :`,
+        `📸 <b>PUBLICATION RAPIDE DE PRODUITS :</b>`,
+        `👉 <b>Envoyez simplement une photo de produit</b> dans ce chat !`,
+        `L'Agent IA Vision analyse l'image, extrait votre prix (ou l'estime), rédige la fiche et publie le produit immédiatement en ligne sur ivoireci.com !`,
+        `<i>Astuce : Écrivez votre prix dans la légende (ex: <code>45000</code> ou <code>45 000 FCFA pointure 42</code>) ou écrivez <code>Dubaï</code> pour le mettre au rayon Dubaï Express !</i>`,
+        '',
+        `⚡ <b>COMMANDES DE GESTION :</b>`,
         `📊 <b>/stats</b> ou <b>/bilan</b> — Chiffre d'affaires et récapitulatif du jour`,
         `📦 <b>/stock</b> — Articles en rupture ou stock faible (≤ 3 unités)`,
         `🛍️ <b>/commandes</b> — Les 5 dernières commandes en attente`,
         `❓ <b>/aide</b> — Afficher ce message d'aide`,
-        '',
-        `💡 <i>Vous pouvez aussi interagir directement avec les boutons cliquables sous chaque alerte de commande.</i>`,
       ].join('\n');
 
       await sendTelegramMessage(helpText, settings as any, {
