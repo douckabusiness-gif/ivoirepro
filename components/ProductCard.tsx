@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/storeContext';
+import { cleanProductTitle } from '@/lib/utils';
 import { 
   ShoppingBag, 
   Heart, 
@@ -184,7 +185,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Titre Produit (2 lignes clampées nettes style Alibaba) */}
           <h3 className="font-bold text-[10.5px] sm:text-xs md:text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-tight sm:leading-snug min-h-[26px] sm:min-h-[32px]">
-            {product.title}
+            {cleanProductTitle(product.title)}
           </h3>
 
           {/* Bloc Prix Principal & Remise */}

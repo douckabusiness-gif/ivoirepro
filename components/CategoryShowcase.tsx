@@ -71,7 +71,7 @@ export const CategoryShowcase = () => {
             }}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs hover:shadow-xs transition self-start sm:self-auto cursor-pointer"
           >
-            <span>Voir tous les rayons ({products.length} articles)</span>
+            <span>Voir tous les rayons ({products.filter(p => !p.isDubaiPreorder).length} articles)</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -79,8 +79,8 @@ export const CategoryShowcase = () => {
         {/* Alibaba Category Grid Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {categories.map((category) => {
-            const count = products.filter(p => p.categoryId === category.id).length;
-            const categoryProducts = products.filter(p => p.categoryId === category.id).slice(0, 3);
+            const count = products.filter(p => !p.isDubaiPreorder && p.categoryId === category.id).length;
+            const categoryProducts = products.filter(p => !p.isDubaiPreorder && p.categoryId === category.id).slice(0, 3);
             const icon = iconMap[category.iconName || ''] || <Grid className="w-5 h-5 text-slate-700 dark:text-slate-300" />;
 
             return (

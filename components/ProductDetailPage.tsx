@@ -37,6 +37,8 @@ import {
 } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { getEffectivePriceTiers, getUnitPriceForQuantity, getActiveTierIndex } from '@/lib/tierPricing';
+import { cleanProductTitle } from '@/lib/utils';
+import { ProductDescriptionRenderer } from '@/components/ProductDescriptionRenderer';
 
 export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product } = {}) => {
   const { 
@@ -72,7 +74,7 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
     product?.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined
   );
   const [quantity, setQuantity] = useState(1);
-  const [selectedCity, setSelectedCity] = useState('Dakar');
+  const [selectedCity, setSelectedCity] = useState('Abidjan (Express 2-4h)');
 
   // UI state
   const [isAddedSuccess, setIsAddedSuccess] = useState(false);
@@ -91,28 +93,28 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
   }>>([
     {
       id: 'rev-1',
-      author: 'Mamadou Sow',
+      author: 'Kouassi Jean-Philippe',
       rating: 5,
       date: 'Hier',
-      comment: 'Article reçu en moins de 24h à Dakar ! La qualité est impressionnante, conforme aux photos. Commande passée par WhatsApp très fluide.',
+      comment: 'Article reçu en moins de 3h à Abidjan (Cocody) ! La qualité est impressionnante, conforme aux photos. Commande passée par WhatsApp très fluide.',
       verified: true,
       helpfulCount: 14
     },
     {
       id: 'rev-2',
-      author: 'Marième Diallo',
+      author: 'Aïssata Touré',
       rating: 5,
       date: 'Il y a 3 jours',
-      comment: 'Super expérience d\'achat. Paiement Wave rapide et livraison sécurisée à domicile. Le packaging est soigné.',
+      comment: 'Super expérience d\'achat. Paiement Wave rapide et livraison sécurisée à domicile à Marcory. Le packaging est impeccable.',
       verified: true,
       helpfulCount: 9
     },
     {
       id: 'rev-3',
-      author: 'Abdoulaye Kébé',
+      author: 'Ibrahim Koné',
       rating: 4,
       date: 'Il y a 1 semaine',
-      comment: 'Excellent rapport qualité-prix. Très bon produit et service client hyper réactif sur WhatsApp.',
+      comment: 'Excellent rapport qualité-prix. Très bon produit et livreur très courtois. Je recommande vivement Ivoire Djassa.',
       verified: true,
       helpfulCount: 6
     }
@@ -241,8 +243,15 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
   };
 
   // Related products from same category or random fallback
+  // STRICT ISOLATION: Normal products only show normal products; Dubai preorders only show Dubai
+  const isCurrentDubai = Boolean(product.isDubaiPreorder);
   const relatedProducts = products
-    .filter(p => p.id !== product.id && (p.categoryId === product.categoryId || p.featured))
+    .filter(p => {
+      if (p.id === product.id) return false;
+      if (!isCurrentDubai && p.isDubaiPreorder) return false;
+      if (isCurrentDubai && !p.isDubaiPreorder) return false;
+      return p.categoryId === product.categoryId || p.featured;
+    })
     .slice(0, 4);
 
   const category = categories.find(c => c.id === product.categoryId);
@@ -290,7 +299,7 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
             )}
             <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <span className="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-xs">
-              {product.title}
+              {cleanProductTitle(product.title)}
             </span>
           </nav>
 
@@ -474,7 +483,7 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
 
                 {/* Main Product Title */}
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-snug">
-                  {product.title}
+                  {cleanProductTitle(product.title)}
                 </h1>
 
                 {/* Rating score, reviews count and sold orders */}
@@ -796,20 +805,25 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
                     onChange={(e) => setSelectedCity(e.target.value)}
                     className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 cursor-pointer focus:outline-hidden"
                   >
-                    <option value="Dakar">Dakar (Express 24h)</option>
-                    <option value="Thiès">Thiès (24-48h)</option>
-                    <option value="Saint-Louis">Saint-Louis (48h)</option>
-                    <option value="Abidjan">Abidjan (24-48h)</option>
-                    <option value="Bamako">Bamako (48-72h)</option>
-                    <option value="Paris & Europe">Paris & Europe (3-5 jours)</option>
-                    <option value="Autre Région">Autre Région / International</option>
+                    <option value="Abidjan (Express 2-4h)">Abidjan (Express 2-4h)</option>
+                    <option value="Cocody / Marcory / Plateau">Cocody / Marcory / Plateau (Jour même)</option>
+                    <option value="Yopougon / Abobo / Koumassi">Yopougon / Abobo / Koumassi (Jour même)</option>
+                    <option value="Bingerville / Grand-Bassam">Bingerville / Grand-Bassam (24h)</option>
+                    <option value="Bouaké / Yamoussoukro">Bouaké / Yamoussoukro (24-48h)</option>
+                    <option value="San-Pédro / Korhogo">San-Pédro / Korhogo (24-48h)</option>
+                    <option value="Autre Ville (Côte d'Ivoire)">Autre Ville (Côte d'Ivoire 48h)</option>
+                    <option value="International / Sous-Région">International Express (3-5 jours)</option>
                   </select>
                 </div>
 
                 <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200">
                   <span>Délai estimé pour {selectedCity} :</span>
                   <span className="font-bold text-slate-900">
-                    {selectedCity === 'Dakar' ? 'Aujourd\'hui ou Demain' : '24 à 48 heures'}
+                    {selectedCity.includes('Abidjan') || selectedCity.includes('Cocody') || selectedCity.includes('Yopougon')
+                      ? 'Livraison Aujourd\'hui (Sous 2 à 4h)'
+                      : selectedCity.includes('Bingerville') || selectedCity.includes('Grand-Bassam')
+                      ? 'Demain (Sous 24h)'
+                      : '24 à 48 heures ouvrées'}
                   </span>
                 </div>
               </div>
@@ -883,12 +897,11 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
             {activeTab === 'desc' && (
               <div className="space-y-6 max-w-4xl text-slate-700 leading-relaxed text-sm">
                 <div>
-                  <h3 className="text-base font-black text-slate-900 mb-2">
-                    À Propos de : {product.title}
+                  <h3 className="text-base font-black text-slate-900 mb-3 flex items-center gap-2">
+                    <span>À Propos de :</span>
+                    <span className="text-indigo-600">{cleanProductTitle(product.title)}</span>
                   </h3>
-                  <p className="whitespace-pre-line text-slate-600 leading-relaxed">
-                    {product.description}
-                  </p>
+                  <ProductDescriptionRenderer description={product.description} />
                 </div>
 
                 {/* Key Benefits Grid */}
@@ -1180,7 +1193,7 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
       {/* ========================================================================= */}
       <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 p-2.5 z-40 shadow-2xl flex items-center gap-2">
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] text-slate-400 font-bold uppercase truncate">{product.title}</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase truncate">{cleanProductTitle(product.title)}</p>
           <p className="text-sm font-black text-slate-900">{formatPrice(totalPrice)}</p>
         </div>
 

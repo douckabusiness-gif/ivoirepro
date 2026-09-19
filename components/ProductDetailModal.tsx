@@ -20,6 +20,8 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { getEffectivePriceTiers, getUnitPriceForQuantity, getActiveTierIndex } from '@/lib/tierPricing';
+import { cleanProductTitle } from '@/lib/utils';
+import { ProductDescriptionRenderer } from '@/components/ProductDescriptionRenderer';
 
 interface ProductDetailModalProps {
   product?: Product | null;
@@ -242,7 +244,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 leading-tight">
-                {product.title}
+                {cleanProductTitle(product.title)}
               </h1>
 
               {/* Rating */}
@@ -534,7 +536,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="pt-4 text-sm text-slate-600 leading-relaxed">
             {activeTab === 'desc' && (
               <div className="space-y-4">
-                <p className="whitespace-pre-line">{product.description}</p>
+                <ProductDescriptionRenderer description={product.description} />
                 {product.tags && product.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 pt-2">
                     {product.tags.map(t => (

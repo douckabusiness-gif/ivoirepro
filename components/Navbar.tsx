@@ -73,6 +73,7 @@ export const Navbar = () => {
   );
   const headerColor = normalizeHexColor(settings.siteHeaderColor, '#ffffff');
   const searchResults = searchQuery.trim() === '' ? [] : products.filter(p => {
+    if (p.isDubaiPreorder) return false;
     const matchCat = searchCategory === 'all' || p.categoryId === searchCategory;
     const q = searchQuery.toLowerCase();
     const matchText = p.title.toLowerCase().includes(q) ||
@@ -488,7 +489,7 @@ export const Navbar = () => {
                       >
                         <span className="font-bold">{cat.name}</span>
                         <span className="text-[10px] text-slate-400 font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700">
-                          {products.filter(p => p.categoryId === cat.id).length}
+                          {products.filter(p => !p.isDubaiPreorder && p.categoryId === cat.id).length}
                         </span>
                       </button>
                     ))}
@@ -639,7 +640,7 @@ export const Navbar = () => {
                     >
                       <span>{cat.name}</span>
                       <span className="text-xs text-slate-400 font-bold">
-                        {products.filter(p => p.categoryId === cat.id).length}
+                        {products.filter(p => !p.isDubaiPreorder && p.categoryId === cat.id).length}
                       </span>
                     </button>
                   ))}

@@ -51,6 +51,39 @@ export function extractPriceFromText(text: string): number | null {
 }
 
 /**
+ * Nettoie les titres de produits pour retirer d'éventuels prix ou tirets collés
+ */
+export function sanitizeProductTitle(title: string): string {
+  if (!title) return '';
+  return title
+    .replace(/[\s–\-—:]+\d[\d\s\.,]*(?:fcfa|cfa|f\b|frs)?\s*$/i, '')
+    .replace(/^["'\s]+|["'\s]+$/g, '')
+    .trim();
+}
+
+/**
+ * Nettoie les descriptions pour convertir/supprimer les balises HTML et garantir un rendu pro
+ */
+export function sanitizeProductDescription(desc: string): string {
+  if (!desc) return '';
+  return desc
+    .replace(/<li[^>]*>(.*?)<\/li>/gis, (_, content) => `\n• ${content.trim()}`)
+    .replace(/<li[^>]*>/gi, '• ')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<br\s*[\/]?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
  * Télécharger une photo depuis les serveurs Telegram
  */
 async function downloadTelegramPhoto(fileId: string, botToken: string): Promise<{ buffer: Buffer; filePath: string }> {
@@ -163,13 +196,13 @@ CATÉGORIES DISPONIBLES DANS LA BOUTIQUE :
 ${JSON.stringify(categoriesContext, null, 2)}
 
 INSTRUCTIONS :
-1. "title" : Rédige un titre commercial accrocheur et précis (ex : "Sneakers Nike Air Jordan 4 Retro - Noir", "Robe de Soirée Élégante en Satin", "iPhone 13 Pro Max 256Go").
+1. "title" : Rédige un titre commercial accrocheur et précis (ex : "Sneakers Nike Air Jordan 4 Retro - Noir", "Machine à Pain RAF Automatique 12 Programmes", "Souffleur de Feuilles Électrique 1800W"). NE METS JAMAIS le prix, ni la mention FCFA, ni de tiret avec le prix dans le titre ! Le titre doit être uniquement le nom commercial du produit.
 2. "categoryId" & "categoryName" : Choisis impérativement l'ID d'une catégorie EXISTANTE dans la liste ci-dessus.
 3. "subcategoryId" & "subcategoryName" : Choisis une sous-catégorie existante de cette catégorie si applicable, ou null.
 4. "price" : Si un prix est détecté (${userExplicitPrice || 'aucun'}), utilise STRICTEMENT ${userExplicitPrice || 'une estimation réaliste en FCFA (multiple de 500)'}.
 5. "originalPrice" : Prix barré suggéré (environ 15% à 25% plus cher que price pour effet promo).
 6. "shortDescription" : Résumé percutant en 1 ou 2 phrases pour mobile.
-7. "description" : Présentation complète avec puces (Points Forts, Caractéristiques, Livraison express 24h Abidjan, Paiement sécurisé Wave / Orange Money / MTN).
+7. "description" : Présentation complète, moderne et très professionnelle. Rédige avec des sections claires et des puces d'emojis propres (✨ Points Forts, ⚙️ Caractéristiques Clés, 🚚 Livraison Express Abidjan 24h, 💳 Paiement Sécurisé Wave / OM / MTN). IMPORTANT : N'utilise AUCUNE balise HTML brute (PAS de <ul>, PAS de <li>, PAS de <strong>, PAS de <p>). Utilise uniquement des puces propres avec des tirets (•).
 8. "tags" : 5 à 7 mots-clés pertinents (ex: ["mode", "chaussures", "abidjan", "promo"]).
 9. "badgeText" : "Nouveau", "Tendance", ou "Vente Flash".
 10. "isDubaiPreorder" : false (Toujours false, publication exclusive sur ivoireci.com).
@@ -646,7 +679,9 @@ async function processAlbumBatch(groupKey: string): Promise<TelegramPhotoProcess
     const subcategoryName = validCat.subcategories.find(s => s.id === subcategoryId)?.name || null;
 
     // 5. Créer l'unique produit avec TOUTES les images regroupées
-    const slug = generateProductSlug(aiData.title);
+    const sanitizedTitle = sanitizeProductTitle(aiData.title);
+    const sanitizedDescription = sanitizeProductDescription(aiData.description);
+    const slug = generateProductSlug(sanitizedTitle || aiData.title);
     const discountPercent = aiData.originalPrice && aiData.originalPrice > aiData.price
       ? Math.round(((aiData.originalPrice - aiData.price) / aiData.originalPrice) * 100)
       : null;
@@ -654,9 +689,9 @@ async function processAlbumBatch(groupKey: string): Promise<TelegramPhotoProcess
     const newProduct = await prisma.product.create({
       data: {
         id: `prod-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
-        title: aiData.title,
+        title: sanitizedTitle || aiData.title,
         slug,
-        description: aiData.description,
+        description: sanitizedDescription || aiData.description,
         shortDescription: aiData.shortDescription,
         price: aiData.price,
         originalPrice: aiData.originalPrice || null,
