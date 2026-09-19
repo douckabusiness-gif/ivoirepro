@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { prisma } from '@/lib/prisma';
-import type { StoreSettings } from '@/lib/types';
-import { escapeTelegramHtml } from '@/lib/telegram';
+import { prisma } from './prisma';
+import type { StoreSettings } from './types';
+import { escapeTelegramHtml } from './telegram';
 
 export interface TelegramPhotoProcessResult {
   success: boolean;
