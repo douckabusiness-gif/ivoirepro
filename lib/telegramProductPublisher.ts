@@ -144,7 +144,6 @@ async function analyzeProductWithAi(
   }));
 
   const userExplicitPrice = extractPriceFromText(caption);
-  const isDubaiMentioned = /dubai|dubaï|dxb|émirats|uae/i.test(caption);
 
   const base64Data = imageBuffer.toString('base64');
   const mimeType = 'image/jpeg';
@@ -154,7 +153,8 @@ async function analyzeProductWithAi(
   const groqKey = settings.groqApiKey?.trim() || process.env.GROQ_API_KEY?.trim() || '';
 
   const prompt = `Tu es l'agent IA expert e-commerce d'Ivoire Djassa à Abidjan (Côte d'Ivoire).
-Analyse cette photo de produit transmise par le commerçant sur Telegram.
+Analyse les informations de ce produit transmises par le commerçant sur Telegram.
+IMPORTANT : Ce produit est STRICTEMENT destiné à la boutique en ligne principale ivoireci.com (Abidjan). Il ne doit JAMAIS être publié dans l'espace Dubaï.
 
 LÉGENDE FOURNIE PAR LE MARCHAND : "${caption || '(Aucune légende, photo seule)'}"
 PRIX DÉTECTÉ DANS LA LÉGENDE : ${userExplicitPrice ? `${userExplicitPrice} FCFA` : 'Non précisé (à estimer judicieusement)'}
@@ -163,7 +163,7 @@ CATÉGORIES DISPONIBLES DANS LA BOUTIQUE :
 ${JSON.stringify(categoriesContext, null, 2)}
 
 INSTRUCTIONS :
-1. "title" : Rédige un titre commercial accrocheur et précis (ex : "Sneakers Nike Air Jordan 4 Retro - Noir", "Robe de Soirée Élégante en Satin", "Parfum Lattafa Khamrah 100ml").
+1. "title" : Rédige un titre commercial accrocheur et précis (ex : "Sneakers Nike Air Jordan 4 Retro - Noir", "Robe de Soirée Élégante en Satin", "iPhone 13 Pro Max 256Go").
 2. "categoryId" & "categoryName" : Choisis impérativement l'ID d'une catégorie EXISTANTE dans la liste ci-dessus.
 3. "subcategoryId" & "subcategoryName" : Choisis une sous-catégorie existante de cette catégorie si applicable, ou null.
 4. "price" : Si un prix est détecté (${userExplicitPrice || 'aucun'}), utilise STRICTEMENT ${userExplicitPrice || 'une estimation réaliste en FCFA (multiple de 500)'}.
@@ -171,8 +171,8 @@ INSTRUCTIONS :
 6. "shortDescription" : Résumé percutant en 1 ou 2 phrases pour mobile.
 7. "description" : Présentation complète avec puces (Points Forts, Caractéristiques, Livraison express 24h Abidjan, Paiement sécurisé Wave / Orange Money / MTN).
 8. "tags" : 5 à 7 mots-clés pertinents (ex: ["mode", "chaussures", "abidjan", "promo"]).
-9. "badgeText" : "Nouveau", "Tendance", "Vente Flash" ou "Arrivage Dubaï".
-10. "isDubaiPreorder" : ${isDubaiMentioned ? 'true' : 'true si produit typique de Dubaï, sinon false'}.
+9. "badgeText" : "Nouveau", "Tendance", ou "Vente Flash".
+10. "isDubaiPreorder" : false (Toujours false, publication exclusive sur ivoireci.com).
 11. "specs" : Objet clé/valeur des caractéristiques visibles (Matière, Couleur, Modèle, Garantie).
 
 RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR :
@@ -285,7 +285,7 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
     }
   }
 
-  // Tenter Groq Vision (Llama 3.2 Vision)
+  // Tenter Groq (openai/gpt-oss-120b) pour analyse experte du produit et des catégories
   if (groqKey) {
     try {
       const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -295,21 +295,14 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
           'Authorization': `Bearer ${groqKey}`,
         },
         body: JSON.stringify({
-          model: 'llama-3.2-11b-vision-preview',
+          model: 'openai/gpt-oss-120b',
           messages: [
             {
               role: 'user',
-              content: [
-                { type: 'text', text: prompt },
-                {
-                  type: 'image_url',
-                  image_url: { url: `data:${mimeType};base64,${base64Data}` }
-                }
-              ]
+              content: prompt,
             }
           ],
           temperature: 0.2,
-          max_tokens: 1000,
           response_format: { type: 'json_object' }
         }),
       });
@@ -321,11 +314,12 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
         const parsed = JSON.parse(cleanJson);
         if (parsed.title && parsed.categoryId) {
           if (userExplicitPrice) parsed.price = userExplicitPrice;
+          parsed.isDubaiPreorder = false;
           return parsed;
         }
       }
     } catch (err) {
-      console.warn('Erreur Groq Vision pour produit Telegram:', err);
+      console.warn('Erreur Groq Text pour produit Telegram:', err);
     }
   }
 
@@ -369,11 +363,11 @@ RÉPONDS STRICTEMENT AU FORMAT JSON UNIQUE SANS BALISE MARKDOWN NI TEXTE AUTOUR 
       `🚚 **Livraison Express :** Partout à Abidjan sous 24h et en intérieur sous 48h.\n` +
       `💳 **Paiement :** Wave, Orange Money, MTN Money ou à la livraison.`,
     tags: [matchedCat.name.toLowerCase(), 'abidjan', 'nouveaute', 'luxe'],
-    badgeText: isDubaiMentioned ? 'Arrivage Dubaï' : 'Nouveau',
-    isDubaiPreorder: isDubaiMentioned,
+    badgeText: 'Nouveau',
+    isDubaiPreorder: false,
     specs: {
-      'Disponibilité': 'En stock immédiat',
-      'Origine': isDubaiMentioned ? 'Dubaï (UAE)' : 'Import Certifié'
+      'Disponibilité': 'En stock immédiat à Abidjan',
+      'Origine': 'Import Certifié'
     }
   };
 }
@@ -484,7 +478,7 @@ export async function handleTelegramProductPhoto(
         featured: false,
         isNew: true,
         isFlashSale: false,
-        isDubaiPreorder: aiData.isDubaiPreorder,
+        isDubaiPreorder: false,
         inStock: true,
         stockCount: 10,
         rating: 5.0,
@@ -511,9 +505,7 @@ export async function handleTelegramProductPhoto(
     }
 
     // 8. Préparer le message final enrichi
-    const productUrl = aiData.isDubaiPreorder
-      ? `${baseUrl}/dubai?product=${newProduct.slug}`
-      : `${baseUrl}/produit/${newProduct.slug}`;
+    const productUrl = `${baseUrl}/produit/${newProduct.slug}`;
 
     const priceText = `${newProduct.price.toLocaleString('fr-FR')} ${currency}`;
     const origPriceText = newProduct.originalPrice
@@ -528,10 +520,10 @@ export async function handleTelegramProductPhoto(
       `💰 <b>Prix :</b> <b>${priceText}</b>${origPriceText}`,
       `📦 <b>Stock :</b> ${newProduct.stockCount} unités`,
       `🏷️ <b>Badge :</b> ${escapeTelegramHtml(newProduct.badgeText || 'Nouveau')}`,
-      aiData.isDubaiPreorder ? `✈️ <b>Espace Dubaï VIP :</b> Oui (Précommande cargo)` : `📍 <b>Boutique :</b> Abidjan (Livraison 24h)`,
-      `🟢 <b>Statut :</b> En Ligne et Prêt pour la Vente`,
+      `📍 <b>Boutique :</b> Abidjan (Livraison express 24h)`,
+      `🟢 <b>Statut :</b> En Ligne sur ivoireci.com`,
       '',
-      `🔗 <b>Lien direct :</b>`,
+      `🔗 <b>Lien direct boutique :</b>`,
       `<code>${productUrl}</code>`,
     ].join('\n');
 

@@ -30,16 +30,21 @@ export async function POST(request: Request) {
     const authorizedChatId = settings.telegramChatId?.trim();
 
     // Sécurité : rejeter toute requête qui ne provient pas de Telegram
-    // (le secret est envoyé par Telegram dans ce header, cf. setWebhook.secret_token).
     const providedSecret = request.headers.get('x-telegram-bot-api-secret-token');
-    if (!verifyTelegramWebhookSecret(botToken, providedSecret)) {
+    const msg = body.message || body.channel_post;
+    const incomingChatId = body.callback_query?.message?.chat?.id ?? msg?.chat?.id;
+
+    const isSecretValid = verifyTelegramWebhookSecret(botToken, providedSecret);
+    const isAuthorizedAdmin = Boolean(authorizedChatId && incomingChatId !== undefined && String(incomingChatId) === String(authorizedChatId));
+
+    if (!isSecretValid && !isAuthorizedAdmin) {
+      console.warn(`[Telegram Webhook] Rejet 401: secret invalide et chat ${incomingChatId} non admin.`);
       return NextResponse.json({ error: 'Webhook non autorisé.' }, { status: 401 });
     }
 
     // Sécurité : si un chat administrateur est défini, ignorer tous les autres chats
-    // (y compris les messages texte, pas seulement les clics sur boutons).
-    const incomingChatId = body.callback_query?.message?.chat?.id ?? body.message?.chat?.id;
     if (authorizedChatId && incomingChatId !== undefined && String(incomingChatId) !== String(authorizedChatId)) {
+      console.log(`[Telegram Webhook] Update ignorée: chat ${incomingChatId} != admin ${authorizedChatId}`);
       return NextResponse.json({ ok: true, skipped: 'Chat non autorisé' });
     }
 
@@ -244,23 +249,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
-    // 2. GESTION DES PHOTOS DE PRODUITS PAR L'AGENT IA (OPTION 1 : PUBLICATION DIRECTE)
-    if (body.message && (body.message.photo || (body.message.document && body.message.document.mime_type?.startsWith('image/')))) {
-      const msg = body.message;
-      const chatId = msg.chat?.id;
+    // 2. GESTION DES PHOTOS DE PRODUITS PAR L'AGENT IA (PUBLICATION DIRECTE SUR IVOIRECI.COM)
+    const isPhotoMessage = Boolean(
+      msg && (
+        (Array.isArray(msg.photo) && msg.photo.length > 0) ||
+        (msg.document && (
+          msg.document.mime_type?.startsWith('image/') ||
+          /\.(jpg|jpeg|png|webp)$/i.test(msg.document.file_name || '')
+        ))
+      )
+    );
 
-      // Sécurité : autoriser uniquement le chat ID configuré
-      if (authorizedChatId && String(chatId) !== String(authorizedChatId)) {
-        return NextResponse.json({ ok: true, ignored: 'Chat non autorisé' });
-      }
-
+    if (isPhotoMessage) {
+      console.log(`[Telegram Webhook] Photo reçue de l'administrateur (${incomingChatId}), lancement de la publication IA sur ivoireci.com...`);
       await handleTelegramProductPhoto(msg, settings as any);
       return NextResponse.json({ ok: true });
     }
 
     // 3. GESTION DES COMMANDES TEXTES (/stats, /stock, /commandes, /aide)
-    if (body.message && body.message.text) {
-      const msg = body.message;
+    if (msg && msg.text) {
       const chatId = msg.chat?.id;
       const text = msg.text.trim().toLowerCase();
 
@@ -288,10 +295,10 @@ export async function POST(request: Request) {
       const helpText = [
         `🤖 <b>ASSISTANT AUTONOME & IA — ${escapeTelegramHtml(settings.storeName || 'Ivoire Djassa')}</b>`,
         '',
-        `📸 <b>PUBLICATION RAPIDE DE PRODUITS :</b>`,
+        `📸 <b>PUBLICATION ULTRA-RAPIDE SUR IVOIRECI.COM :</b>`,
         `👉 <b>Envoyez simplement une photo de produit</b> dans ce chat !`,
-        `L'Agent IA Vision analyse l'image, extrait votre prix (ou l'estime), rédige la fiche et publie le produit immédiatement en ligne sur ivoireci.com !`,
-        `<i>Astuce : Écrivez votre prix dans la légende (ex: <code>45000</code> ou <code>45 000 FCFA pointure 42</code>) ou écrivez <code>Dubaï</code> pour le mettre au rayon Dubaï Express !</i>`,
+        `L'Agent IA analyse votre photo, identifie le produit, rédige la fiche technique et le publie instantanément en ligne sur ivoireci.com !`,
+        `<i>Astuce : Écrivez simplement votre prix dans la légende (ex: <code>45000</code> ou <code>45 000 FCFA pointure 42</code>). Le produit sera immédiatement mis en ligne avec lien direct !</i>`,
         '',
         `⚡ <b>COMMANDES DE GESTION :</b>`,
         `📊 <b>/stats</b> ou <b>/bilan</b> — Chiffre d'affaires et récapitulatif du jour`,
