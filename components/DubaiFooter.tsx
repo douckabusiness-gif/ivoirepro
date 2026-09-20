@@ -114,10 +114,10 @@ export const DubaiFooter: React.FC = () => {
             </div>
           </div>
 
-          {/* Col 2: Rayons Dubaï */}
+          {/* Col 2: Catégories Dubaï */}
           <div className="space-y-3">
             <h5 className="text-xs font-black uppercase text-amber-400 tracking-wider">
-              Rayons & Arrivages Dubaï
+              Catégories & Arrivages Dubaï
             </h5>
             <ul className="space-y-2 text-xs text-slate-300">
               <li>

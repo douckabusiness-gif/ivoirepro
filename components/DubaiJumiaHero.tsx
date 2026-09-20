@@ -148,7 +148,7 @@ export const DubaiJumiaHero: React.FC<DubaiJumiaHeroProps> = ({
             <div className="space-y-1">
               <div className="px-3 py-2 flex items-center justify-between border-b border-slate-800/80 mb-1">
                 <span className="text-[11px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" /> Rayons Dubaï VIP
+                  <Sparkles className="w-3.5 h-3.5" /> Catégories Dubaï VIP
                 </span>
                 <span className="text-[10px] font-bold text-slate-500">100% DXB</span>
               </div>

@@ -354,7 +354,7 @@ export const HeroBanner = () => {
               ref={categoryScrollRef}
               className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none scroll-smooth select-none"
             >
-              {/* "Tous les rayons" Pill */}
+              {/* "Toutes les catégories" Pill */}
               <button
                 type="button"
                 onClick={() => {
@@ -369,7 +369,7 @@ export const HeroBanner = () => {
                 }`}
               >
                 <Grid className="w-4 h-4" />
-                <span>Tous les Rayons</span>
+                <span>Toutes les Catégories</span>
               </button>
 
               {/* Dynamic Categories */}

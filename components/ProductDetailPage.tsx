@@ -1173,7 +1173,7 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
                 }}
                 className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 cursor-pointer"
               >
-                <span>Voir tout le rayon</span>
+                <span>Voir toute la catégorie</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>

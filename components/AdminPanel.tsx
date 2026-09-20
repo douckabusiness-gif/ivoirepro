@@ -796,7 +796,7 @@ export const AdminPanel = () => {
     e.preventDefault();
     const name = categoryForm.name?.trim() || '';
     if (!name) {
-      setSaveErrorMsg('Le nom du rayon est obligatoire.');
+      setSaveErrorMsg('Le nom de la catégorie est obligatoire.');
       return;
     }
 
@@ -811,7 +811,7 @@ export const AdminPanel = () => {
           image: categoryForm.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
           iconName: categoryForm.iconName || 'Grid'
         });
-        setSaveSuccessMsg(`Rayon "${name}" mis à jour avec succès !`);
+        setSaveSuccessMsg(`Catégorie "${name}" mise à jour avec succès !`);
       } else {
         await addCategory({
           name,
@@ -821,7 +821,7 @@ export const AdminPanel = () => {
           iconName: categoryForm.iconName || 'Grid',
           subcategories: []
         });
-        setSaveSuccessMsg(`Nouveau rayon "${name}" créé avec succès !`);
+        setSaveSuccessMsg(`Nouvelle catégorie "${name}" créée avec succès !`);
       }
 
       setIsAddingCategory(false);
@@ -829,7 +829,7 @@ export const AdminPanel = () => {
       setCategoryForm({ name: '', description: '', image: '', iconName: 'Grid' });
       setTimeout(() => setSaveSuccessMsg(''), 3500);
     } catch (error: any) {
-      setSaveErrorMsg(error?.message || 'Impossible d’enregistrer le rayon.');
+      setSaveErrorMsg(error?.message || 'Impossible d’enregistrer la catégorie.');
     } finally {
       setIsSavingCatalog(false);
     }
@@ -860,7 +860,7 @@ export const AdminPanel = () => {
           description: subcategoryForm.description.trim(),
           image: subcategoryForm.image || undefined
         });
-        setSaveSuccessMsg(`Sous-catégorie "${name}" créée et ajoutée au rayon !`);
+        setSaveSuccessMsg(`Sous-catégorie "${name}" créée et ajoutée à la catégorie !`);
       }
 
       setAddingSubForCatId(null);
@@ -1069,10 +1069,10 @@ export const AdminPanel = () => {
     try {
       const dataUrl = await processUploadedImage(file, 1000, 1000, 0.85);
       setCategoryForm(prev => ({ ...prev, image: dataUrl }));
-      setSaveSuccessMsg('Image de rayon importée !');
+      setSaveSuccessMsg('Image de catégorie importée !');
       setTimeout(() => setSaveSuccessMsg(''), 3500);
     } catch (err: any) {
-      alert(err?.message || 'Erreur lors de l\'import de l\'image de rayon.');
+      alert(err?.message || 'Erreur lors de l\'import de l\'image de catégorie.');
     } finally {
       setIsUploadingCategoryImage(false);
     }
@@ -1102,7 +1102,7 @@ export const AdminPanel = () => {
     const stockCount = (rawStock === undefined || rawStock === null || (rawStock as any) === '') ? 100 : Number(rawStock);
     const currentCat = categories.find(c => c.id === productForm.categoryId);
     if (!title || !Number.isFinite(price) || price <= 0 || !currentCat) {
-      setSaveErrorMsg('Renseignez un titre, un prix supérieur à zéro et sélectionnez un rayon existant.');
+      setSaveErrorMsg('Renseignez un titre, un prix supérieur à zéro et sélectionnez une catégorie existante.');
       return;
     }
     if (!Number.isInteger(stockCount) || stockCount < 0) {
@@ -1248,7 +1248,7 @@ export const AdminPanel = () => {
         { id: 'delivery', label: 'Livraison Autonome 🇨🇮', icon: <Bike className="w-4 h-4 text-amber-400" />, badge: `${deliveryPersons.length} coursiers` },
         { id: 'dubai', label: 'Espace Dubaï VIP 🇦🇪', icon: <Plane className="w-4 h-4 text-amber-400" />, badge: localSettings.dubaiPageEnabled !== false ? '🟢 Actif' : '🔴 Désactivé' },
         { id: 'products', label: 'Produits & Catalogue', icon: <Package className="w-4 h-4" />, badge: `${products.length}` },
-        { id: 'categories', label: 'Rayons & Catégories', icon: <Layers className="w-4 h-4" />, badge: `${categories.length}` },
+        { id: 'categories', label: 'Catégories', icon: <Layers className="w-4 h-4" />, badge: `${categories.length}` },
         { id: 'chat', label: 'Support & Chat Direct', icon: <MessageSquare className="w-4 h-4" />, badge: unreadAdminChatCount > 0 ? `${unreadAdminChatCount} new` : (chatConversations.length > 0 ? `${chatConversations.length}` : null) },
         { id: 'agent', label: 'Système Multi-Agents IA', icon: <Bot className="w-4 h-4 text-indigo-400" />, badge: localSettings.aiAgentEnabled !== false ? `${currentAgentsList.length} Agents 🤖` : 'Désactivé' },
       ]
@@ -1513,7 +1513,7 @@ export const AdminPanel = () => {
                 {activeTab === 'analytics' && 'Analytics & Visiteurs'}
                 {activeTab === 'chat' && 'Support Client & Chat Direct'}
                 {activeTab === 'products' && 'Gestion Produits & Catalogue'}
-                {activeTab === 'categories' && 'Rayons & Catégories'}
+                {activeTab === 'categories' && 'Catégories'}
                 {activeTab === 'orders' && 'Commandes & Livraisons'}
                 {activeTab === 'dubai' && 'Espace Dubaï VIP • Précommandes & Fret Aérien'}
                 {activeTab === 'partners' && 'Partenaires & Affiliation (Micro-Franchise)'}
@@ -1529,7 +1529,7 @@ export const AdminPanel = () => {
 
             <div className="flex items-center gap-3">
               <span className="text-[11px] font-bold text-slate-400 hidden sm:inline">
-                {products.length} produits • {categories.length} rayons • {orders.length} commandes
+                {products.length} produits • {categories.length} catégories • {orders.length} commandes
               </span>
 
               <a
@@ -1713,7 +1713,7 @@ export const AdminPanel = () => {
                   </div>
                   <p className="text-2xl sm:text-3xl font-black text-white">{products.length}</p>
                   <p className="text-[11px] text-slate-400 font-semibold">
-                    Répartis sur {categories.length} rayons ({totalSubcategoriesCount} sous-cat.)
+                    Répartis sur {categories.length} catégories ({totalSubcategoriesCount} sous-cat.)
                   </p>
                 </div>
 
@@ -3159,7 +3159,7 @@ export const AdminPanel = () => {
                       setEditingCategoryId(null);
                       setCategoryForm({ name: '', description: '', image: '', iconName: 'Grid' });
                       setIsAddingCategory(true);
-                      setSaveErrorMsg('Créez d’abord un rayon avant de publier votre premier produit.');
+                      setSaveErrorMsg('Créez d’abord une catégorie avant de publier votre premier produit.');
                       return;
                     }
                     setEditingProductId(null);
@@ -3236,7 +3236,7 @@ export const AdminPanel = () => {
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-300">Rayon / Catégorie *</label>
+                        <label className="text-xs font-bold text-slate-300">Catégorie *</label>
                         <select
                           required
                           value={productForm.categoryId || ''}
@@ -3251,7 +3251,7 @@ export const AdminPanel = () => {
                           }}
                           className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-bold"
                         >
-                          <option value="" disabled>Sélectionnez un rayon</option>
+                          <option value="" disabled>Sélectionnez une catégorie</option>
                           {categories.map((c) => (
                             <option key={c.id} value={c.id}>{c.name}</option>
                           ))}
@@ -3816,7 +3816,7 @@ export const AdminPanel = () => {
                     onChange={(e) => setFilterCategoryInProducts(e.target.value)}
                     className="px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-slate-200"
                   >
-                    <option value="all">Tous les rayons ({products.length})</option>
+                    <option value="all">Toutes les catégories ({products.length})</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
@@ -3847,7 +3847,7 @@ export const AdminPanel = () => {
                     <thead>
                       <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] bg-slate-950/60">
                         <th className="p-4">Article</th>
-                        <th className="p-4">Rayon</th>
+                        <th className="p-4">Catégorie</th>
                         <th className="p-4">Prix</th>
                         <th className="p-4">Stock</th>
                         <th className="p-4">Vente Flash</th>
@@ -3982,15 +3982,15 @@ export const AdminPanel = () => {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 4: GESTION DES RAYONS & CATÉGORIES */}
+          {/* TAB 4: GESTION DES CATÉGORIES */}
           {/* ========================================================================= */}
           {activeTab === 'categories' && (
             <div className="space-y-6 animate-in fade-in duration-200">
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-md">
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-black text-white">Gestion des Rayons & Sous-Catégories</h1>
-                  <p className="text-xs text-slate-400 mt-0.5">Organisez vos articles par univers spécialisés et sous-rayons.</p>
+                  <h1 className="text-xl sm:text-2xl font-black text-white">Gestion des Catégories & Sous-Catégories</h1>
+                  <p className="text-xs text-slate-400 mt-0.5">Organisez vos articles par catégories et sous-catégories.</p>
                 </div>
                 <button
                   onClick={() => {
@@ -4002,7 +4002,7 @@ export const AdminPanel = () => {
                   className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer self-start sm:self-auto"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Nouveau Rayon</span>
+                  <span>Nouvelle Catégorie</span>
                 </button>
               </div>
 
@@ -4011,9 +4011,9 @@ export const AdminPanel = () => {
                   <div className="flex items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-800">
                     <div>
                       <h2 className="text-lg font-black text-white">
-                        {editingCategoryId ? 'Modifier le rayon' : 'Créer un nouveau rayon'}
+                        {editingCategoryId ? 'Modifier la catégorie' : 'Créer une nouvelle catégorie'}
                       </h2>
-                      <p className="text-xs text-slate-400 mt-1">Le rayon sera immédiatement disponible pour vos produits.</p>
+                      <p className="text-xs text-slate-400 mt-1">La catégorie sera immédiatement disponible pour vos produits.</p>
                     </div>
                     <button
                       type="button"
@@ -4022,7 +4022,7 @@ export const AdminPanel = () => {
                         setEditingCategoryId(null);
                       }}
                       className="p-2 text-slate-400 hover:text-white transition cursor-pointer"
-                      aria-label="Fermer le formulaire de rayon"
+                      aria-label="Fermer le formulaire de catégorie"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -4031,7 +4031,7 @@ export const AdminPanel = () => {
                   <form onSubmit={handleSaveCategory} className="space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <label className="space-y-1.5">
-                        <span className="text-xs font-bold text-slate-300">Nom du rayon *</span>
+                        <span className="text-xs font-bold text-slate-300">Nom de la catégorie *</span>
                         <input
                           type="text"
                           required
@@ -4044,7 +4044,7 @@ export const AdminPanel = () => {
                       </label>
 
                       <label className="space-y-1.5">
-                        <span className="text-xs font-bold text-slate-300">Icône du rayon</span>
+                        <span className="text-xs font-bold text-slate-300">Icône de la catégorie</span>
                         <select
                           value={categoryForm.iconName || 'Grid'}
                           onChange={(e) => setCategoryForm((current) => ({ ...current, iconName: e.target.value }))}
@@ -4073,13 +4073,13 @@ export const AdminPanel = () => {
                           maxLength={5000}
                           value={categoryForm.description || ''}
                           onChange={(e) => setCategoryForm((current) => ({ ...current, description: e.target.value }))}
-                          placeholder="Décrivez brièvement les produits de ce rayon."
+                          placeholder="Décrivez brièvement les produits de cette catégorie."
                           className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                         />
                       </label>
 
                       <div className="space-y-2 md:col-span-2">
-                        <span className="text-xs font-bold text-slate-300">Image du rayon</span>
+                        <span className="text-xs font-bold text-slate-300">Image de la catégorie</span>
                         <div className="flex flex-col sm:flex-row gap-3">
                           <input
                             type="url"
@@ -4108,7 +4108,7 @@ export const AdminPanel = () => {
                         {categoryForm.image && (
                           <img
                             src={categoryForm.image}
-                            alt="Aperçu du rayon"
+                            alt="Aperçu de la catégorie"
                             className="w-28 h-20 object-cover rounded-xl border border-slate-700 bg-slate-950"
                           />
                         )}
@@ -4132,7 +4132,7 @@ export const AdminPanel = () => {
                         className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer"
                       >
                         {isSavingCatalog ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                        <span>{isSavingCatalog ? 'Enregistrement...' : editingCategoryId ? 'Enregistrer les modifications' : 'Créer le rayon'}</span>
+                        <span>{isSavingCatalog ? 'Enregistrement...' : editingCategoryId ? 'Enregistrer les modifications' : 'Créer la catégorie'}</span>
                       </button>
                     </div>
                   </form>
@@ -4144,8 +4144,8 @@ export const AdminPanel = () => {
                 {categories.length === 0 && (
                   <div className="border border-dashed border-slate-700 rounded-2xl px-6 py-10 text-center bg-slate-900/50">
                     <FolderPlus className="w-9 h-9 text-indigo-400 mx-auto mb-3" />
-                    <p className="font-bold text-white">Aucun rayon enregistré</p>
-                    <p className="text-xs text-slate-400 mt-1">Créez votre premier rayon pour pouvoir publier des produits.</p>
+                    <p className="font-bold text-white">Aucune catégorie enregistrée</p>
+                    <p className="text-xs text-slate-400 mt-1">Créez votre première catégorie pour pouvoir publier des produits.</p>
                   </div>
                 )}
                 {categories.map((cat) => {
@@ -4192,21 +4192,21 @@ export const AdminPanel = () => {
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                             className="p-2 bg-slate-800 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded-xl transition cursor-pointer"
-                            title="Modifier le rayon"
+                            title="Modifier la catégorie"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
                             type="button"
                             onClick={async () => {
-                              if (confirm(`Supprimer le rayon "${cat.name}" ?`)) {
+                              if (confirm(`Supprimer la catégorie "${cat.name}" ?`)) {
                                 setSaveErrorMsg('');
                                 try {
                                   await deleteCategory(cat.id);
-                                  setSaveSuccessMsg(`Rayon "${cat.name}" supprimé.`);
+                                  setSaveSuccessMsg(`Catégorie "${cat.name}" supprimée.`);
                                   setTimeout(() => setSaveSuccessMsg(''), 3500);
                                 } catch (error: any) {
-                                  setSaveErrorMsg(error?.message || 'Impossible de supprimer le rayon.');
+                                  setSaveErrorMsg(error?.message || 'Impossible de supprimer la catégorie.');
                                 }
                               }
                             }}
@@ -4339,7 +4339,7 @@ export const AdminPanel = () => {
                           </span>
                         ))}
                         {(!cat.subcategories || cat.subcategories.length === 0) && !isAddingSub && (
-                          <span className="text-xs text-slate-500">Aucune sous-catégorie pour ce rayon.</span>
+                          <span className="text-xs text-slate-500">Aucune sous-catégorie pour cette catégorie.</span>
                         )}
                       </div>
                     </div>

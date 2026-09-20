@@ -230,7 +230,7 @@ export const Navbar = () => {
                     onChange={(e) => setSearchCategory(e.target.value)}
                     className="bg-transparent focus:outline-hidden cursor-pointer text-xs pr-1 dark:text-slate-200 font-bold"
                   >
-                    <option value="all" className="dark:bg-slate-800">Tous les rayons</option>
+                    <option value="all" className="dark:bg-slate-800">Toutes les catégories</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id} className="dark:bg-slate-800">
                         {c.name}
@@ -631,7 +631,7 @@ export const Navbar = () => {
                 </button>
 
                 <div className="pt-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Rayons & Catégories</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Catégories</p>
                   {categories.map((cat) => (
                     <button
                       key={cat.id}

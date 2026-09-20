@@ -171,7 +171,7 @@ function buildSystemPrompt(
   orchestration?: OrchestrationResult
 ): string {
   const catalogSummary = products.slice(0, 18).map(p => 
-    `- [ID:${p.id}] "${p.title}" | Prix: ${p.price} FCFA | Stock: ${p.stockCount} ${p.stockCount <= 5 ? '(Stock Faible)' : ''} | Rayon: ${p.categoryName || 'Général'} | Résumé: ${p.shortDescription || p.description.slice(0, 80)}`
+    `- [ID:${p.id}] "${p.title}" | Prix: ${p.price} FCFA | Stock: ${p.stockCount} ${p.stockCount <= 5 ? '(Stock Faible)' : ''} | Catégorie: ${p.categoryName || 'Général'} | Résumé: ${p.shortDescription || p.description.slice(0, 80)}`
   ).join('\n');
 
   if (orchestration) {
@@ -666,7 +666,7 @@ function generateLocalExpertResponse(
     };
   }
 
-  // --- INTENT 5: RECHERCHE PRODUITS PAR MOTS-CLÉS / PRIX / RAYON ---
+  // --- INTENT 5: RECHERCHE PRODUITS PAR MOTS-CLÉS / PRIX / CATÉGORIE ---
   const matchingProducts = searchCatalog(query, products, categories);
 
   if (matchingProducts.length > 0) {

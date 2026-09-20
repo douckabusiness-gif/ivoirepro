@@ -742,7 +742,7 @@ async function processAlbumBatch(groupKey: string): Promise<TelegramPhotoProcess
       '',
       `📸 <b>Titre :</b> ${escapeTelegramHtml(newProduct.title)}`,
       `🖼️ <b>Photos :</b> ${imageUrls.length} photo(s) haute résolution regroupée(s)`,
-      `📂 <b>Rayon :</b> ${escapeTelegramHtml(categoryName)}${subcategoryName ? ` › ${escapeTelegramHtml(subcategoryName)}` : ''}`,
+      `📂 <b>Catégorie :</b> ${escapeTelegramHtml(categoryName)}${subcategoryName ? ` › ${escapeTelegramHtml(subcategoryName)}` : ''}`,
       `💰 <b>Prix :</b> <b>${priceText}</b>${origPriceText}`,
       `📦 <b>Stock :</b> ${newProduct.stockCount} unités`,
       `🏷️ <b>Badge :</b> ${escapeTelegramHtml(newProduct.badgeText || 'Nouveau')}`,

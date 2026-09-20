@@ -593,7 +593,7 @@ export const DubaiPreorderPage: React.FC = () => {
                 <p className="text-xs text-slate-400 max-w-md mx-auto">
                   {searchQuery 
                     ? `Aucun résultat pour "${searchQuery}". Essayez avec d'autres mots-clés ou utilisez notre service Personal Shopper.`
-                    : "Les articles pour ce rayon sont en cours de mise en ligne pour le prochain vol cargo."}
+                    : "Les articles pour cette catégorie sont en cours de mise en ligne pour le prochain vol cargo."}
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">

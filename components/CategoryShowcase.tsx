@@ -59,7 +59,7 @@ export const CategoryShowcase = () => {
               Explorer par Secteur d'Activité
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Parcourez nos rayons spécialisés avec photos d'articles réels et sous-catégories détaillées.
+              Parcourez nos catégories spécialisées avec photos d'articles réels et sous-catégories détaillées.
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export const CategoryShowcase = () => {
             }}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs hover:shadow-xs transition self-start sm:self-auto cursor-pointer"
           >
-            <span>Voir tous les rayons ({products.filter(p => !p.isDubaiPreorder).length} articles)</span>
+            <span>Voir toutes les catégories ({products.filter(p => !p.isDubaiPreorder).length} articles)</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -154,7 +154,7 @@ export const CategoryShowcase = () => {
 
                 {/* Bottom CTA */}
                 <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  <span>Accéder au rayon</span>
+                  <span>Accéder à la catégorie</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
 

@@ -257,14 +257,14 @@ export const HomeCategoryRows: React.FC = () => {
                       </span>
                     </div>
 
-                    {/* Slogan & Description du Rayon */}
+                    {/* Slogan & Description de la Catégorie */}
                     <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
                       <span className="font-semibold text-slate-700 dark:text-slate-300">{theme.tagline}</span> — {category.description || theme.subTitle}
                     </p>
                   </div>
                 </div>
 
-                {/* Côté Droit : Sous-Catégories en Puces Clquables & Bouton d'Accès Rayon */}
+                {/* Côté Droit : Sous-Catégories en Puces Cliquables & Bouton d'Accès Catégorie */}
                 <div className="flex items-center gap-2 self-end md:self-auto overflow-x-auto max-w-full pb-1 md:pb-0 scrollbar-none">
                   
                   {/* Puces de sous-catégories interactives (ordinateur) */}
@@ -287,7 +287,7 @@ export const HomeCategoryRows: React.FC = () => {
                     onClick={() => handleOpenCategory(category.id)}
                     className={`group/btn inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r ${theme.buttonGradient} shadow-sm hover:shadow-md hover:brightness-110 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] cursor-pointer shrink-0`}
                   >
-                    <span>Voir tout le rayon</span>
+                    <span>Voir toute la catégorie</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -325,7 +325,7 @@ export const HomeCategoryRows: React.FC = () => {
                     onClick={() => handleOpenCategory(category.id)}
                     className="inline-flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
                   >
-                    <span>+ {catProducts.length - 12} autres articles dans ce rayon</span>
+                    <span>+ {catProducts.length - 12} autres articles dans cette catégorie</span>
                     <ChevronRight className="w-3 h-3" />
                   </button>
                 )}
@@ -349,7 +349,7 @@ export const HomeCategoryRows: React.FC = () => {
               <span>Catalogue Intégral ivoireci.com</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-black tracking-tight">
-              Trouvez l'article idéal parmi tous nos rayons
+              Trouvez l'article idéal parmi toutes nos catégories
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
               Filtrez facilement par gamme de prix, note client et catégorie avec commande instantanée par WhatsApp ou en ligne.

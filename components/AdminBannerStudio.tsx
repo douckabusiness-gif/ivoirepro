@@ -667,7 +667,7 @@ export const AdminBannerStudio: React.FC<AdminBannerStudioProps> = ({
                   actionLabel = targetProd ? `📦 Produit: ${targetProd.title}` : '📦 Fiche Produit';
                 } else if (item.actionType === 'category') {
                   const targetCat = categories.find((c) => c.id === item.targetCategoryId);
-                  actionLabel = targetCat ? `🏷️ Rayon: ${targetCat.name}` : '🏷️ Rayon';
+                  actionLabel = targetCat ? `🏷️ Catégorie: ${targetCat.name}` : '🏷️ Catégorie';
                 } else if (item.actionType === 'link') {
                   actionLabel = `🌐 Lien: ${item.customLink || 'externe'}`;
                 }
@@ -1295,7 +1295,7 @@ export const AdminBannerStudio: React.FC<AdminBannerStudioProps> = ({
                   {[
                     { id: 'whatsapp', label: 'Discussion WhatsApp', icon: <MessageCircle className="w-4 h-4 text-emerald-400" /> },
                     { id: 'product', label: 'Produit Spécifique', icon: <Package className="w-4 h-4 text-indigo-400" /> },
-                    { id: 'category', label: 'Rayon / Catégorie', icon: <Layers className="w-4 h-4 text-amber-400" /> },
+                    { id: 'category', label: 'Catégorie', icon: <Layers className="w-4 h-4 text-amber-400" /> },
                     { id: 'shop', label: 'Catalogue Général', icon: <ShoppingBag className="w-4 h-4 text-sky-400" /> },
                     { id: 'link', label: 'Lien Web Externe', icon: <ExternalLink className="w-4 h-4 text-pink-400" /> }
                   ].map((act) => (
@@ -1386,14 +1386,14 @@ export const AdminBannerStudio: React.FC<AdminBannerStudioProps> = ({
                     <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-amber-500/30 animate-in fade-in">
                       <div className="flex items-center gap-2 text-amber-300 text-xs font-bold">
                         <Layers className="w-4 h-4" />
-                        <span>Sélectionnez le Rayon / Catégorie Cible :</span>
+                        <span>Sélectionnez la Catégorie Cible :</span>
                       </div>
                       <select
                         value={draft.targetCategoryId}
                         onChange={(e) => setDraft({ ...draft, targetCategoryId: e.target.value })}
                         className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-bold focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
                       >
-                        <option value="">-- Choisir un rayon --</option>
+                        <option value="">-- Choisir une catégorie --</option>
                         {categories.map((c) => (
                           <option key={c.id} value={c.id}>
                             {c.name}
@@ -1584,7 +1584,7 @@ export const AdminBannerStudio: React.FC<AdminBannerStudioProps> = ({
                     )}
                     {draft.actionType === 'category' && (
                       <p className="text-slate-400 pl-5">
-                        Filtre le catalogue sur le rayon : <strong className="text-white">{categories.find(c => c.id === draft.targetCategoryId)?.name || 'Rayon sélectionné'}</strong>
+                        Filtre le catalogue sur la catégorie : <strong className="text-white">{categories.find(c => c.id === draft.targetCategoryId)?.name || 'Catégorie sélectionnée'}</strong>
                       </p>
                     )}
                     {draft.actionType === 'shop' && (

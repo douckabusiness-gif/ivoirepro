@@ -46,12 +46,12 @@ export async function POST(request: Request) {
       );
     }
     if (!categoryId) {
-      return NextResponse.json({ error: 'Le rayon parent est obligatoire.' }, { status: 400 });
+      return NextResponse.json({ error: 'La catégorie parente est obligatoire.' }, { status: 400 });
     }
 
     const category = await prisma.category.findUnique({ where: { id: categoryId }, select: { id: true } });
     if (!category) {
-      return NextResponse.json({ error: 'Le rayon sélectionné n’existe plus.' }, { status: 400 });
+      return NextResponse.json({ error: 'La catégorie sélectionnée n’existe plus.' }, { status: 400 });
     }
 
     const description = input.description === undefined ? '' : input.description;

@@ -408,11 +408,11 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         </div>
       </div>
 
-      {/* 4. RAYONS & CATÉGORIES */}
+      {/* 4. CATÉGORIES */}
       <div className="space-y-2.5 pt-3 border-t border-slate-200 dark:border-slate-800">
         <h4 className="text-xs font-black text-slate-900 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
           <Percent className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-          <span>Rayons du Catalogue</span>
+          <span>Catégories du Catalogue</span>
         </h4>
 
         <div className="space-y-1 max-h-56 overflow-y-auto pr-1">
@@ -428,7 +428,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                 : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            <span>Tous les rayons</span>
+            <span>Toutes les catégories</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${selectedCategoryFilter === null ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
               {products.length}
             </span>
@@ -590,14 +590,14 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
             {selectedCategoryFilter && activeCategory && (
               <span className="inline-flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-2.5 py-1 rounded-lg font-bold">
-                Rayon : {activeCategory.name}
+                Catégorie : {activeCategory.name}
                 <X className="w-3 h-3 cursor-pointer hover:text-rose-600" onClick={() => { setSelectedCategoryFilter(null); setSelectedSubcategoryFilter(null); }} />
               </span>
             )}
 
             {selectedSubcategoryFilter && activeSubcategory && (
               <span className="inline-flex items-center gap-1.5 bg-indigo-100 dark:bg-indigo-900/60 text-indigo-900 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700 px-2.5 py-1 rounded-lg font-bold">
-                Sous-rayon : {activeSubcategory.name}
+                Sous-catégorie : {activeSubcategory.name}
                 <X className="w-3 h-3 cursor-pointer hover:text-rose-600" onClick={() => setSelectedSubcategoryFilter(null)} />
               </span>
             )}
@@ -762,7 +762,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   onClick={() => setSelectedCategoryFilter(null)}
                   className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
                 >
-                  Voir tous les rayons →
+                  Voir toutes les catégories →
                 </button>
               )}
             </div>

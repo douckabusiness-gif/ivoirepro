@@ -94,9 +94,9 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Rayons / Catégories */}
+          {/* Column 3: Catégories */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase tracking-wider text-xs">Rayons Populaires</h4>
+            <h4 className="font-bold text-white uppercase tracking-wider text-xs">Catégories Populaires</h4>
             <ul className="space-y-2">
               {categories.slice(0, 5).map((cat) => (
                 <li key={cat.id}>

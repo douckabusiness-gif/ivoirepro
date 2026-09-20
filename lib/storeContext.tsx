@@ -1166,7 +1166,7 @@ export const StoreProvider = ({
         body: JSON.stringify(newCategory),
       });
       if (!res.ok) {
-        throw new Error(await readApiError(res, 'Impossible de créer le rayon.'));
+        throw new Error(await readApiError(res, 'Impossible de créer la catégorie.'));
       }
       const created: Category = await res.json();
       setCategories((prev) => [...prev.filter((category) => category.id !== created.id), created]
@@ -1174,7 +1174,7 @@ export const StoreProvider = ({
       return created.id;
     } catch (e) {
       console.warn('Failed to add category on API:', e);
-      throw e instanceof Error ? e : new Error('Impossible de créer le rayon.');
+      throw e instanceof Error ? e : new Error('Impossible de créer la catégorie.');
     } finally {
       setIsSyncing(false);
     }
@@ -1189,7 +1189,7 @@ export const StoreProvider = ({
         body: JSON.stringify(updated),
       });
       if (!res.ok) {
-        throw new Error(await readApiError(res, 'Impossible de modifier le rayon.'));
+        throw new Error(await readApiError(res, 'Impossible de modifier la catégorie.'));
       }
       const saved: Category = await res.json();
       setCategories((prev) => prev
@@ -1202,7 +1202,7 @@ export const StoreProvider = ({
       }
     } catch (e) {
       console.warn('Failed to update category on API:', e);
-      throw e instanceof Error ? e : new Error('Impossible de modifier le rayon.');
+      throw e instanceof Error ? e : new Error('Impossible de modifier la catégorie.');
     } finally {
       setIsSyncing(false);
     }
@@ -1213,12 +1213,12 @@ export const StoreProvider = ({
     try {
       const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
       if (!res.ok) {
-        throw new Error(await readApiError(res, 'Impossible de supprimer le rayon.'));
+        throw new Error(await readApiError(res, 'Impossible de supprimer la catégorie.'));
       }
       setCategories((prev) => prev.filter((category) => category.id !== id));
     } catch (e) {
       console.warn('Failed to delete category on API:', e);
-      throw e instanceof Error ? e : new Error('Impossible de supprimer le rayon.');
+      throw e instanceof Error ? e : new Error('Impossible de supprimer la catégorie.');
     } finally {
       setIsSyncing(false);
     }

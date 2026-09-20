@@ -352,8 +352,8 @@ export const AdminTeamManager: React.FC = () => {
                       <td className="py-3.5">
                         <span className="text-slate-300 text-[11px] font-semibold">
                           {member.role === 'admin' && '🌟 Accès Illimité (16 modules)'}
-                          {member.role === 'vendeur' && '📦 Commandes, Produits, Chat, Rayons'}
-                          {member.role === 'gestionnaire_stock' && '📊 Stocks, Produits, Rayons'}
+                          {member.role === 'vendeur' && '📦 Commandes, Produits, Chat, Catégories'}
+                          {member.role === 'gestionnaire_stock' && '📊 Stocks, Produits, Catégories'}
                           {member.role === 'support' && '💬 Live Chat, Consultation Commandes'}
                           {member.role === 'gestionnaire_livraison' && '🛵 Commandes, Dispatch Coursiers'}
                         </span>

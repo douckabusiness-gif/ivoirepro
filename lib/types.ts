@@ -590,7 +590,7 @@ export const ROLE_DEFINITIONS: Record<UserRole, {
     label: 'Gestionnaire de Stock / Magasinier',
     shortLabel: 'Stock',
     badge: '📦 Stock',
-    description: 'Inventaire, niveaux de stock, alertes rupture, gestion des produits et rayons.',
+    description: 'Inventaire, niveaux de stock, alertes rupture, gestion des produits et catégories.',
     color: 'from-blue-600 to-cyan-600',
     allowedTabs: ['dashboard', 'dubai', 'products', 'categories']
   },

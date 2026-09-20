@@ -679,7 +679,7 @@ export const AdminDubaiManager: React.FC = () => {
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>Rayons & Collections Dubaï</span>
+          <span>Catégories & Collections Dubaï</span>
         </button>
 
         <button
@@ -725,7 +725,7 @@ export const AdminDubaiManager: React.FC = () => {
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-amber-500/50"
               >
-                <option value="all">Tous les rayons</option>
+                <option value="all">Toutes les catégories</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -780,7 +780,7 @@ export const AdminDubaiManager: React.FC = () => {
                   <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-black tracking-wider border-b border-slate-800">
                     <tr>
                       <th className="py-3.5 px-4">Article & Visuel</th>
-                      <th className="py-3.5 px-4">Rayon</th>
+                      <th className="py-3.5 px-4">Catégorie</th>
                       <th className="py-3.5 px-4 text-right">Prix Vente (FCFA)</th>
                       <th className="py-3.5 px-4 text-right">Coût Est. (AED)</th>
                       <th className="py-3.5 px-4">Délais Fret Aérien</th>
@@ -1088,7 +1088,7 @@ export const AdminDubaiManager: React.FC = () => {
                   onChange={(e) => setCalcTargetCategory(e.target.value)}
                   className="px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-amber-500"
                 >
-                  <option value="">Sélectionner le rayon cible...</option>
+                  <option value="">Sélectionner la catégorie cible...</option>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -1195,10 +1195,10 @@ export const AdminDubaiManager: React.FC = () => {
           <div className="bg-slate-900/60 p-6 rounded-3xl border border-slate-800/80 space-y-2">
             <h2 className="text-lg font-black text-white flex items-center gap-2">
               <Layers className="w-5 h-5 text-amber-400" />
-              <span>Rayons Clés & Collections Prestigieuses de Dubaï</span>
+              <span>Catégories Clés & Collections Prestigieuses de Dubaï</span>
             </h2>
             <p className="text-xs text-slate-400 leading-relaxed max-w-3xl">
-              Ces collections thématiques sont mises en avant sur la page publique <a href="/dubai" target="_blank" className="text-amber-400 underline">https://www.ivoireci.com/dubai</a>. Vous pouvez filtrer les articles existants ou créer un nouvel article directement dans le rayon sélectionné.
+              Ces collections thématiques sont mises en avant sur la page publique <a href="/dubai" target="_blank" className="text-amber-400 underline">https://www.ivoireci.com/dubai</a>. Vous pouvez filtrer les articles existants ou créer un nouvel article directement dans la catégorie sélectionnée.
             </p>
           </div>
 
@@ -1503,7 +1503,7 @@ export const AdminDubaiManager: React.FC = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-300">Rayon / Catégorie *</label>
+                  <label className="text-xs font-bold text-slate-300">Catégorie *</label>
                   <select
                     required
                     value={formCategoryId}
