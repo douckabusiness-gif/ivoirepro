@@ -11,6 +11,7 @@ import { PartnerBanner } from '@/components/PartnerBanner';
 import { Navbar } from '@/components/Navbar';
 import { HeroBanner } from '@/components/HeroBanner';
 import { FlashSaleSection } from '@/components/FlashSaleSection';
+import { HomeCategoryRows } from '@/components/HomeCategoryRows';
 import { ProductGrid } from '@/components/ProductGrid';
 import { TrustBadges } from '@/components/TrustBadges';
 import { Footer } from '@/components/Footer';
@@ -80,11 +81,7 @@ function MainAppContent() {
           <div className="site-home-theme" data-home-theme={settings.homeTheme || 'midnight'}>
             <HeroBanner />
             <FlashSaleSection />
-            <ProductGrid 
-              showFilters={false} 
-              title="Nos Produits & Meilleures Ventes" 
-              subtitle="Découvrez notre sélection exclusive et nos meilleures ventes en stock réel, avec commande directe et livraison express." 
-            />
+            <HomeCategoryRows />
             <TrustBadges />
           </div>
         )}

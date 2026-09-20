@@ -7,6 +7,7 @@ import { PartnerBanner } from '@/components/PartnerBanner';
 import { Navbar } from '@/components/Navbar';
 import { HeroBanner } from '@/components/HeroBanner';
 import { FlashSaleSection } from '@/components/FlashSaleSection';
+import { HomeCategoryRows } from '@/components/HomeCategoryRows';
 import { ProductGrid } from '@/components/ProductGrid';
 import { ProductDetailPage } from '@/components/ProductDetailPage';
 import { ProductDetailModal } from '@/components/ProductDetailModal';
@@ -66,11 +67,7 @@ function PartnerStorefrontContent({ slug }: { slug: string }) {
           <>
             <HeroBanner />
             <FlashSaleSection />
-            <ProductGrid 
-              showFilters={false} 
-              title="Nos Produits & Meilleures Ventes" 
-              subtitle="Découvrez notre sélection exclusive recommandée par notre ambassadeur officiel." 
-            />
+            <HomeCategoryRows />
             <TrustBadges />
           </>
         )}
