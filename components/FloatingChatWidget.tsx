@@ -55,6 +55,7 @@ export const FloatingChatWidget = () => {
     generateWhatsAppGeneralLink,
     isChatDrawerOpen,
     setIsChatDrawerOpen,
+    currentView,
     setCurrentView,
     startWebCall,
     simulateIncomingCall
@@ -235,8 +236,12 @@ export const FloatingChatWidget = () => {
   };
 
   if (!aiAvailable && !whatsappAvailable) return null;
+  if (currentView === 'home' && !isChatDrawerOpen) return null;
 
-  const agentName = settings.aiAgentName || 'Amara (Conseillère IA)';
+  const cleanAgentName = (settings.aiAgentName || 'Amara')
+    .replace(/\s*\([^)]*IA[^)]*\)/gi, '')
+    .trim() || 'Amara';
+  const agentName = cleanAgentName;
 
   return (
     <div className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
@@ -257,19 +262,19 @@ export const FloatingChatWidget = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center font-bold text-white relative shadow-inner">
-                  <Bot className="w-5 h-5 fill-white/20" />
+                  <MessageSquare className="w-5 h-5 fill-white/20" />
                   <span className="w-3 h-3 bg-emerald-400 border-2 border-indigo-700 rounded-full absolute -top-0.5 -right-0.5 animate-pulse" />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h4 id="floating-chat-title" className="font-black text-sm leading-tight tracking-tight">{settings.storeName}</h4>
                     <span className="text-[9px] font-black uppercase bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.2 rounded-sm">
-                      {aiAvailable ? 'IA active' : 'Support'}
+                      En ligne
                     </span>
                   </div>
                   <p className="text-[11px] text-indigo-100 font-semibold flex items-center gap-1.5 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
-                    {aiAvailable ? `${agentName} • Réponse automatique` : 'Support client • Réponse manuelle'}
+                    <span>Conseillère shopping • Service client</span>
                   </p>
                 </div>
               </div>
@@ -315,7 +320,7 @@ export const FloatingChatWidget = () => {
                 }`}
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span className="text-[11px]">{aiAvailable ? 'Chat IA' : 'Chat support'}</span>
+                <span className="text-[11px]">Chat</span>
                 {unreadVisitorChatCount > 0 && (
                   <span className="w-2 h-2 rounded-full bg-rose-500" />
                 )}
@@ -398,7 +403,7 @@ export const FloatingChatWidget = () => {
                 <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
                   <span className="flex items-center gap-1">
                     <Sparkles className="w-3 h-3 text-indigo-500" />
-                    {aiAvailable ? 'Conseillère IA & Conseillers connectés' : 'Équipe support client'}
+                    <span>Conseillère shopping & Service client connectés</span>
                   </span>
                   <button
                     onClick={() => setShowIdentityInputs(true)}
@@ -415,18 +420,18 @@ export const FloatingChatWidget = () => {
                 {/* Welcome Auto-Message */}
                 <div className="flex items-start gap-2 max-w-[88%]">
                   <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-1 shadow-sm">
-                    🤖
+                    💬
                   </div>
                   <div className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 space-y-1.5">
                     {aiAvailable ? (
                       <>
                         <p className="font-semibold leading-relaxed">
-                          {renderMessageMarkdown(`Bonjour ! 👋 Je suis **${agentName}**, votre conseillère shopping personnelle chez **${settings.storeName}**.`)}
+                          {renderMessageMarkdown(`Bonjour ! 👋 Je suis **${agentName}**, votre conseillère shopping chez **${settings.storeName}**.`)}
                         </p>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
                           {renderMessageMarkdown(`Je connais tous nos articles en stock, nos prix en **${settings.currency}**, nos délais de livraison et nos promotions. Comment puis-je vous aider ?`)}
                         </p>
-                        <span className="text-[9px] text-slate-400 block text-right font-medium">IA Autonome</span>
+                        <span className="text-[9px] text-slate-400 block text-right font-medium">Service Client</span>
                       </>
                     ) : (
                       <>
@@ -451,7 +456,7 @@ export const FloatingChatWidget = () => {
                            msg.senderName?.includes('📦') ? '📦' :
                            msg.senderName?.includes('✍️') ? '✍️' :
                            msg.senderName?.includes('🏷️') ? '🏷️' :
-                           msg.senderName?.includes('🛡️') ? '🛡️' : '🤖'}
+                           msg.senderName?.includes('🛡️') ? '🛡️' : '💬'}
                         </div>
                       )}
 
@@ -483,10 +488,10 @@ export const FloatingChatWidget = () => {
                 {isAgentTyping && (
                   <div className="flex items-start gap-2 max-w-[85%] animate-in fade-in">
                     <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-1 shadow-sm">
-                      🤖
+                      💬
                     </div>
                     <div className="p-3 bg-white dark:bg-slate-900 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 flex items-center gap-2">
-                      <span className="font-bold text-[11px] text-indigo-600 dark:text-indigo-400">{agentName} analyse et répond</span>
+                      <span className="font-bold text-[11px] text-indigo-600 dark:text-indigo-400">{agentName} est en train d'écrire...</span>
                       <div className="flex gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '0ms' }} />
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -559,7 +564,7 @@ export const FloatingChatWidget = () => {
                   aria-label="Votre message"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder={aiAvailable ? "Posez votre question à l'IA..." : "Écrivez à notre équipe..."}
+                  placeholder="Écrivez votre message..."
                   className="flex-1 px-3.5 py-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-medium"
                 />
                 <button
@@ -630,15 +635,15 @@ export const FloatingChatWidget = () => {
 
                 {/* Call Options */}
                 <div className="space-y-2.5">
-                  {/* Option 1: AI Advisor */}
+                  {/* Option 1: Shopping Advisor */}
                   {aiAvailable && <div className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl shrink-0">
-                        🤖
+                        🎧
                       </div>
                       <div>
                         <h5 className="font-black text-xs text-slate-900 dark:text-white">{agentName}</h5>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400">Conseillère IA vocale 24h/24 & 7j/7</p>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400">Conseillère vocale 24h/24 & 7j/7</p>
                       </div>
                     </div>
                     <button
@@ -712,24 +717,23 @@ export const FloatingChatWidget = () => {
         </div>
       )}
 
-      {/* Floating Main Button with AI Sparkle & Pulse */}
+      {/* Floating Main Button */}
       <button
         onClick={() => setIsChatDrawerOpen(!isChatDrawerOpen)}
         aria-expanded={isChatDrawerOpen}
         aria-controls="floating-chat-panel"
-        className="relative group flex items-center gap-2.5 p-3.5 sm:px-4 sm:py-3.5 bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white font-bold rounded-full shadow-2xl shadow-indigo-700/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-        aria-label={isChatDrawerOpen ? 'Fermer le chat' : aiAvailable ? 'Ouvrir le chat de support IA' : 'Ouvrir le chat de support'}
+        className="relative group flex items-center gap-2 p-3 sm:px-4 sm:py-3 bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white font-bold rounded-full shadow-2xl shadow-indigo-700/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+        aria-label={isChatDrawerOpen ? 'Fermer le chat' : 'Ouvrir le chat'}
       >
         {/* Pulse Dot */}
-        <span className="absolute -top-1 -right-1 flex h-4 w-4">
+        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-400 border-2 border-white dark:border-slate-900" />
+          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-white dark:border-slate-900" />
         </span>
 
-        <Bot className="w-5 h-5 sm:w-6 sm:h-6 fill-white/20" />
-        <span className="text-xs font-black hidden sm:inline tracking-wide flex items-center gap-1.5">
-          <span>{aiAvailable ? 'Conseillère IA' : 'Support client'}</span>
-          {aiAvailable && <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />}
+        <MessageSquare className="w-5 h-5 fill-white/20" />
+        <span className="text-xs font-black hidden sm:inline tracking-wide">
+          <span>Chat</span>
         </span>
       </button>
 

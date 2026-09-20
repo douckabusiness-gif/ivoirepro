@@ -15,6 +15,7 @@ import {
   ShoppingBag, 
   ArrowRight, 
   MessageCircle, 
+  MessageSquare,
   Sparkles,
   Phone,
   Mail,
@@ -38,7 +39,8 @@ export const CustomerPortal = () => {
     toggleWishlist,
     isInWishlist,
     settings,
-    openCustomerAuth
+    openCustomerAuth,
+    setIsChatDrawerOpen
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'rewards'>('orders');
@@ -138,6 +140,15 @@ export const CustomerPortal = () => {
 
           <div className="flex flex-wrap items-center gap-2.5">
             <button
+              onClick={() => setIsChatDrawerOpen(true)}
+              className="px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs rounded-xl border border-white/20 transition cursor-pointer flex items-center gap-2 shadow-xs"
+              title="Discuter avec le service client"
+            >
+              <MessageSquare className="w-4 h-4 text-emerald-400" />
+              <span>Chat</span>
+            </button>
+
+            <button
               onClick={() => setCurrentView('shop')}
               className="px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md transition cursor-pointer flex items-center gap-2"
             >
@@ -208,6 +219,15 @@ export const CustomerPortal = () => {
         >
           <Gift className="w-4 h-4 text-amber-300" />
           <span>Points VIP ({customer.loyaltyPoints} pts)</span>
+        </button>
+
+        <button
+          onClick={() => setIsChatDrawerOpen(true)}
+          className="px-4 py-2.5 rounded-2xl text-xs font-black transition cursor-pointer flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800"
+          title="Ouvrir le Chat support"
+        >
+          <MessageSquare className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>Chat</span>
         </button>
       </div>
 
@@ -529,11 +549,11 @@ export const CustomerPortal = () => {
 
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 shrink-0">
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageSquare className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="font-bold text-xs text-slate-900 dark:text-white">Conseiller WhatsApp Dédié</p>
-                  <p className="text-[11px] text-slate-500">Support client prioritaire 7j/7 pour toutes vos demandes.</p>
+                  <p className="font-bold text-xs text-slate-900 dark:text-white">Chat & Assistance Dédiée</p>
+                  <p className="text-[11px] text-slate-500">Service client direct 7j/7 pour répondre à toutes vos questions.</p>
                 </div>
               </div>
             </div>

@@ -1958,10 +1958,10 @@ export const StoreProvider = ({
     webCallAudio.stopAll();
 
     const defaultName = target === 'ai_advisor'
-      ? (settings.aiAgentName || 'Amara (Conseillère IA)')
+      ? (settings.aiAgentName || 'Amara (Conseillère shopping)')
       : 'Service Client & Support Direct';
     const defaultSubtitle = target === 'ai_advisor'
-      ? 'Conseillère vocale IA 24/7'
+      ? 'Conseillère vocale 24/7'
       : 'Équipe commerciale & Support en direct';
 
     const tempCallId = `call_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
