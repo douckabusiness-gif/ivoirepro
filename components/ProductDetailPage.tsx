@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useStore } from '@/lib/storeContext';
 import { Product } from '@/lib/types';
 import { 
@@ -267,34 +268,28 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
       <div className="bg-white border-b border-slate-200 sticky top-16 z-20 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
           <nav className="flex items-center gap-1.5 text-xs text-slate-500 overflow-x-auto scrollbar-none whitespace-nowrap">
-            <button
-              onClick={() => setCurrentView('home')}
-              className="hover:text-indigo-600 font-medium transition cursor-pointer"
+            <Link
+              href="/"
+              className="hover:text-indigo-600 font-medium transition"
             >
               Accueil
-            </button>
+            </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <button
-              onClick={() => {
-                setSelectedCategoryFilter(null);
-                setCurrentView('shop');
-              }}
-              className="hover:text-indigo-600 font-medium transition cursor-pointer"
+            <Link
+              href="/categories"
+              className="hover:text-indigo-600 font-medium transition"
             >
               Boutique
-            </button>
+            </Link>
             {category && (
               <>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <button
-                  onClick={() => {
-                    setSelectedCategoryFilter(category.id);
-                    setCurrentView('shop');
-                  }}
-                  className="hover:text-indigo-600 font-medium transition cursor-pointer text-slate-700 font-semibold"
+                <Link
+                  href={`/categorie/${category.slug || category.id}`}
+                  className="hover:text-indigo-600 font-medium transition text-slate-700 font-semibold"
                 >
                   {category.name}
-                </button>
+                </Link>
               </>
             )}
             <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -303,13 +298,13 @@ export const ProductDetailPage = ({ initialProduct }: { initialProduct?: Product
             </span>
           </nav>
 
-          <button
-            onClick={() => setCurrentView('shop')}
-            className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition cursor-pointer shrink-0"
+          <Link
+            href="/categories"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Tous les articles</span>
-          </button>
+          </Link>
         </div>
       </div>
 

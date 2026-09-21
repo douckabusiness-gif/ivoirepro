@@ -30,6 +30,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/categories`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/dubai`,
       lastModified: now,
       changeFrequency: 'daily',
@@ -55,7 +61,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 2. Dynamic Products
+  // 2. Dynamic Categories
+  let categoryEntries: MetadataRoute.Sitemap = [];
+  try {
+    const categories = await prisma.category.findMany({
+      select: {
+        slug: true,
+        updatedAt: true,
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: 500,
+    });
+
+    categoryEntries = categories.map((cat) => ({
+      url: `${baseUrl}/categorie/${cat.slug}`,
+      lastModified: cat.updatedAt || now,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    }));
+  } catch (err) {
+    console.error('Erreur génération sitemap catégories:', err);
+  }
+
+  // 3. Dynamic Products
   let productEntries: MetadataRoute.Sitemap = [];
   try {
     const products = await prisma.product.findMany({
@@ -78,7 +106,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Erreur génération sitemap produits:', err);
   }
 
-  // 3. Dynamic Partner Storefronts
+  // 4. Dynamic Partner Storefronts
   let partnerEntries: MetadataRoute.Sitemap = [];
   try {
     const partners = await prisma.partner.findMany({
@@ -100,5 +128,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Erreur génération sitemap partenaires:', err);
   }
 
-  return [...staticPages, ...productEntries, ...partnerEntries];
+  return [...staticPages, ...categoryEntries, ...productEntries, ...partnerEntries];
 }

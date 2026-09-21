@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useStore } from '@/lib/storeContext';
 import { normalizeHexColor } from '@/lib/siteTheme';
 import { 
@@ -278,13 +279,12 @@ export const Navbar = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-2 pt-2">
                     {searchResults.map((prod) => (
-                      <button
+                      <Link
                         key={prod.id}
-                        type="button"
+                        href={`/produit/${prod.slug || prod.id}`}
                         onClick={() => {
-                          setSelectedProductId(prod.id);
-                          setCurrentView('product-detail');
                           setSearchQuery('');
+                          setIsSearchExpanded(false);
                         }}
                         className="flex items-center gap-2.5 p-2 hover:bg-indigo-50/60 dark:hover:bg-slate-700/60 rounded-xl transition text-left cursor-pointer group border border-transparent hover:border-indigo-100 dark:hover:border-slate-600"
                       >
@@ -297,19 +297,20 @@ export const Navbar = () => {
                           <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{prod.title}</p>
                           <p className="text-xs font-black text-indigo-600 dark:text-indigo-400">{formatPrice(prod.price)}</p>
                         </div>
-                      </button>
+                      </Link>
                     ))}
                   </div>
-                  <button
-                    type="button"
+                  <Link
+                    href="/categories"
                     onClick={() => {
-                      setCurrentView('shop');
+                      setSearchQuery('');
+                      setIsSearchExpanded(false);
                     }}
                     className="w-full text-center py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 bg-indigo-50/50 dark:bg-slate-700/50 hover:bg-indigo-50 dark:hover:bg-slate-700 rounded-xl mt-2 cursor-pointer transition flex items-center justify-center gap-1"
                   >
                     <span>Voir tous les résultats dans la boutique</span>
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  </Link>
                 </div>
               )}
             </form>
@@ -471,35 +472,37 @@ export const Navbar = () => {
                     onMouseLeave={() => setIsCategoryMegaMenuOpen(false)}
                     className="absolute top-full left-0 w-80 bg-white dark:bg-slate-800 rounded-b-2xl shadow-2xl border border-slate-200 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   >
-                    <button
-                      onClick={() => handleNavigate('shop', null)}
+                    <Link
+                      href="/categories"
+                      onClick={() => setIsCategoryMegaMenuOpen(false)}
                       className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between font-extrabold cursor-pointer"
                     >
                       <span className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                         <span>Tout le catalogue ({products.length} articles)</span>
                       </span>
-                    </button>
+                    </Link>
                     <div className="h-px bg-slate-100 dark:bg-slate-700 my-1" />
                     {categories.map((cat) => (
-                      <button
+                      <Link
                         key={cat.id}
-                        onClick={() => handleNavigate('shop', cat.id)}
+                        href={`/categorie/${cat.slug || cat.id}`}
+                        onClick={() => setIsCategoryMegaMenuOpen(false)}
                         className="w-full text-left px-4 py-2 text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-between transition cursor-pointer"
                       >
                         <span className="font-bold">{cat.name}</span>
                         <span className="text-[10px] text-slate-400 font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700">
                           {products.filter(p => !p.isDubaiPreorder && p.categoryId === cat.id).length}
                         </span>
-                      </button>
+                      </Link>
                     ))}
                   </div>
                 )}
               </div>
 
               {/* All Products Link */}
-              <button
-                onClick={() => handleNavigate('shop', null)}
+              <Link
+                href="/categories"
                 className={`shrink-0 px-4 py-2 rounded-xl transition cursor-pointer font-extrabold text-xs sm:text-[13px] whitespace-nowrap ${
                   currentView === 'shop' && !selectedCategoryFilter
                     ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 font-black'
@@ -507,7 +510,7 @@ export const Navbar = () => {
                 }`}
               >
                 <span>Tous les articles</span>
-              </button>
+              </Link>
 
               <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 shrink-0 mx-1" />
 
@@ -515,9 +518,9 @@ export const Navbar = () => {
               {categories.map((cat) => {
                 const isSelected = selectedCategoryFilter === cat.id && currentView === 'shop';
                 return (
-                  <button
+                  <Link
                     key={cat.id}
-                    onClick={() => handleNavigate('shop', cat.id)}
+                    href={`/categorie/${cat.slug || cat.id}`}
                     className={`shrink-0 px-4 py-2 rounded-xl transition cursor-pointer font-bold text-xs sm:text-[13px] whitespace-nowrap ${
                       isSelected
                         ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 font-black'
@@ -525,7 +528,7 @@ export const Navbar = () => {
                     }`}
                   >
                     <span>{cat.name}</span>
-                  </button>
+                  </Link>
                 );
               })}
 
@@ -623,26 +626,28 @@ export const Navbar = () => {
                   </a>
                 )}
 
-                <button
-                  onClick={() => handleNavigate('shop')}
-                  className="w-full text-left px-3 py-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                <Link
+                  href="/categories"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full text-left px-3 py-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer block"
                 >
                   Catalogue Complet ({products.length} articles)
-                </button>
+                </Link>
 
                 <div className="pt-2">
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Catégories</p>
                   {categories.map((cat) => (
-                    <button
+                    <Link
                       key={cat.id}
-                      onClick={() => handleNavigate('shop', cat.id)}
+                      href={`/categorie/${cat.slug || cat.id}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="w-full text-left px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 rounded-xl flex items-center justify-between transition cursor-pointer font-medium"
                     >
                       <span>{cat.name}</span>
                       <span className="text-xs text-slate-400 font-bold">
                         {products.filter(p => !p.isDubaiPreorder && p.categoryId === cat.id).length}
                       </span>
-                    </button>
+                    </Link>
                   ))}
                 </div>
 

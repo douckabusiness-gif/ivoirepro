@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/storeContext';
 import { cleanProductTitle } from '@/lib/utils';
@@ -20,6 +22,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const router = useRouter();
   const { 
     formatPrice, 
     addToCart, 
@@ -36,6 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const inWishlist = isInWishlist(product.id);
   const discount = product.discountPercent || (product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : null);
+  const productHref = `/produit/${product.slug || product.id}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,9 +50,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setTimeout(() => setIsAdded(false), 1200);
   };
 
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a')) {
+      return;
+    }
     setSelectedProductId(product.id);
-    setCurrentView('product-detail');
+    router.push(productHref);
   };
 
   // Wholesale / Tier price calculation if enabled
@@ -66,12 +74,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       {/* 1. Zone Image Premium */}
       <div className="relative aspect-square w-full bg-slate-50 dark:bg-slate-950/60 overflow-hidden">
-        <img
-          src={product.images[currentImageIndex] || product.images[0]}
-          alt={product.title}
-          loading="lazy"
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-        />
+        <Link href={productHref} className="block w-full h-full">
+          <img
+            src={product.images[currentImageIndex] || product.images[0]}
+            alt={product.title}
+            loading="lazy"
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          />
+        </Link>
 
         {/* Floating Badges Overlay (Haut Gauche) */}
         <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex flex-col gap-0.5 sm:gap-1 z-10 pointer-events-none">
@@ -173,9 +183,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           
           {/* Ligne Catégorie & Note Étoile */}
           <div className="flex items-center justify-between text-[8.5px] sm:text-[11px] font-bold leading-tight">
-            <span className="text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-tight truncate max-w-[65px] sm:max-w-[120px]">
+            <Link
+              href={`/categorie/${product.category?.slug || product.categoryId}`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-tight truncate max-w-[65px] sm:max-w-[120px] hover:underline cursor-pointer"
+            >
               {product.categoryName}
-            </span>
+            </Link>
             <div className="flex items-center gap-0.5 text-amber-500 shrink-0">
               <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />
               <span>{product.rating || 4.9}</span>
@@ -185,7 +199,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Titre Produit (2 lignes clampées nettes style Alibaba) */}
           <h3 className="font-bold text-[10.5px] sm:text-xs md:text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-tight sm:leading-snug min-h-[26px] sm:min-h-[32px]">
-            {cleanProductTitle(product.title)}
+            <Link href={productHref} className="hover:underline">
+              {cleanProductTitle(product.title)}
+            </Link>
           </h3>
 
           {/* Bloc Prix Principal & Remise */}

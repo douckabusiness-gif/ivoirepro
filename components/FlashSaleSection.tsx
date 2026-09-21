@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 import { 
   Flame, 
@@ -8,19 +10,20 @@ import {
   ShoppingBag, 
   MessageCircle, 
   Eye, 
-  Sparkles,
-  ArrowRight,
-  Zap,
-  Check,
-  Heart,
-  TrendingDown,
-  Star,
-  Percent,
-  SlidersHorizontal,
-  ChevronRight
+  Sparkles, 
+  ArrowRight, 
+  Zap, 
+  Check, 
+  Heart, 
+  TrendingDown, 
+  Star, 
+  Percent, 
+  SlidersHorizontal, 
+  ChevronRight 
 } from 'lucide-react';
 
 export const FlashSaleSection = () => {
+  const router = useRouter();
   const { 
     products, 
     categories,
@@ -202,27 +205,33 @@ export const FlashSaleSection = () => {
             const inWishlist = isInWishlist(product.id);
             const claimedPercent = Math.min(95, Math.max(65, 100 - (stockRemaining * 2.5)));
 
+            const productHref = `/produit/${product.slug || product.id}`;
+
             return (
               <div
                 key={product.id}
-                onClick={() => {
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (target.closest('button, a')) return;
                   setSelectedProductId(product.id);
-                  setCurrentView('product-detail');
+                  router.push(productHref);
                 }}
                 className="group bg-slate-900/90 rounded-xl sm:rounded-2xl border border-slate-800 hover:border-rose-500/70 p-1.5 sm:p-3 flex flex-col justify-between transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-rose-950/40 cursor-pointer relative overflow-hidden"
               >
                 <div>
                   {/* Image Area with Badges & Action Overlays */}
                   <div className="relative aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-slate-950 mb-1.5 sm:mb-2.5">
-                    <img
-                      src={product.images[0]}
-                      alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
-                      loading="lazy"
-                    />
+                    <Link href={productHref} className="block w-full h-full">
+                      <img
+                        src={product.images[0]}
+                        alt={product.title}
+                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </Link>
                     
                     {/* Discount & Flash Badge */}
-                    <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex flex-col gap-0.5 sm:gap-1 z-10">
+                    <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex flex-col gap-0.5 sm:gap-1 z-10 pointer-events-none">
                       <div className="bg-gradient-to-r from-rose-600 to-amber-600 text-white font-black text-[8px] sm:text-xs px-1 sm:px-2 py-0.5 rounded shadow-lg flex items-center gap-0.5">
                         <Flame className="w-2 h-2 sm:w-3 sm:h-3 fill-white" />
                         <span>-{discount}%</span>
@@ -246,7 +255,7 @@ export const FlashSaleSection = () => {
                     </button>
 
                     {/* Stock Remaining Pill */}
-                    <div className="absolute bottom-1 inset-x-1 sm:bottom-2 sm:inset-x-2 bg-slate-950/85 backdrop-blur-xs text-[7.5px] sm:text-[10px] font-bold text-amber-300 px-1 sm:px-2 py-0.2 sm:py-0.5 rounded flex items-center justify-between border border-slate-800">
+                    <div className="absolute bottom-1 inset-x-1 sm:bottom-2 sm:inset-x-2 bg-slate-950/85 backdrop-blur-xs text-[7.5px] sm:text-[10px] font-bold text-amber-300 px-1 sm:px-2 py-0.2 sm:py-0.5 rounded flex items-center justify-between border border-slate-800 pointer-events-none">
                       <span className="flex items-center gap-0.5">
                         <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-amber-400 fill-amber-400 animate-pulse shrink-0" />
                         <span className="truncate">{stockRemaining} rest.</span>
@@ -270,9 +279,13 @@ export const FlashSaleSection = () => {
                   {/* Product Metadata */}
                   <div className="space-y-0.5 sm:space-y-1">
                     <div className="flex items-center justify-between gap-1 text-[8.5px] sm:text-[10px]">
-                      <span className="font-extrabold text-rose-400 uppercase tracking-wider truncate max-w-[65px] sm:max-w-none">
+                      <Link
+                        href={`/categorie/${product.category?.slug || product.categoryId}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="font-extrabold text-rose-400 uppercase tracking-wider truncate max-w-[65px] sm:max-w-none hover:underline cursor-pointer"
+                      >
                         {product.categoryName}
-                      </span>
+                      </Link>
                       <div className="flex items-center gap-0.5 text-amber-400 font-bold shrink-0">
                         <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />
                         <span>{product.rating}</span>
@@ -280,7 +293,9 @@ export const FlashSaleSection = () => {
                     </div>
 
                     <h3 className="font-bold text-[10.5px] sm:text-xs md:text-sm text-white group-hover:text-rose-300 transition-colors line-clamp-1 leading-tight sm:leading-snug">
-                      {product.title}
+                      <Link href={productHref} className="hover:underline">
+                        {product.title}
+                      </Link>
                     </h3>
 
                     <p className="hidden sm:block text-[11px] text-slate-400 line-clamp-1">

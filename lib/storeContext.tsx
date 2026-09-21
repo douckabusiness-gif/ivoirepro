@@ -265,17 +265,21 @@ export const StoreProvider = ({
   children,
   initialView,
   initialData,
+  initialCategoryFilter,
+  initialSubcategoryFilter,
 }: {
   children: ReactNode;
   initialView?: AppView;
   /** Données préchargées côté serveur (home) : évite le flash de données démo et 3 requêtes au démarrage. */
   initialData?: StoreInitialData | null;
+  initialCategoryFilter?: string | null;
+  initialSubcategoryFilter?: string | null;
 }) => {
   // Navigation
   const [currentView, setCurrentViewState] = useState<AppView>(initialView || 'home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [selectedCategoryFilter, setSelectedCategoryFilterState] = useState<string | null>(null);
-  const [selectedSubcategoryFilter, setSelectedSubcategoryFilter] = useState<string | null>(null);
+  const [selectedCategoryFilter, setSelectedCategoryFilterState] = useState<string | null>(initialCategoryFilter ?? null);
+  const [selectedSubcategoryFilter, setSelectedSubcategoryFilter] = useState<string | null>(initialSubcategoryFilter ?? null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Referral & Partner State

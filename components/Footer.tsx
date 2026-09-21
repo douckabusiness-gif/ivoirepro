@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useStore } from '@/lib/storeContext';
 import { normalizeHexColor } from '@/lib/siteTheme';
 import { 
@@ -67,14 +68,14 @@ export const Footer = () => {
             <h4 className="font-bold text-white uppercase tracking-wider text-xs">Navigation</h4>
             <ul className="space-y-2">
               <li>
-                <button onClick={() => setCurrentView('home')} className="hover:text-indigo-400 transition cursor-pointer">
+                <Link href="/" className="hover:text-indigo-400 transition">
                   Accueil
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => { setCurrentView('shop'); setSelectedCategoryFilter(null); }} className="hover:text-indigo-400 transition cursor-pointer">
+                <Link href="/categories" className="hover:text-indigo-400 transition">
                   Tous les Produits
-                </button>
+                </Link>
               </li>
               <li>
                 <button onClick={() => setCurrentView('faq')} className="hover:text-indigo-400 transition cursor-pointer">
@@ -100,15 +101,12 @@ export const Footer = () => {
             <ul className="space-y-2">
               {categories.slice(0, 5).map((cat) => (
                 <li key={cat.id}>
-                  <button 
-                    onClick={() => {
-                      setSelectedCategoryFilter(cat.id);
-                      setCurrentView('shop');
-                    }}
-                    className="hover:text-indigo-400 transition text-left cursor-pointer"
+                  <Link 
+                    href={`/categorie/${cat.slug || cat.id}`}
+                    className="hover:text-indigo-400 transition text-left block"
                   >
                     {cat.name}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
