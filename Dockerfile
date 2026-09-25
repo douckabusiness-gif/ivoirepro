@@ -31,6 +31,7 @@ COPY --chown=node:node --from=builder /app/public ./public
 COPY --chown=node:node --from=builder /app/.next ./.next
 COPY --chown=node:node --from=builder /app/prisma ./prisma
 COPY --chown=node:node --chmod=755 --from=builder /app/scripts/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN sed -i 's/\r$//' ./docker-entrypoint.sh
 
 EXPOSE 3000
 
