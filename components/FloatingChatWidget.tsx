@@ -236,7 +236,6 @@ export const FloatingChatWidget = () => {
   };
 
   if (!aiAvailable && !whatsappAvailable) return null;
-  if (currentView === 'home' && !isChatDrawerOpen) return null;
 
   const cleanAgentName = (settings.aiAgentName || 'Amara')
     .replace(/\s*\([^)]*IA[^)]*\)/gi, '')

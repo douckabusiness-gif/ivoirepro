@@ -77,8 +77,10 @@ export interface Product {
   discountPercent?: number;
   categoryId: string;
   categoryName?: string;
+  category?: Category;
   subcategoryId?: string;
   subcategoryName?: string;
+  subcategory?: Subcategory;
   images: string[];
   featured?: boolean;
   isNew?: boolean;
