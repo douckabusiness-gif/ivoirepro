@@ -33,18 +33,20 @@ export const Footer = () => {
           {/* Brand Info (col-span-2) */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              {isSettingsLoaded && settings.storeLogoUrl ? (
-                <div className="flex min-h-[92px] w-full max-w-[410px] items-center justify-center sm:justify-start">
-                  <img
-                    src={settings.storeLogoUrl}
-                    alt=""
-                    role="img"
-                    aria-label="Logo de la boutique"
-                    style={{ height: `${Math.max(settings.storeLogoHeight || 84, 82)}px` }}
-                    className="max-h-[84px] w-auto max-w-full object-contain"
-                  />
-                </div>
-              ) : <div aria-hidden="true" className="min-h-[92px] w-full max-w-[410px]" />}
+              <Link href="/" className="inline-block cursor-pointer select-none" aria-label="Retour à l'accueil">
+                {isSettingsLoaded && settings.storeLogoUrl ? (
+                  <div className="flex min-h-[92px] w-full max-w-[410px] items-center justify-center sm:justify-start">
+                    <img
+                      src={settings.storeLogoUrl}
+                      alt=""
+                      role="img"
+                      aria-label="Logo de la boutique"
+                      style={{ height: `${Math.max(settings.storeLogoHeight || 84, 82)}px` }}
+                      className="max-h-[84px] w-auto max-w-full object-contain transition-transform duration-300 hover:scale-105"
+                    />
+                  </div>
+                ) : <div aria-hidden="true" className="min-h-[92px] w-full max-w-[410px]" />}
+              </Link>
             </div>
 
             <div className="space-y-2 pt-2 text-xs">

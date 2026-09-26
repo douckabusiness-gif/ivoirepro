@@ -208,15 +208,15 @@ export const Navbar = () => {
 
           {/* Logo / Brand Name Area */}
           <div className="flex items-center gap-3 shrink-0">
-            <button 
+            <Link 
+              href="/"
               onClick={() => handleNavigate('home')}
               className="flex items-center gap-2.5 sm:gap-3.5 text-left group cursor-pointer select-none"
               aria-label="Retour à l'accueil"
             >
               {/* Branded Logo Image OR Vector Emblem */}
               {renderBrandLogo('nav')}
-              
-            </button>
+            </Link>
           </div>
 
           {/* Central Search Bar (Desktop & Large screens) */}
@@ -559,9 +559,14 @@ export const Navbar = () => {
               
               {/* Drawer Brand Header */}
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                <div className="flex items-center gap-2.5">
+                <Link 
+                  href="/"
+                  onClick={() => handleNavigate('home')}
+                  className="flex items-center gap-2.5 cursor-pointer"
+                  aria-label="Retour à l'accueil"
+                >
                   {renderBrandLogo('drawer')}
-                </div>
+                </Link>
                 <button 
                   onClick={() => setIsMobileMenuOpen(false)} 
                   className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer"
